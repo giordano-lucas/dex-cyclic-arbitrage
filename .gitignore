@@ -156,3 +156,4 @@ data/
 /data
 opt/
 */core.*
+models/*_model/
