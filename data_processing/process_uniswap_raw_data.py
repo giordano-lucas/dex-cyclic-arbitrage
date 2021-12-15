@@ -4,11 +4,14 @@ import sys
 sys.path.append("/scratch/izar/kapps/DEX-Cyclic-Arbitrage/")
 from helper import *
 
+import glob 
+
+from config.get import cfg
 
 print("===========================================")
 print("Loading uni data")
-raw_data_path = "/scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/uniswap_raw_data_*json.gz"
-uni_raw_data_paths = glob.glob(raw_data_path)
+
+uni_raw_data_paths = glob.glob(cfg['directories']['uniswap_raw_data'])
 
 uniswap_raw_data = []
 for path in uni_raw_data_paths:
