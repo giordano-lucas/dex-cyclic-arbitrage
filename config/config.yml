@@ -1,0 +1,7 @@
+directories:
+    base_dir: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/
+    data_dir: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/
+    preprocessed_data: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/uniswap_data.csv
+biquery:
+    API_KEY1: BQYd6qf95gjz6MU3FTP9yQegkGVkuQ4r # Augustin's KEY
+    API_KEY2: BQYt1q57Typ8HsY7nxzqsGzmKA0u7FzS # Lucas's KEY
