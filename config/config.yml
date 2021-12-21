@@ -12,7 +12,8 @@ files:
     encoded_test_features  : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/ML_features/encoded_test_features.npy
     encoded_train_features : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/ML_features/encoded_train_features.npy
     cycle_ids : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/ML_features/cycle_ids.npy
-    
+    all_cycles : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/cycles_in_Uniswap.json
+    filtered_cycles : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/filtered_cycles.json
     
 biquery:
     API_KEY1: BQYd6qf95gjz6MU3FTP9yQegkGVkuQ4r # Augustin's KEY

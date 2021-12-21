@@ -1,1 +1,1 @@
-wget -P /home/kapps/DEX-Cyclic-Arbitrage/data/cycles_in_Uniswap.json  https://disco.ethz.ch/misc/uniswap/cycles_in_Uniswap.json --no-check-certificate
+wget -P /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/  https://disco.ethz.ch/misc/uniswap/cycles_in_Uniswap.json --no-check-certificate
