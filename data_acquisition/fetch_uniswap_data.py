@@ -5,7 +5,7 @@ import gzip
 import sys 
 sys.path.append("/scratch/izar/kapps/DEX-Cyclic-Arbitrage/")
 from helper import *
-
+from config.get import cfg
 
 API_KEY1 = 'BQYd6qf95gjz6MU3FTP9yQegkGVkuQ4r' # Augustin's KEY
 API_KEY2 = 'BQYt1q57Typ8HsY7nxzqsGzmKA0u7FzS' # Lucas's KEY
@@ -79,10 +79,10 @@ def create_query(k,token1,token2,block_n):
 print("start fetching data")
 
 k = 600 # number of data point to fetch per request
-first_cycle  = 40000
-last_cycle   = 80000
+first_cycle  = 80000
+last_cycle   = 120000
 
-uniswap_raw_data_path = f"/scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/uniswap_raw_data_{first_cycle}_{last_cycle}.json.gz"
+uniswap_raw_data_path = cfg['directories']['uniswap_raw_data']+f"/uniswap_raw_data_{first_cycle}_{last_cycle}.json.gz"
 f_out = gzip.open(uniswap_raw_data_path,"wt")
 n_query   = 0
 err_count = 0

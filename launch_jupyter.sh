@@ -12,4 +12,4 @@ source opt/venv-gcc/bin/activate
  
 ipnport=$(shuf -i8000-9999 -n1)
  
-git init
+jupyter-notebook --no-browser --port=${ipnport} --ip=$(hostname -i)
