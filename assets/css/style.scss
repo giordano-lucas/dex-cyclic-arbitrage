@@ -1,0 +1,25 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+.update-background {
+     background-image: url("https://user-images.githubusercontent.com/43466781/147548321-ac029d24-ce8c-49b5-bdde-e4071fc8c8e0.png") !important;
+}
+.non-opaque {
+    opacity: 0.9;
+}
+.project-authors {
+    font-size: small;
+    margin-bottom: 2rem;
+    font-weight: normal;
+    opacity: 0.9;
+}
+
+.justify {
+    text-align: justify !important;
+}
+
+content h5, .main-content h6 {
+    color: #FF0054 !important;
+}
