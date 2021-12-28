@@ -22,3 +22,6 @@ We already have downloaded the dataset used in the arxiv paper. This dataset con
 
 A a second step, we construct a new dataset out of "cycles_data" as follows : for each cycle in "cycles_data" we fetch from [https://bitquery.io/](https://bitquery.io/) the "k" exchange rates preceding the swaps present in the cycle path.
 
+## Test live plot
+
+{% include_relative images/first_figure.html %}
