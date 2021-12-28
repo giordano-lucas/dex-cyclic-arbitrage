@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 
      
-data = pd.read_csv(cfg['files']['preprocessed_data'],nrows=50_000_000)
+data = pd.read_csv(cfg['files']['preprocessed_data'],nrows=25_000_000)
 
 # from data exploration log was found to be a good normaliser
 def log_scaling(data):

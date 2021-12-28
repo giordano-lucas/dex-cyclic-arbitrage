@@ -2,6 +2,10 @@ directories:
     base_dir: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/
     data_dir: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/
     uniswap_raw_data : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/uniswap_raw_data/
+        
+fig_dir:
+    clustering: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/figures/clustering/
+
 files: 
     preprocessed_data: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/uniswap_data.csv
     raw_features : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/ML_features/raw_features.npy
@@ -14,10 +18,15 @@ files:
     cycle_ids : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/ML_features/cycle_ids.npy
     all_cycles : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/cycles_in_Uniswap.json
     filtered_cycles : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/filtered_cycles.json
+    features : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/features.csv
+    features_train : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/features_train.csv
+    features_test : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/features_test.csv
+    
+
     
 biquery:
     API_KEY1: BQYd6qf95gjz6MU3FTP9yQegkGVkuQ4r # Augustin's KEY
     API_KEY2: BQYt1q57Typ8HsY7nxzqsGzmKA0u7FzS # Lucas's KEY
     
 models:
-    autoencoder: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/models/autoencoder_model
+    autoencoder: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/models/embedding/autoencoder/{}
