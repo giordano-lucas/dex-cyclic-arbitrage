@@ -50,6 +50,9 @@ Each row contains information about a single swap :
 
 
 # Cycle embedding 
+
+{% include_relative figures/encoder-diagram.drawio.html %}
+
 # Clustering
 
 ## Motivation and method
@@ -85,12 +88,12 @@ In section [Further preprocessing](#further-preprocessing), `0-padding` was intr
 
 Moreover, if we keep increasing the number of padded `Os`, we can make the `MSE` abitrary close to 0 (perfect model). 
 
-These undirised behaviors could be addresssed by introducing a special token `PAD` which has no intrinsic value (similarly as the `BERT Transformer` model). By defining a custom `keras model` and `MSE` that simply ignore these `PAD` tokens, it would increase the quality of the embedding.
+These undesired behaviors could be addresssed by introducing a special token `PAD` which has no intrinsic value (similarly as in the `BERT Transformer` model). Defining a custom `keras model` and `MSE` that simply ignore these `PAD` tokens would increase the quality of the embedding.
 
-Another possible improvement is to define a custom convolutional layer that can take advantage of the cyclic nature of the arbitrage. Circular convolution could be a step towards this direction.
+Another possible improvement is to define a custom convolutional layer that can take advantage of the cyclic nature of the arbitrage. Circular convolution is be a step towards this direction.
 
 
-Finally, we should add other features such as Tokens, liquity, and XXX
+Finally, we should include other features (e.g. the 3 encodings of the tokens present in the cycle) to the model. However, this process is not as straightforward as it may seem. Indeed  
 
 
 
