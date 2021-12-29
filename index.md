@@ -77,7 +77,7 @@ When the validity of the clustering is established, we can start to analyse it. 
 # Test live plot
 
 
-{% include_relative figures/Profitability_of_each_cluster_train.html %}
+{% include_relative figures/clustering/Profitability_of_each_cluster_train.html %}
 
 # Further steps
 
