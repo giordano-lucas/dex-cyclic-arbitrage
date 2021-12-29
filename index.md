@@ -26,7 +26,9 @@ XXXXX
 
 Moreover, to compute embeddings (next step) it would be more convenient to work on fixed-length cycles. Thus, cycles whose lengths are different than 3 are filtered out. The obtained data is called ```filtered_cycles_data```.
 While filtering, a new indexing system is created to identify cycles through an incremental  ```cycle_id```.
+
 ### Uniswap data
+
 As a second step, we construct new dataset out of `cycles_data` as follows. For each cycle in ```filtered_cycles_data```: 
 
 1. we fetch from [https://bitquery.io/](https://bitquery.io/) the exchange rates and gas prices of the   ```k``` preceding the swaps present in the cycle path. This downloading process is more complex and needs to address some challenges. The free version of the bitquery API that is used for this project only allows a limited number of queries (10/mins). To solve this issue we used EPFL's cluster machine to query the API for a few weeks with a time delay between each call. To increase the throughput we used 2 API keys. For each given cycle in ```filtered_cycles_data``` 3 calls are needed, one per edge of the cycle. 
@@ -36,7 +38,15 @@ Each row contains information about a single swap :
 
 >  ```cycle_id```, ```token1```, ```token2```, ```baseAmount```, ```quoteAmount```,```quotePrice```, ```gasPrice```, ```gasValue```, ```time```.
 
-# Cycle embedding
+
+## Data Exploration 
+
+## Further processing
+* 0 Padding
+* building the ML feature tensor
+* taking the log
+* train test split
+* scaling
 
 # Clustering
 
