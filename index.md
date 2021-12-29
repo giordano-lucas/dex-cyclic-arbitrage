@@ -50,7 +50,9 @@ Each row contains information about a single swap :
 
 # Cycle embedding 
 
-<img width="400" alt="Diagram encoder" class="img-responsive" src="figures/diagrams/encoder/encoder-diagram.drawio.svg">
+<p align="center">
+<img width="400" alt="Diagram encoder" src="figures/diagrams/encoder/encoder-diagram.drawio.svg">
+</p>
 
 # Clustering
 
