@@ -133,3 +133,5 @@ Note: ```vizu.ipynb``` is only there for the people who read our data story but 
 ### Dependencies requirement
 
 In the repository, we provide a `requirement.txt` file from which you can create a virutatal python environment.
+
+> Note : to be able to import `talos` on the Scitas cluster, we need to update line 8 of `opt/venv-gcc/lib/python3.7/site-packages/kerasplotlib/traininglog.py` from `from keras.callbacks import Callback` to `from tensorflow.keras.callbacks import Callback`

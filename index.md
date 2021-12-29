@@ -17,11 +17,11 @@ Then, we will cluster the arbitrages based on the computed features. Ideally, we
 ### Data from the paper
 
 We already have downloaded the dataset used in the arxiv paper. This dataset consists of arbitrage cycles that were exploited in the past. Each of these cycles is described by: a path (the token swaps),  a cost (gas fees), a profit etc. Let's call this dataset  "cycles_data"
-
 ### Uniswap data
 
 A a second step, we construct a new dataset out of "cycles_data" as follows : for each cycle in "cycles_data" we fetch from [https://bitquery.io/](https://bitquery.io/) the "k" exchange rates preceding the swaps present in the cycle path.
 
 ## Test live plot
 
-{% include_relative images/first_figure.html %}
+
+{% include_relative figures/Profitability_of_each_cluster_train.html %}
