@@ -41,7 +41,7 @@ Each row contains information about a single swap :
 
 # Data Exploration 
 
-## Further processing
+## Further preprocessing
 * 0 Padding
 * building the ML feature tensor
 * taking the log
@@ -78,3 +78,9 @@ When the validity of the clustering is established, we can start to analyse it. 
 {% include_relative figures/Profitability_of_each_cluster_train.html %}
 
 # Further steps
+
+## Embedding improvement
+
+In section [Further preprocessing](#further-preprocessing),
+
+## DBscan 
