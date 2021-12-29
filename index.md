@@ -81,6 +81,18 @@ When the validity of the clustering is established, we can start to analyse it. 
 
 ## Embedding improvement
 
-In section [Further preprocessing](#further-preprocessing),
+In section [Further preprocessing](#further-preprocessing), `0-padding` was introducted to standardize the length of each time series. However, the choice of `0s` is rather arbitrary and can introduce many problems upon training the autoencoder. Indeed, a small computation shows that introducing this padding technique adds XXX zeros which corresponds to a fraction XXX % of the training set entries. This means that the autoencoder can do a decent only by trying to improve the reconstruction of `0s`is the training set. 
+
+Moreover, if we keep increasing the number of padded `Os`, we can make the `MSE` abitrary close to 0 (perfect model). 
+
+These undirised behaviors could be addresssed by introducing a special token `PAD` which has no intrinsic value (similarly as the `BERT Transformer` model). By defining a custom `keras model` and `MSE` that simply ignore these `PAD` tokens, it would increase the quality of the embedding.
+
+Another possible improvement is to define a custom convolutional layer that can take advantage of the cyclic nature of the arbitrage. Circular convolution could be a step towards this direction.
+
+
+Finally, we should add other features such as Tokens, liquity, and XXX
+
+
+
 
 ## DBscan 
