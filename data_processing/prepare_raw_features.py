@@ -3,8 +3,8 @@ sys.path.append("/scratch/izar/kapps/DEX-Cyclic-Arbitrage/")
 from config.get import cfg
 import pandas as pd
 import numpy as np
-
-     
+from sklearn.preprocessing import StandardScaler
+print("===================================")     
 data = pd.read_csv(cfg['files']['preprocessed_data'],nrows=25_000_000)
 
 # from data exploration log was found to be a good normaliser
