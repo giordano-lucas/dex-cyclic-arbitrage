@@ -21,6 +21,7 @@ Data used in the study come from two different sources: information about exploi
 We already have downloaded the dataset used in the arxiv paper. This dataset consists of arbitrage cycles that were exploited in the past. Each of these cycles is described by: a path (the token swaps),  a cost (gas fees), a profit etc.  It consists of a single JSON file and the downloading process is straightforward. The `cyclic transaction dataset` contains cycles of various lengths (number of tokens involved). The following figure displays the distribution of these lengths : 
 
 {%include_relative figures/data_exploration/cycles_length_distribution.html %}
+
 > Note: this figure was replicated from the arxiv paper.
 
 Moreover, to compute embeddings (next step) it would be more convenient to work on fixed-length cycles. Thus, cycles whose lengths are different than 3 are filtered out. The obtained data is called `filtered_cycles_data`.
@@ -56,7 +57,11 @@ Since we are dealing with financial time series for the following features:
 
 > Note: in this section, no distinction is made between cycles. In other words, all data available is treated as a single feature, aka a single distribution. Indeed, understanding each cycle separatly is a cumbersome process. Furthermore, it does not help in getting a global understanding of the dataset.
 
-In this first milestone, only `quotePrice` and `gasPrice` are used as features for the embedding (in fact `quotePrice = quoteAmount/baseAmount` ). Therefore, we propose the following plots:
+In this first milestone, only `quotePrice` and `gasPrice` are used as features for the embedding (in fact `quotePrice = quoteAmount/baseAmount` ). The distribution of `quotePrice` is show below:
+
+{% include_relative figures/data_exploration/quotePrice_small.html %}
+
+And similarly for `gasPrice`:
 
 {% include_relative figures/data_exploration/gasPrice_small.html %}
 
@@ -157,7 +162,6 @@ It may well be that we did not fully exploit the capacity of the neural network.
 
 ## Motivation and method
 
-
 Run different clustering algorithms (k-means or db-scan).
 
 For each of them, we plan the validity of the clustering through the following metrics
@@ -178,10 +182,10 @@ In other words, using relevant metrics, we need to demonstrate dissimilarities a
 
 For instance, we could consider the following :
 
-1. `Number of cycles per cluster` : indeed, a in a random clustering, the number 
-2. `Profit per cluster` : 
-3. `Proftiability per cluster` : 
-4. `Token Distribution understandign per cluster` : 
+1. `Number of cycles per cluster` : 
+2. `Profit per cluster` : we would expect to observe clusters more profitable than others 
+3. `Proftiability per cluster` : this metric is related to the risk associated to a cluster. Indeed, some clusters could be less profitable than others (in average) but yielding a higher probablity to make a profit in the end. It s the type of analysis that we would like to conduct with this metric. 
+4. `Token Distribution understanding per cluster` : 
 
 
 {% include_relative figures/clustering/Profitability_of_each_cluster_train.html %}
