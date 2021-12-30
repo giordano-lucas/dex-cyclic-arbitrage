@@ -133,13 +133,21 @@ The task of an autencoder is summarised in the following figure.
 
 > Note: through this process, we observe a reduction factor of `3600/100 = 36x` which is non-negligeable.
 
-To better capture the structure of cycles, a convolutional autoencoder will be used to create the embedding. The idea is that when a cyclic arbitrage is implemented, the first transaction could affect some the price/gas of the second token and similarly for other transactions. The convolution operations could extract these neighborings relationships between tokens in order to build a better latent representation of cycles.
+To better capture the structure of cycles, a convolutional `autoencoder` will be used to create the embedding. The idea is that when a cyclic arbitrage is implemented, the first transaction could affect some the price/gas of the second token and similarly for other transactions. The convolution operations could extract these neighborings relationships between tokens in order to build a better latent representation of cycles.
 
 In the [Cycles profitability prediction](#cycles-profitability-prediction) task, we will be able to measure the gain of the embedding compared to the raw features (base model).
 
 ## Performance
 
+An `autoencoder` is trained to produce an output as close as possible to the corresponding input. 
 
+A classical way to evaluate the perfornance (reconstruction error) of an `autoencoder` is through the `Mean Square Error (MSE)` loss 
+
+The following plots displays the difference in terms of `MSE` for the `autoencoder` and the `PCA` methods.
+
+{% include_relative figures/embedding/mse_embedding.html %}
+
+> Note: `0` corresponds to the best possible model.
 
 
 # Clustering
@@ -163,10 +171,12 @@ When the validity of the clustering is established, we can start to analyse it. 
 {% include_relative figures/clustering/Profitability_of_each_cluster_train.html %}
 # Cycles profitability prediction
 
-# Further steps/improvements
+XXXXX
+
+# Further steps 
 ## Embedding improvement
 
-In section [Data preprocessing](#data-preprocessing), `0-padding` was introducted to standardize the length of each time series. However, the choice of `0s` is rather arbitrary and can introduce many problems upon training the autoencoder (as well as scaling the data). Indeed, a small computation shows that introducing this padding technique adds XXX zeros which corresponds to a fraction XXX % of the training set entries. This means that the autoencoder can do a decent only by trying to improve the reconstruction of `0s`is the training set. 
+In section [Data preprocessing](#data-preprocessing), `0-padding` was introducted to standardize the length of each time series. However, the choice of `0s` is rather arbitrary and can introduce many problems upon training the `autoencoder` (as well as scaling the data). Indeed, a small computation shows that introducing this padding technique adds XXX zeros which corresponds to a fraction XXX % of the training set entries. This means that the `autoencoder` can do a decent only by trying to improve the reconstruction of `0s`is the training set. 
 
 Moreover, if we keep increasing the number of padded `Os`, we can make the `MSE` abitrary close to 0 (perfect model). 
 
@@ -181,3 +191,10 @@ If we have time, we could also compare performance of the encoder with Fourier/W
 ## Clustering improvement 
 
 If we increase the quality of the embedding, the clustering quality should increase as well. However, we can futher backtest the clustering algorthm by comparing KMeans with BDscan for instance.
+
+
+## Hyper-paramater optimisation
+
+In this first milestone, we only trained basic model to setup the whole project pipeline. We remain to optimise the training capabilities through `hyper-paramater optimisation`. 
+
+To this end, we will use the `talos` library to test various possible achitectures for the `autoencoder`.
