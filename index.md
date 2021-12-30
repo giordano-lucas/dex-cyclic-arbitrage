@@ -159,14 +159,15 @@ It may well be that we did not fully exploit the capacity of the neural network.
 
 ## Motivation and method
 
-Run different clustering algorithms (k-means or db-scan).
+Cycles clustering can be understandood as an unsupervised method to classify cycles into a given (`k`) number of categories. The clustering assignemnts provide a natural way of grouping cycles together. Statisfical analysis can be conducted on the clusters to understand the general structural properties of the dataset. 
 
+To this end, we will start by studying the output of a standard clustering algorithm named [K-means](https://en.wikipedia.org/wiki/K-means_clustering).
 
-This step will allow us to quantify how much information (and possibly predictive power) is contained in the clustering.
+The starting point of the analysis is to understand which values of ```k``` (the number of clusters) lead to a relevant clustering assignment. ```silhouette``` and ```sse``` plots are the standard way to go.  
 
 {% include_relative figures/clustering/kmeans_k_metrics.html %}
 
-When the validity of the clustering is established, we can start to analyse it. We propose to study the following list of factors (could be extended or reduced later on): Gas, Time, Market cap, volume, liquidity, volatility. To this end, we propose to compute several metrics for each cluster, observe if they are any differences across clusters.
+The elbow method applied on the SSE graph seems to indicate that 3 might be a relevant choice from ```k```. However, the silhouette graph suggests that 4 and 8 are better choices. From these plots, we believe that `k=4` is a fair tradeoff between the goodness of the fit and the number of clusters. 
 
 ## Clustering validation
 
@@ -228,7 +229,7 @@ These undesired behaviors could be addresssed by introducing a special token `PA
 
 Another possible improvement is to define a custom convolutional layer that can take advantage of the cyclic nature of the arbitrage. Circular convolution is be a step towards this direction.
 
-Finally, we should include other features (e.g. the 3 encodings of the tokens present in the cycle) to the model. However, this process is not as straightforward as it may seem. Indeed XXXXX
+Finally, we should include other features (e.g. the 3 encodings of the tokens present in the cycle) to the model. We draw the attention of the reader on the fact that these extra features should not be added as input to the convolutional autoencoder. Indeed, there is not translation bias to exploit here. However, we can use them for the clustering or the profitability prediction.
 
 If we have time, we could also compare performance of the encoder with Fourier/Wavelet transform or Signature transform.
 
