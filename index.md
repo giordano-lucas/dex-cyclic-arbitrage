@@ -220,11 +220,10 @@ The goal of the project also consists of testing the predictability of the cycle
 ## Logistic regression
 The first model consists of logistic regression. It is fitted on the standardized embeddings using a grid search cross-validation process to tune the hyperparameter C (regularizer). The target imbalance is handled through the `class_weight` parameter of the Sklearn logistic model. It reweights the samples during training to obtain a 1:1 balance between positive and negative data points. The following confusion matrix is obtained on the test set : 
 
-| /       |     /   |Prediction   |
-| /       |    /    |True | False |
-|:-------:|--------:|:------------|
-| Reality | True    | 0   |   3   |
-|         | False   |  1  |   2   |
+| /       |True | False |
+|--------:|:------------|
+| True    | 0   |   3   |
+| False   |  1  |   2   |
 
 # Further steps 
 ## Embedding improvement
