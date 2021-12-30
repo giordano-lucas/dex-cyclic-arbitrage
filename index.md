@@ -60,7 +60,9 @@ Since we are dealing with financial time series for the following features:
 
 In this first milestone, only `quotePrice` and `gasPrice` are used as features for the embedding (in fact `quotePrice = quoteAmount/baseAmount` ). Therefore, we propose the following plots:
 
-{% include_relative figures/data_exploration/baseAmount_small.html %}
+{% include_relative figures/data_exploration/quotePrice_small.html %}
+
+{% include_relative figures/data_exploration/gasPrice_small.html %}
 
 ## Further preprocessing
 
