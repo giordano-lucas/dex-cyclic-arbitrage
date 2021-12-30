@@ -215,7 +215,16 @@ In the following set of plots, the same metrics are recomputed but this time on 
 
 # Cycles profitability prediction
 
-XXXXX
+The goal of the project also consists of testing the predictability of the cycle's profitability. The return of a given cycle is defined by its `revenues` minus its `cost` (fees). `Profitability` is a Boolean value indicating if the corresponding cycle has positive or negative `profitability`. `Profitability` is then used as a target/label for classification tasks. 94% of the cycles have a positive return. Thus, we need to take this imbalance into the prediction process. First, simple models such as logistic regression and SVM are used. These models take the previously computed embeddings as features. Then a more complex model consisting of a neural network is used, it is fed with the raw features. Namely, the swap rates and gas fees.
+
+## Logistic regression
+The first model consists of logistic regression. It is fitted on the standardized embeddings using a grid search cross-validation process to tune the hyperparameter C (regularizer). The target imbalance is handled through the `class_weight` parameter of the Sklearn logistic model. It reweights the samples during training to obtain a 1:1 balance between positive and negative data points. The following confusion matrix is obtained on the test set : 
+
+| /                 |Prediction   |
+| /                 |True | False |
+|:-------:|--------:|:------------|
+| Reality | True    | 0   |   3   |
+|         | False   |  1  |   2   |
 
 # Further steps 
 ## Embedding improvement
