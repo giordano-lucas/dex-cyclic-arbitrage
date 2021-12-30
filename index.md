@@ -144,10 +144,16 @@ A classical way to evaluate the perfornance (reconstruction error) of an `autoen
 
 The following plots displays the difference in terms of `MSE` for the `autoencoder` and the `PCA` methods.
 
-{% include_relative figures/embedding/mse_embedding.html %}
+{% include_relative figures/embedding/performance_autoencoder.html %}
 
 > Note: `0` corresponds to the best possible model.
 
+Surprisingly, the `autoencoder` performs worse in terms of reconstruction than `PCA`. However, in this first milestone, since we only trained :
+1. For a few epochs (`600`).
+2. Without hyper-parameter optimisation. 
+3. Using a subset of the dataset available (`10 000` cycles).
+
+It may well be that we did not fully exploit the capacity of the neural network.
 
 # Clustering
 
