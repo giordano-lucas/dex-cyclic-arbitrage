@@ -155,5 +155,6 @@ cython_debug/
 data/
 /data
 opt/
+old_opt/
 */core.*
 models/*_model/

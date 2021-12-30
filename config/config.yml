@@ -5,6 +5,7 @@ directories:
         
 fig_dir:
     clustering: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/figures/clustering/
+    data_exploration: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/figures/data_exploration/
 
 files: 
     preprocessed_data: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/uniswap_data.csv
@@ -22,7 +23,6 @@ files:
     features_train : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/features_train.csv
     features_test : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/features_test.csv
     
-
     
 biquery:
     API_KEY1: BQYd6qf95gjz6MU3FTP9yQegkGVkuQ4r # Augustin's KEY
