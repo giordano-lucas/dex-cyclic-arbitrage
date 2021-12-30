@@ -215,22 +215,44 @@ In the following set of plots, the same metrics are recomputed but this time on 
 
 # Cycles profitability prediction
 
-The goal of the project also consists of testing the predictability of the cycle's profitability. The return of a given cycle is defined by its `revenues` minus its `cost` (fees). `Profitability` is a Boolean value indicating if the corresponding cycle has positive or negative `profitability`. `Profitability` is then used as a target/label for classification tasks. 94% of the cycles have a positive return. Thus, we need to take this imbalance into the prediction process. First, simple models such as logistic regression and SVM are used. These models take the previously computed embeddings as features. Then a more complex model consisting of a neural network is used, it is fed with the raw features. Namely, the swap rates and gas fees.
+The goal of the project also consists of testing the predictability of the cycle's profitability. The return of a given cycle is defined by its `revenues` minus its `cost` (fees). `Profitability` is a Boolean value indicating if the corresponding cycle has positive or negative `profitability`. `Profitability` is then used as a target/label for classification tasks. 94% of the cycles have a positive return. Thus, we need to take this imbalance into the prediction process. The target imbalance is handled through the `class_weight` module of  Sklearn . It reweights the samples during training to obtain a 1:1 balance between positive and negative data points.
+
+First, simple models such as logistic regression and SVM are used. These models take the previously computed embeddings as features. Then a more complex model consisting of a neural network is used, it is fed with the raw features. Namely, the swap rates and gas fees.
 
 ## Logistic regression
-The first model consists of logistic regression. It is fitted on the standardized embeddings using a grid search cross-validation process to tune the hyperparameter C (regularizer). The target imbalance is handled through the `class_weight` parameter of the Sklearn logistic model. It reweights the samples during training to obtain a 1:1 balance between positive and negative data points. The following confusion matrix is obtained on the test set : 
+The first model consists of logistic regression. It is fitted on the standardized embeddings using a grid search cross-validation process to tune the hyperparameter C (regularizer). The following confusion matrix is obtained on the test set : 
 
-| /       |True | False |
-|--------:|:---:|:------|
-| True    | 0   |   3   |
-| False   |  1  |   2   |
+| /           |True(pred) | False(pred) |
+|------------:|:---------:|:------------|
+| True(real)  | XXXX      |   XXXX      |
+| False(real) |  XXXX     |   XXXX      |
+What correponsds to a f1 score of : XXXX
 
-| Name | Size |  Description                                                           |
-|:----:|-----:|:-----------------------------------------------------------------------|
-| `D`  | 3    | the length of the cycle, aka the number of tokens                      |
-| `P`  | 600  | the length of the time series of swap transactions                     |
-| `K`  | 2    | the amount of time series/features (`quotePrice` and `gasPrice`)       |
+## Support vector machine (SVM)
+The second model is a support vector machine trained on the standardized embeddings to find the optimal boundary between profitable and non-profitable cycles. Again, cross-validation is used to tune the hyperparameters. Namely: the kernel of the SVM (`linear`, `rbf`, or `poly`) and the regularizer (`C`). The selected model produces the following confusion matrix on the test set : 
 
+| /           |True(pred) | False(pred) |
+|------------:|:---------:|:------------|
+| True(real)  | XXXX      |   XXXX      |
+| False(real) |  XXXX     |   XXXX      |
+What correponsds to a f1 score of : XXXX
+## Neural network (NN)
+The last classification model is a complex neural network. it takes the raw standardized data as features.  The network has the following architecture:
+ ------------------------------
+XXX 
+-----------------------------
+XXX 
+-----------------------------
+XXX 
+-----------------------------
+It consists of XXXX parameters, which is comparable to the encoding part of the embedding's autoencoder. We chose the number of parameters to be comparable to the encoder to allow the classification network to create its own embedding. We expect this network to perform better than the previous one since it creates an embedding designed for the given classification task.
+Dropout ?
+The performance obtain on the test set are the following :
+| /           |True(pred) | False(pred) |
+|------------:|:---------:|:------------|
+| True(real)  | XXXX      |   XXXX      |
+| False(real) |  XXXX     |   XXXX      |
+What correponsds to a f1 score of : XXXX
 
 # Further steps 
 ## Embedding improvement
