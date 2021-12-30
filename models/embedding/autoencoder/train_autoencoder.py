@@ -10,7 +10,7 @@ import sys
 sys.path.append("/scratch/izar/kapps/DEX-Cyclic-Arbitrage/")
 from config.get import cfg
 from sklearn.model_selection import train_test_split
-
+print("===============================")
 X = np.load(cfg['files']["raw_features"])
 cycles_ids = np.load(cfg['files']["cycle_ids"])
 # train/test split and standard scaling 
@@ -52,7 +52,7 @@ def build_model():
     decoded = layers.Conv2D(2, (3, 3), activation='relu', padding='same')(x)
 
     autoencoder = keras.Model(input_img, decoded)
-    autoencoder.compile(optimizer='adam',loss='binary_crossentropy',)
+    autoencoder.compile(optimizer='adam',loss='mean_squared_error',)
     
     return autoencoder
 
@@ -68,7 +68,7 @@ hist = autoencoder.fit(X_train_scaled, X_train_scaled,
                 shuffle=True,
                 verbose=1)
 
-model_name = 'autoencoder_model_binary_Cross'
+model_name = 'simple_model_2'
 
 autoencoder.save(model_name)
 

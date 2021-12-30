@@ -5,7 +5,9 @@ import tensorflow as tf
 import numpy as np
 from tensorflow import keras
 
-autoencoder = keras.models.load_model(cfg["models"]["autoencoder"])
+model_name = "autoencoder_model_simple"
+
+autoencoder = keras.models.load_model(cfg["models"]["autoencoder"]+"/"+model_name)
 
 encoding_layer = 5
 
