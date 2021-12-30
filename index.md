@@ -62,8 +62,6 @@ In this first milestone, only `quotePrice` and `gasPrice` are used as features f
 
 {% include_relative figures/data_exploration/baseAmount_small.html %}
 
-{% include_relative figures/data_exploration/gasPrice_small.html %}
-
 ## Further preprocessing
 
 As it was previously said, the focus of this study is on cycles of length 3. 
