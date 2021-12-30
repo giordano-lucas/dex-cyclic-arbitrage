@@ -58,11 +58,6 @@ Since we are dealing with financial time series for the following features:
 
 In this first milestone, only `quotePrice` and `gasPrice` are used as features for the embedding (in fact `quotePrice = quoteAmount/baseAmount` ). Therefore, we propose the following plots:
 
-{% include_relative figures/data_exploration/quotePrice_small.html %}
-
-2.
-
-{% include_relative figures/data_exploration/gasPrice_small.html %}
 
 We observe that both features are extremely heavy tailed. It is likely to cause some issues whem used as features for machine learning models. As shown in the plot,applying a logarithmic transformation make the distributions more Gaussian (desired behavior). 
 
@@ -160,7 +155,6 @@ It may well be that we did not fully exploit the capacity of the neural network.
 # Cycle clustering
 
 ## Motivation and method
-
 
 
 Run different clustering algorithms (k-means or db-scan).
