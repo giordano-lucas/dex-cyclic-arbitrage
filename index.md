@@ -60,6 +60,8 @@ In this first milestone, only `quotePrice` and `gasPrice` are used as features f
 
 {% include_relative figures/data_exploration/quotePrice_small.html %}
 
+2.
+
 {% include_relative figures/data_exploration/gasPrice_small.html %}
 
 We observe that both features are extremely heavy tailed. It is likely to cause some issues whem used as features for machine learning models. As shown in the plot,applying a logarithmic transformation make the distributions more Gaussian (desired behavior). 
@@ -155,9 +157,11 @@ Surprisingly, the `autoencoder` performs worse in terms of reconstruction than `
 
 It may well be that we did not fully exploit the capacity of the neural network.
 
-# Clustering
+# Cycle clustering
 
 ## Motivation and method
+
+
 
 Run different clustering algorithms (k-means or db-scan).
 
@@ -172,6 +176,12 @@ This step will allow us to quantify how much information (and possibly predictiv
 When the validity of the clustering is established, we can start to analyse it. We propose to study the following list of factors (could be extended or reduced later on): Gas, Time, Market cap, volume, liquidity, volatility. To this end, we propose to compute several metrics for each cluster, observe if they are any differences across clusters.
 
 ## Clustering validation
+
+In this section, we aim to provide the reader with evidence that the clustering contains useful information (aka  clustering assignments are not random). 
+
+In other words, using relevant metrics, we need to demonstrate dissimilarities accross clusters. 
+
+
 
 {% include_relative figures/clustering/Profitability_of_each_cluster_train.html %}
 # Cycles profitability prediction
