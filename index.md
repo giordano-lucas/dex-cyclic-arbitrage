@@ -20,9 +20,8 @@ Data used in the study come from two different sources: information about exploi
 
 We already have downloaded the dataset used in the arxiv paper. This dataset consists of arbitrage cycles that were exploited in the past. Each of these cycles is described by: a path (the token swaps),  a cost (gas fees), a profit etc.  It consists of a single JSON file and the downloading process is straightforward. The `cyclic transaction dataset` contains cycles of various lengths (number of tokens involved). The following figure displays the distribution of these lengths : 
 
-XXXXXXX
-
-> Note: this figure was taken from the arxiv paper.
+{%include_relative figures/data_exploration/cycles_length_distribution.html %}
+> Note: this figure was replicated from the arxiv paper.
 
 Moreover, to compute embeddings (next step) it would be more convenient to work on fixed-length cycles. Thus, cycles whose lengths are different than 3 are filtered out. The obtained data is called `filtered_cycles_data`.
 While filtering, a new indexing system is created to identify cycles through an incremental  `cycle_id`.
@@ -191,8 +190,6 @@ If we have time, we could also compare performance of the encoder with Fourier/W
 ## Clustering improvement 
 
 If we increase the quality of the embedding, the clustering quality should increase as well. However, we can futher backtest the clustering algorthm by comparing KMeans with BDscan for instance.
-
-
 ## Hyper-paramater optimisation
 
 In this first milestone, we only trained basic model to setup the whole project pipeline. We remain to optimise the training capabilities through `hyper-paramater optimisation`. 
