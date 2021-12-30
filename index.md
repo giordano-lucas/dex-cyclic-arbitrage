@@ -58,6 +58,7 @@ Since we are dealing with financial time series for the following features:
 
 In this first milestone, only `quotePrice` and `gasPrice` are used as features for the embedding (in fact `quotePrice = quoteAmount/baseAmount` ). Therefore, we propose the following plots:
 
+{% include_relative figures/data_exploration/quotePrice_small.html %}
 
 We observe that both features are extremely heavy tailed. It is likely to cause some issues whem used as features for machine learning models. As shown in the plot,applying a logarithmic transformation make the distributions more Gaussian (desired behavior). 
 
@@ -171,10 +172,13 @@ When the validity of the clustering is established, we can start to analyse it. 
 
 ## Clustering validation
 
-In this section, we aim to provide the reader with evidence that the clustering contains useful information (aka  clustering assignments are not random). 
+In this section, we aim to provide the reader with evidence that the clustering contains useful information (aka clustering assignments are not random). 
 
-In other words, using relevant metrics, we need to demonstrate dissimilarities accross clusters. 
+In other words, using relevant metrics, we need to demonstrate dissimilarities accross clusters that are also persistent on the `test set`. 
 
+For instance, we could consider the following :
+
+1. 
 
 
 {% include_relative figures/clustering/Profitability_of_each_cluster_train.html %}
