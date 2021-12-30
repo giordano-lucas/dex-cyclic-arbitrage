@@ -77,7 +77,7 @@ As shown in section [Data Exploration](#data-exploration), it is probably a good
 In this study, each cycle is represented as a tensor with the following 3 dimensions:
 
 | Name | Size |  Description                                                           |
-
+|:----:|-----:|:-----------------------------------------------------------------------|
 | `D`  | 3    | the length of the cycle, aka the number of tokens                      |
 | `P`  | 600  | the length of the time series of swap transactions                     |
 | `K`  | 2    | the amount of time series/features (`quotePrice` and `gasPrice`)       |
@@ -100,10 +100,10 @@ In order to test our models with the least amount of bias possible,we randomly s
 
 To avoid the effect of the scales of the features in our results we have to re-scale them. To do so, we can consider two different approaches:
 
-* Use a standard scaler that applies the following transformation to each feature $x_i$ :
+* Use a standard scaler that applies the following transformation to each feature $$x_i$$ :
         $$x_i=\frac{x_i-\bar{x_i}}{std(x_i)}$$
   By doing so we obtain a dataset with zero mean and a variance of 1 
-* Use a min max scaler that reduce the range fo the features to [0,1] by applying the following transformation to each feature $x_i$ :
+* Use a min max scaler that reduce the range fo the features to [0,1] by applying the following transformation to each feature $$x_i$$ :
          $$x_i=\frac{x_i-min(x_i)}{max(x_i)-min(x_i)}$$
 
 After taken the `log` features somhow look Gaussian, so we decided to opt for the standard scaler in this first milestone.
