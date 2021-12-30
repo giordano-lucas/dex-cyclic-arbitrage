@@ -63,8 +63,6 @@ In this first milestone, only `quotePrice` and `gasPrice` are used as features f
 
 And similarly for `gasPrice`:
 
-{% include_relative figures/data_exploration/gasPrice_small.html %}
-
 We observe that both features are extremely heavy tailed. It is likely to cause some issues whem used as features for machine learning models. As shown in the plot,applying a logarithmic transformation make the distributions more Gaussian (desired behavior). 
 
 ## Data preprocessing
@@ -89,6 +87,8 @@ In this study, each cycle is represented as a tensor with the following 3 diment
 However, due to lack of liquity in Uniswap pools for a given pair of tokens, there could be less than `P = 600` swaps transaction fetched from `bitquery`.  Since machine learning models required fixed input size for their functionning, we need to pad the shorter time series. To this end, the fixed length `P =600` was chosen, as well as the `zero-padding` techinque for simplicity reasons.
 
 >  Note: the spanned period was fixed to be `P = 600` is this first milestone. It will be backtested (e.g. fixed or mean frequency between two cycles) later on.
+
+{% include_relative figures/data_exploration/gasPrice_small.html %}
 
 ### Building the feature tensor
 
@@ -182,10 +182,12 @@ In other words, using relevant metrics, we need to demonstrate dissimilarities a
 
 For instance, we could consider the following :
 
-1. `Number of cycles per cluster` : 
+1. `Number of cycles per cluster` : a sanity check to understand the overall quality of the clustering. Indeed, if `99%` of cycles are clustered together, we won't be able to extract meaningfull information out of the clustering.
 2. `Profit per cluster` : we would expect to observe clusters more profitable than others 
 3. `Proftiability per cluster` : this metric is related to the risk associated to a cluster. Indeed, some clusters could be less profitable than others (in average) but yielding a higher probablity to make a profit in the end. It s the type of analysis that we would like to conduct with this metric. 
-4. `Token Distribution understanding per cluster` : 
+4. `Token distribution understanding per cluster` : one desirable property of a interesting clustering could be to observe imporant differences in terms of token distribution across clusters. For example, computing the  `median` of the distribution would allow us to undersand wether or not only a few tokens that are very profitable or not are used. Furthermore, the entropoy of the distribution, can be used as a comparision to a random clustering. 
+
+
 
 
 {% include_relative figures/clustering/Profitability_of_each_cluster_train.html %}
