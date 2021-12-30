@@ -50,7 +50,9 @@ In order to introduce the `Cyclic transaction dataset` and check our understandi
 Before developping any machine learning model, we need to grap a basic understanding of the `dataset` and its statistical properties. 
 
 Since we are dealing with financial time series for the following features:
+
 >  `baseAmount`, `quoteAmount`,`quotePrice`, `gasPrice`, `gasValue`
+
  we will probably observe heavy tail distribution to some extent. It is what we are going to check first.
 
 > Note : in this section, no distinction is made between cycles. In other words, all data available is treated as a single feature, aka a single distribution. Indeed, understanding each cycle separatly is a cumbersome process. Furthermore, it does not help in getting a global understanding of the dataset.
@@ -58,7 +60,7 @@ Since we are dealing with financial time series for the following features:
 
 In this first milestone, only `quotePrice` and `gasPrice` are used as features for the embedding (in fact `quotePrice = quoteAmount/baseAmount` ). Therefore, we propose the following plots:
 
-{% include_relative figures/data_exploration/quotePrice_small.html %}
+{% include_relative figures/data_exploration/baseAmount_small.html %}
 
 {% include_relative figures/data_exploration/gasPrice_small.html %}
 
