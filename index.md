@@ -61,7 +61,6 @@ In this first milestone, only `quotePrice` and `gasPrice` are used as features f
 
 {% include_relative figures/data_exploration/quotePrice_small.html %}
 
-And similarly for `gasPrice`:
 
 We observe that both features are extremely heavy tailed. It is likely to cause some issues whem used as features for machine learning models. As shown in the plot,applying a logarithmic transformation make the distributions more Gaussian (desired behavior). 
 
@@ -87,8 +86,6 @@ In this study, each cycle is represented as a tensor with the following 3 diment
 However, due to lack of liquity in Uniswap pools for a given pair of tokens, there could be less than `P = 600` swaps transaction fetched from `bitquery`.  Since machine learning models required fixed input size for their functionning, we need to pad the shorter time series. To this end, the fixed length `P =600` was chosen, as well as the `zero-padding` techinque for simplicity reasons.
 
 >  Note: the spanned period was fixed to be `P = 600` is this first milestone. It will be backtested (e.g. fixed or mean frequency between two cycles) later on.
-
-{% include_relative figures/data_exploration/gasPrice_small.html %}
 
 ### Building the feature tensor
 
@@ -164,13 +161,10 @@ It may well be that we did not fully exploit the capacity of the neural network.
 
 Run different clustering algorithms (k-means or db-scan).
 
-For each of them, we plan the validity of the clustering through the following metrics
-
-- Same sized cycles are in the same cluster.
-- Similar cycles (in terms of common nodes) are in the same cluster.
-- Cycles with similar profitability (yield, positivity) are clustered together.
 
 This step will allow us to quantify how much information (and possibly predictive power) is contained in the clustering.
+
+{% include_relative figures/clustering/kmeans_k_metrics.html %}
 
 When the validity of the clustering is established, we can start to analyse it. We propose to study the following list of factors (could be extended or reduced later on): Gas, Time, Market cap, volume, liquidity, volatility. To this end, we propose to compute several metrics for each cluster, observe if they are any differences across clusters.
 
@@ -187,10 +181,15 @@ For instance, we could consider the following :
 3. `Proftiability per cluster` : this metric is related to the risk associated to a cluster. Indeed, some clusters could be less profitable than others (in average) but yielding a higher probablity to make a profit in the end. It s the type of analysis that we would like to conduct with this metric. 
 4. `Token distribution understanding per cluster` : one desirable property of a interesting clustering could be to observe imporant differences in terms of token distribution across clusters. For example, computing the  `median` of the distribution would allow us to undersand wether or not only a few tokens that are very profitable or not are used. Furthermore, the entropoy of the distribution, can be used as a comparision to a random clustering. 
 
+{% include_relative figures/clustering/Number_of_cycles_per_cluster_train_small.html %}
 
+{% include_relative figures/clustering/Profit_per_cluster_train_small.html %}
 
+{% include_relative figures/clustering/Profitability_of_each_cluster_train_small.html %}
 
-{% include_relative figures/clustering/Profitability_of_each_cluster_train.html %}
+{% include_relative figures/clustering/Median_of_token_distribution_within_each_cluster_train_small.html %}
+
+{% include_relative figures/clustering/Entropy_of_token_distribution_within_each_cluster_train_small.html %}
 # Cycles profitability prediction
 
 XXXXX
