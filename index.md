@@ -20,7 +20,9 @@ Data used in the study come from two different sources: information about exploi
 
 We already have downloaded the dataset used in the arxiv paper. This dataset consists of arbitrage cycles that were exploited in the past. Each of these cycles is described by: a path (the token swaps),  a cost (gas fees), a profit etc.  It consists of a single JSON file and the downloading process is straightforward. The `cyclic transaction dataset` contains cycles of various lengths (number of tokens involved). The following figure displays the distribution of these lengths : 
 
-XXXXXXX
+<p align="center">
+<img width="400" alt="cycles length distribution" src="figures/data_exploration/cycles_length_distribution.html">
+</p>
 
 > Note: this figure was taken from the arxiv paper.
 
