@@ -181,6 +181,8 @@ For instance, we could consider the following :
 3. `Proftiability per cluster` : this metric is related to the risk associated to a cluster. Indeed, some clusters could be less profitable than others (in average) but yielding a higher probablity to make a profit in the end. It s the type of analysis that we would like to conduct with this metric. 
 4. `Token distribution understanding per cluster` : one desirable property of a interesting clustering could be to observe imporant differences in terms of token distribution across clusters. For example, computing the  `median` of the distribution would allow us to undersand wether or not only a few tokens that are very profitable or not are used. Furthermore, the entropoy of the distribution, can be used as a comparision to a random clustering. 
 
+These metrics, computed on the training set, are shown below.
+
 {% include_relative figures/clustering/Number_of_cycles_per_cluster_train_small.html %}
 
 {% include_relative figures/clustering/Profit_per_cluster_train_small.html %}
@@ -190,6 +192,27 @@ For instance, we could consider the following :
 {% include_relative figures/clustering/Median_of_token_distribution_within_each_cluster_train_small.html %}
 
 {% include_relative figures/clustering/Entropy_of_token_distribution_within_each_cluster_train_small.html %}
+
+At first sight, it already looks quite promising. Let's dive into the details:
+
+1. Cluster `0` appears to be the one generating the larger amount of profits, with slightly better profitablity but nothing astonishing.
+2. On the contrary, cluster `1` is below average in terms of profits.
+3. There is no oustanding differences in terms of profitability across clusters. However, one should note that the global average is alrealy at `95%` which shows that most of the cycles are profitable anyway.
+4. Cluster `0` contains more data points than the others. When it comes to the token distribution, it is more random than the rest (see large entropy and low median), perhaps a catch-all cluster ?
+5. Cluster `3` has a very large median and low entropy for its token distribution. It is also the second most profitable cluster. We can understand taht it is likely to always use the same tokens to generate high returns. Given the fact that it contains a relatively small amount of tokens, we should definitely investigate it further.
+
+In the following set of plots, the same metrics are recomputed but this time on the test set. Interestingly, the conclusions that were drawn for the train set can be extented for the test, demonstrating sone degree of predictiabiliy/persistance.
+
+{% include_relative figures/clustering/Number_of_cycles_per_cluster_test_small.html %}
+
+{% include_relative figures/clustering/Profit_per_cluster_test_small.html %}
+
+{% include_relative figures/clustering/Profitability_of_each_cluster_test_small.html %}
+
+{% include_relative figures/clustering/Median_of_token_distribution_within_each_cluster_test_small.html %}
+
+{% include_relative figures/clustering/Entropy_of_token_distribution_within_each_cluster_test_small.html %}
+
 # Cycles profitability prediction
 
 XXXXX
