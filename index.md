@@ -154,6 +154,10 @@ Surprisingly, the `autoencoder` performs worse in terms of reconstruction than `
 
 It may well be that we did not fully exploit the capacity of the neural network.
 
+For the reader's information, the evolution  of the `train loss` is shown below:
+
+![simple_model_2_train_loss](https://user-images.githubusercontent.com/43466781/147818924-278bd5f8-7b78-440a-883e-35f9e8134464.png)
+
 # Cycle clustering
 
 ## Motivation and method
