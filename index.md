@@ -107,7 +107,6 @@ To avoid the effect of the scales of the features in our results we have to re-s
          $$x_i=\frac{x_i-min(x_i)}{max(x_i)-min(x_i)}$$
 
 After taken the `log` features somhow look Gaussian, so we decided to opt for the standard scaler in this first milestone.
-
 # Cycle embedding 
 
 ## Movitation
@@ -128,30 +127,6 @@ To create this embedding, multiple approaches can be considered. We propose the 
 The task of an autencoder is summarised in the following figure.
 
 <p align="center"> <img width="400" alt="Diagram encoder" src="figures/diagrams/encoder/encoder-diagram.drawio.svg"> </p>
-
-Formally, we used the following architecture 
-
-```python
-
-def build_model():
-    input_img = keras.Input(shape=(3,600, 2))
-    x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(input_img)
-    x = layers.MaxPooling2D((3, 3), padding='same')(x)
-    x = layers.Conv2D(4, (3, 3), activation='relu', padding='same')(x)
-    x = layers.MaxPooling2D((2, 2), padding='same')(x)
-    encoded = layers.Conv2D(1, (2, 2), activation='relu', padding='same')(x)
-    # at this point the representation is 100-dimensional
-    x = layers.Conv2D(4, (2, 2), activation='relu', padding='same')(encoded)
-    x = layers.UpSampling2D((1, 2))(x)
-    x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(x)
-    x = layers.UpSampling2D((3, 3))(x)
-    decoded = layers.Conv2D(2, (3, 3), activation='relu', padding='same')(x)
-
-    autoencoder = keras.Model(input_img, decoded)
-    autoencoder.compile(optimizer='adam',loss='mean_squared_error',)
-    
-    return autoencoder
-```
 
 > Note: through this process, we observe a reduction factor of `3600/100 = 36x` which is non-negligible.
 
@@ -249,20 +224,20 @@ The first model consists of logistic regression. It is fitted on the standardize
 
 | /           |True(pred) | False(pred) |
 |------------:|:---------:|:------------|
-| True(real)  | XXXX      |   XXXX      |
-| False(real) |  XXXX     |   XXXX      |
+| True(real)  | 2241      |   1544      |
+| False(real) |  104      |   112       |
 
-What correponsds to a f1 score of : XXXX
+What correponsds to a f1 score of : 0.7312
 
 ## Support vector machine (SVM)
 The second model is a support vector machine trained on the standardized embeddings to find the optimal boundary between profitable and non-profitable cycles. Again, cross-validation is used to tune the hyperparameters. Namely: the kernel of the SVM (`linear`, `rbf`, or `poly`) and the regularizer (`C`). The selected model produces the following confusion matrix on the test set : 
 
 | /           |True(pred) | False(pred) |
 |------------:|:---------:|:------------|
-| True(real)  | XXXX      |   XXXX      |
-| False(real) |  XXXX     |   XXXX      |
+| True(real)  | 2276      |   1509      |
+| False(real) |  88       |   128       |
 
-What correponsds to a f1 score of : XXXX
+What correponsds to a f1 score of : 0.7403
 ## Neural network (NN)
 The last classification model is a complex neural network. it takes the raw standardized data as features.  The network has the following architecture:
  ------------------------------
