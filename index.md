@@ -265,17 +265,12 @@ The second model is a support vector machine trained on the standardized embeddi
 
 What correponsds to a f1 score of : 0.7403
 ## Neural network (NN)
-The last classification model is a complex neural network. it takes the raw standardized data as features.  The network has the following architecture:
- ------------------------------
-XXX 
------------------------------
-XXX 
------------------------------
-XXX 
------------------------------
+The last classification model is a complex neural network. it takes the raw standardized data as features.  The network has the following architecture:[TODO](#neural-network-nn).
+
 It consists of XXXX parameters, which is comparable to the encoding part of the embedding's autoencoder. We chose the number of parameters to be comparable to the encoder to allow the classification network to create its own embedding. We expect this network to perform better than the previous one since it creates an embedding designed for the given classification task.
 Dropout ?
 The performance obtain on the test set are the following :
+
 | /           |True(pred) | False(pred) |
 |------------:|:---------:|:------------|
 | True(real)  | XXXX      |   XXXX      |
