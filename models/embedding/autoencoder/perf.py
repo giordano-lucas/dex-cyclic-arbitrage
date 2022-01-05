@@ -4,6 +4,7 @@ from config.get import cfg
 import tensorflow as tf
 import numpy as np
 from tensorflow import keras
+import pandas as pd
 
 def mean_squared_error(x,y):
     return np.sum((x-y)**2)/x.size
