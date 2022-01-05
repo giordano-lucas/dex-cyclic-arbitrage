@@ -19,8 +19,26 @@ def linear_simple():
     return model_name ,autoencoder
 
 
-def Complex_CNN():
-    model_name = "Complex_CNN"
+def fully_connected():
+    model_name = "fully_connected"
+    in_shape = (3,600, 2) 
+    # build encoder
+    input_layer = keras.Input(shape=in_shape)
+    x = layers.Reshape([in_shape[0]*in_shape[1]*in_shape[2]])(input_layer)
+    x = layers.Dense(600,  activation='elu')(x)
+    x = layers.Dense(100,  activation='elu')(x)
+    x = layers.Dense(600,  activation='elu')(x)
+    x = layers.Dense(in_shape[0]*in_shape[1]*in_shape[2],  activation='elu')(x)
+    output_layer =layers.Reshape(in_shape)(x)
+    
+    
+    # combine encoder and decoder
+    autoencoder = keras.Model(input_layer, output_layer)
+    autoencoder.compile(optimizer='adam', loss='mean_squared_error',)
+    return model_name ,autoencoder
+
+def CNN():
+    model_name = "CNN"
     # build encoder
     input_img = keras.Input(shape=(3,600, 2))
     x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(input_img)
