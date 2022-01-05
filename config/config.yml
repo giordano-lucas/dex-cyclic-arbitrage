@@ -31,4 +31,4 @@ biquery:
     API_KEY2: BQYt1q57Typ8HsY7nxzqsGzmKA0u7FzS # Lucas's KEY
     
 models:
-    autoencoder: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/models/embedding/autoencoder/
+    autoencoder: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/models/embedding/autoencoder/results
