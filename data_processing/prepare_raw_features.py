@@ -7,8 +7,8 @@ from sklearn.preprocessing import StandardScaler
 from TokenStandardScaler import TokenStandardScaler
 from sklearn.model_selection import train_test_split
 
-print("===================================")     
-data = pd.read_csv(cfg['files']['preprocessed_data'],nrows=5_000_000).drop(columns=["time"])
+print("=========================")     
+data = pd.read_csv(cfg['files']['preprocessed_data'],nrows=10_000_000).drop(columns=["time"])
 data = data.set_index(["cycle_id","token1","token2"])
 
 
