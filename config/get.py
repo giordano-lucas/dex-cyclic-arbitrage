@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 import yaml
-import sys  
+import sys,os
 
-sys.path.append("/scratch/izar/kapps/DEX-Cyclic-Arbitrage/")
-
-with open("/scratch/izar/kapps/DEX-Cyclic-Arbitrage/config/config.yml", "r") as ymlfile:
+base_dir = '/'.join(os.getcwd().split('/')[:4])
+with open(f"{base_dir}/config/config.yml", "r") as ymlfile:
     cfg = yaml.safe_load(ymlfile)
 
