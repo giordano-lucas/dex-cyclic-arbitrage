@@ -1,29 +1,28 @@
 directories:
-    base_dir: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/
-    data_dir: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/
-    uniswap_raw_data : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/uniswap_raw_data/
+    data_dir: data/
+    uniswap_raw_data : data/uniswap_raw_data/
         
 fig_dir:
-    clustering: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/figures/clustering/
-    data_exploration: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/figures/data_exploration/
-    embedding: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/figures/embedding/
+    clustering: figures/clustering/
+    data_exploration: figures/data_exploration/
+    embedding: figures/embedding/
 
 files: 
-    cycles_in_Uniswap : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/cycles_in_Uniswap.json
-    preprocessed_data: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/uniswap_data.csv
-    raw_features : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/ML_features/raw_features.npy
-    raw_test_features  : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/ML_features/raw_test_features.npy
-    raw_train_features : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/ML_features/raw_train_features.npy
-    test_ids  : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/ML_features/test_ids.npy
-    train_ids : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/ML_features/train_ids.npy
-    encoded_test_features  : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/ML_features/encoded_test_features.npy
-    encoded_train_features : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/ML_features/encoded_train_features.npy
-    cycle_ids : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/ML_features/cycle_ids.npy
-    all_cycles : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/cycles_in_Uniswap.json
-    filtered_cycles : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/filtered_cycles.json
-    features : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/features.csv
-    features_train : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/features_train.csv
-    features_test : /scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/features_test.csv
+    cycles_in_Uniswap : data/cycles_in_Uniswap.json
+    preprocessed_data: data/uniswap_data.csv
+    raw_features : data/ML_features/raw_features.npy
+    raw_test_features  : data/ML_features/raw_test_features.npy
+    raw_train_features : data/ML_features/raw_train_features.npy
+    test_ids  : data/ML_features/test_ids.npy
+    train_ids : data/ML_features/train_ids.npy
+    encoded_test_features  : data/ML_features/encoded_test_features.npy
+    encoded_train_features : data/ML_features/encoded_train_features.npy
+    cycle_ids : data/ML_features/cycle_ids.npy
+    all_cycles : data/cycles_in_Uniswap.json
+    filtered_cycles : data/filtered_cycles.json
+    features : data/features.csv
+    features_train : data/features_train.csv
+    features_test : data/features_test.csv
     
     
 biquery:
@@ -31,4 +30,4 @@ biquery:
     API_KEY2: BQYt1q57Typ8HsY7nxzqsGzmKA0u7FzS # Lucas's KEY
     
 models:
-    autoencoder: /scratch/izar/kapps/DEX-Cyclic-Arbitrage/models/embedding/autoencoder/results
+    autoencoder: /models/embedding/autoencoder/results
