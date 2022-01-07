@@ -7,7 +7,7 @@ To obtain all the data needed for the analysis one shoud first run the python sc
 * `download_uniswap_cycles.sh` : this script download the  `cycles_in_Uniswap.json` dataset published with the arxiv paper `Cyclic Arbitrage in Decentralized Exchange Markets`. It contains information about arbitrage cycles that were exploited on DEX 
 Then, to download the rates and gas prices preceeding cycles there exists 2 possibilities :
 * Method 1: Use `rates_from_Bitquery.py` to query the data from Bitquery. Because of queying constraints, this solution is slow and will take weeks to get the data
-* Method 2: Use `rates_from_Kaggle.sh` to download the data data from the datasets that we posted on Kaggle. these data were previously fetched using method1. 
+* Method 2: Download the data that we poseted on kaggle [here](https://www.kaggle.com/ogst68/uniswap-rates-preceeding-cyclic-arbitrages-raw/download) these data were previously fetched using method1. 
 
 ## data_processing
 To process the downloaded data on need to follow these steps :
