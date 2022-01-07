@@ -1,5 +1,5 @@
 import sys 
-sys.path.append("/scratch/izar/kapps/DEX-Cyclic-Arbitrage/")
+sys.path.append('/'.join(os.getcwd().split('/')[:4]))
 from config.get import cfg
 import pandas as pd
 import numpy as np
