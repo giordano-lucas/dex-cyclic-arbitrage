@@ -5,7 +5,7 @@ import time
 import gzip
 import matplotlib.pyplot as plt
 import sys 
-sys.path.append("/scratch/izar/kapps/DEX-Cyclic-Arbitrage/")
+sys.path.append('/'.join(os.getcwd().split('/')[:4]))
 from helper import *
 from config.get import cfg
 import pandas as pd

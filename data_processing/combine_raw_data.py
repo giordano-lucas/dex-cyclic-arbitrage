@@ -1,7 +1,7 @@
 import csv
 import gzip
 import sys 
-sys.path.append("/scratch/izar/kapps/DEX-Cyclic-Arbitrage/")
+sys.path.append('/'.join(os.getcwd().split('/')[:4]))
 from helper import *
 import glob 
 from config.get import cfg
