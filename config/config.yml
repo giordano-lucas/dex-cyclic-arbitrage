@@ -10,7 +10,6 @@ fig_dir:
 files: 
     cycles_in_Uniswap : data/cycles_in_Uniswap.json
     preprocessed_data: data/uniswap_data.csv
-    raw_features : data/ML_features/raw_features.npy
     raw_test_features  : data/ML_features/raw_test_features.npy
     raw_train_features : data/ML_features/raw_train_features.npy
     test_ids  : data/ML_features/test_ids.npy
