@@ -1,4 +1,4 @@
-import sys 
+import sys, os 
 sys.path.append('/'.join(os.getcwd().split('/')[:4]))
 from config.get import cfg
 import pandas as pd
@@ -71,3 +71,8 @@ def run():
     np.save(cfg['files']['test_ids'] , test_ids)
     np.save(cfg['files']['train_ids'] , train_ids)
     print("Done")
+
+if __name__ == "__main__":
+    print("==== Run : build embedding features ====")
+    run()
+    print("==== Done ====")

@@ -1,11 +1,10 @@
 import csv
 import gzip
-import sys 
+import sys, os
 sys.path.append('/'.join(os.getcwd().split('/')[:4]))
 from helper import *
 import glob 
 from config.get import cfg
-
 
  
 def load_transaction_hashs():
@@ -25,7 +24,8 @@ def combine():
     print("Loading tx hashs")
     cycle_transaction_hashs = load_transaction_hashs()
     print("processing")
-    uni_data_path = "/scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/uniswap_data.csv"
+    #uni_data_path = "/scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/uniswap_data.csv"
+    uni_data_path = cfg["files"]["preprocessed_data"]
     count = 0
     with open(uni_data_path, mode='w') as f_out:
         csv_writer = csv.writer(f_out, delimiter=',')
@@ -60,3 +60,8 @@ def combine():
                     if count%10_000==0:
                         print(count,end="\r")
             f_in.close()
+
+if __name__ == "__main__":
+    print("==== Run : combine raw data ====")
+    combine()
+    print("==== Done ====")

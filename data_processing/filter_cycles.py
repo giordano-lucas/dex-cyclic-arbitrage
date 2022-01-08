@@ -1,6 +1,5 @@
 import json
-import pandas as pd
-import sys 
+import sys, os 
 sys.path.append('/'.join(os.getcwd().split('/')[:4]))
 from config.get import cfg
 import pandas as pd
@@ -8,7 +7,7 @@ import numpy as np
 
 def load_cycles(type_="raw"):
     if type_== "raw":
-        data_path = "/scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/cycles_in_Uniswap.json"
+        data_path = cfg['files']['cycles_in_Uniswap']
     data = []
     for line in open(cfg['files']['all_cycles']):
         data.append(line)
@@ -26,3 +25,8 @@ def run(cycle_length = 6):
             f_out.write(json.dumps(cycle)+"\n")
     f_out.close()
     print(cycle_id," cycles saved")    
+
+if __name__ == "__main__":
+    print("==== Run : filter cycles ====")
+    run()
+    print("==== Done ====")
