@@ -3,6 +3,7 @@ sys.path.append('/'.join(os.getcwd().split('/')[:4]))
 from config.get import cfg
 import pandas as pd
 import numpy as np
+from helper import check_and_create_dir
 from sklearn.preprocessing import StandardScaler
 from TokenStandardScaler import TokenStandardScaler
 from sklearn.model_selection import train_test_split
@@ -17,26 +18,24 @@ def pad(X):
     
     padded_index = pad_index(X.index,600)
     X[1] = X.reset_index().groupby(["cycle_id","token1","token2"]).cumcount().values
-    return X.reset_index().set_index(["cycle_id","token1","token2",1]).reindex(padded_index,fill_value=0)
+    return X.reset_index().set_index(["cycle_id","token1","token2",1]).reindex(padded_index,fill_value=0).dropna()
 
 
 def build_tensor(X_padded):
     cycle_ids = []
     tensor    = []
-    i = 0
+    errors = 0
     for cycle_id, group in iter(X_padded.groupby("cycle_id")): 
             try :
                 tensor.append(group[["quotePrice","gasPrice"]].values.reshape((3, 600, 2)))
                 cycle_ids.append(cycle_id)
             except:
-                print(i)
-            i+=1
-            
+                errors+=1
+    print(f"{errors} errors")   
     return np.array(cycle_ids),np.array(tensor) 
 
-def run():
-    print("=========================")     
-    data = pd.read_csv(cfg['files']['preprocessed_data'],nrows=10_000_000).drop(columns=["time"])
+def run():   
+    data = pd.read_csv(cfg['files']['preprocessed_data'],nrows=10_000_000).drop(columns=["time"]) 
     data = data.set_index(["cycle_id","token1","token2"])
 
 
@@ -66,6 +65,7 @@ def run():
 
 
     print("Saving")
+ 
     np.save(cfg['files']['raw_test_features'] , test_tensor)
     np.save(cfg['files']['raw_train_features'] ,train_tensor)
     np.save(cfg['files']['test_ids'] , test_ids)
@@ -74,5 +74,6 @@ def run():
 
 if __name__ == "__main__":
     print("==== Run : build embedding features ====")
+    check_and_create_dir(cfg['directories']['ML_features'])
     run()
     print("==== Done ====")
