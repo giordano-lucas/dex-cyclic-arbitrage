@@ -56,3 +56,7 @@ def CNN():
     autoencoder = keras.Model(input_img, decoded)
     autoencoder.compile(optimizer='adam', loss='mean_squared_error',)
     return model_name, autoencoder
+
+def talos_architecture(params):
+    # unique name
+    model_name = 'CNN_' + "_".join(params.values())
