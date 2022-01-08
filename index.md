@@ -49,9 +49,22 @@ In order to introduce the `Cyclic transaction dataset` and check our understandi
 
 Before developing any machine learning model, we need to grasp a basic understanding of the `dataset` and its statistical properties. 
 
+As a first step, some basic descriptive statistics are shown.
+
+||baseAmount|quoteAmount|quotePrice|gasPrice|gasValue|
+|---|---|---|---|---|---|
+|count|15000000.0|15000000.0|15000000.0|15000000.0|15000000.0|
+|mean|617285.7691774105|713846.7959430087|2242173912899.245|220.7801204099542|0.039095987647290976|
+|std|65344245.49678698|70486989.66812174|1692048320610068.8|358.3729580470268|0.07014017303962658|
+|min|-15.142535104|-12.159705765907386|-2524.8558484026958|4.0|0.000995174389907456|
+|25%|0.8133318661470393|0.9036593505321668|0.004853244571226323|38.999998464|0.0077283002647838715|
+|50%|12.397615|13.492995324544614|1.00714360456757|112.99999744|0.017265654713286657|
+|75%|452.1615419051607|437.5007715050853|210.47100813227757|337.500012544|0.05276144843830067|
+|max|38617566009.5172|38617566009.5172|2.8893209691893514e+18|100000.00037683199|13.081600120162616|
+
 Since we are dealing with financial time series for the following features:
 
->  `baseAmount`, `quoteAmount`,`quotePrice`, `gasPrice`, `gasValue`
+> `baseAmount`, `quoteAmount`,`quotePrice`, `gasPrice`, `gasValue`
 
 We will probably observe heavy tail distribution to some extent. It is what we are going to check first.
 
@@ -63,15 +76,28 @@ Note that only `quotePrice` and `gasPrice` are used as features for the embeddin
 
 We observe that both features are extremely heavy tailed. It is likely to cause some issues when used as features for machine learning models. As shown in the plot,applying a logarithmic transformation make the distributions more Gaussian (desired behaviour).
 
+As a result, we computed again the basic descriptive statistics but this time in a log scale. We observe a better scale and the results are much more interpretable.
+
+||baseAmount|quoteAmount|quotePrice|gasPrice|gasValue|
+|---|---|---|---|---|---|
+|count|14999899.00|14999852.00|14999751.00|15000000.00|15000000.00|
+|mean|2.91|2.95|0.04|4.74|-3.94|
+|std|4.02|3.99|5.70|1.17|1.17|
+|min|-41.45|-41.45|-40.91|1.39|-6.91|
+|25%|-0.21|-0.10|-5.33|3.66|-4.86|
+|50%|2.52|2.60|0.01|4.73|-4.06|
+|75%|6.11|6.08|5.35|5.82|-2.94|
+|max|24.38|24.38|42.51|11.51|2.57|
+
 Furthermore, some tokens were partially illiquid which negatively affects the number of transactions available in the dataset. To better understand this phenomenon, we plotted the distrbution of transaction per token pair.
 
-{% include_relative figures/data_exploration/XXX.html %}
+{% include_relative figures/data_exploration/nb_transaction_small.html %}
 
 Futhermore, it is likely that for illiquid uniswap pools the time between the first and the last transactions reported differ quite significantly. In contrast, for very liquids pools, the time-span can be in the order of miliseconds. This discrepancy in the dataset could create some issues for the analysis performed in this study.
 
 We provide more detail information of the time-span distribution in the following plot.
 
-{% include_relative figures/data_exploration/XXX.html %}
+{% include_relative figures/data_exploration/time_span_small.html %}
 
 ## Data preprocessing
 
@@ -101,7 +127,6 @@ However, due to lack of liquidity in Uniswap pools for a given pair of tokens, t
 `The dataset` is not directly shaped to build the tensor feature for the machine learning models. Indeed it simply contains a list of swap transactions in `csv` format. We need to massage using with multiple operations to group transactions associated to the same cycle together and pad each time series independently. 
 
 > Note: hardware capacities of the cluster only allowed us to process `25 000 000` swap transactions at once. We could, later on, consider batch processing to handle more transactions. 
-
 
 ### Train/Test split
 
@@ -148,22 +173,31 @@ However, the more we lower `Q`, the more the signal is compressed which increase
 
 Using the `PCA` approach, we can easily understand how much is lost when `Q` varies.
 
-
+{% include_relative figures/embedding/XXX.html %}
 
 In the [Cycles profitability prediction](#cycles-profitability-prediction) task, we will be able to measure the gain of the embedding compared to the raw features (base model).
-
 
 ## Autoencoder : different architectures
 
 ### Linear autoencoder 
 
+As a first sanity check, we trained a single layer linear autoencoder. We should observe a similar peroformance as `PCA` and, as expected, it is indeed the case.
+
+{% include_relative figures/embedding/XXX.html %}
+
+### Multilayer autoencoder
+
+Let's go deep ! In this section, the number of layers is inscreased (XXX). 
+
+The following plot displays the performance of this model.
+
+{% include_relative figures/embedding/XXX.html %}
+
 ### Convolutional autoencoder
 
-To better capture the structure of cycles, a convolutional `autoencoder` will be used to create the embedding. The idea is that when a cyclic arbitrage is implemented, the first transaction could affect some price/gas of the second token and similarly for other transactions. The convolution operations could extract these neighbouring relationships between tokens in order to build a better latent representation of cycles.
+To better capture the structure of cycles, we propose an alternative to the fully dense model of last section : a convolutional `autoencoder`. The motivation to introduce this complex architecture is that when a cyclic arbitrage is implemented, the first transaction could affect some price/gas of the second token and similarly for other transactions. The convolution operations could extract these neighbouring relationships between tokens in order to build a better latent representation of cycles.
 
-anity check model
-
-
+We hope that a convolutional layer will allow us to leverge this structural bias.
 
 Formally, we used the following architecture 
 
