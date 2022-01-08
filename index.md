@@ -57,11 +57,21 @@ We will probably observe heavy tail distribution to some extent. It is what we a
 
 > Note: in this section, no distinction is made between cycles. In other words, all data available is treated as a single feature, aka a single distribution. Indeed, understanding each cycle separately is a cumbersome process. Furthermore, it does not help in getting a global understanding of the dataset.
 
-In this first milestone, only `quotePrice` and `gasPrice` are used as features for the embedding (in fact `quotePrice = quoteAmount/baseAmount` ). The distribution of `quotePrice` is shown below:
+Note that only `quotePrice` and `gasPrice` are used as features for the embedding (in fact `quotePrice = quoteAmount/baseAmount` ). The distribution of `quotePrice` is shown below:
 
 {% include_relative figures/data_exploration/quotePrice_small.html %}
 
-We observe that both features are extremely heavy tailed. It is likely to cause some issues when used as features for machine learning models. As shown in the plot,applying a logarithmic transformation make the distributions more Gaussian (desired behaviour). 
+We observe that both features are extremely heavy tailed. It is likely to cause some issues when used as features for machine learning models. As shown in the plot,applying a logarithmic transformation make the distributions more Gaussian (desired behaviour).
+
+Furthermore, some tokens were partially illiquid which negatively affects the number of transactions available in the dataset. To better understand this phenomenon, we plotted the distrbution of transaction per token pair.
+
+{% include_relative figures/data_exploration/XXX.html %}
+
+Futhermore, it is likely that for illiquid uniswap pools the time between the first and the last transactions reported differ quite significantly. In contrast, for very liquids pools, the time-span can be in the order of miliseconds. This discrepancy in the dataset could create some issues for the analysis performed in this study.
+
+We provide more detail information of the time-span distribution in the following plot.
+
+{% include_relative figures/data_exploration/XXX.html %}
 
 ## Data preprocessing
 
@@ -106,7 +116,9 @@ To avoid the effect of the scales of the features in our results we have to re-s
 * Use a min max scaler that reduce the range fo the features to [0,1] by applying the following transformation to each feature $$x_i$$ :
          $$x_i=\frac{x_i-min(x_i)}{max(x_i)-min(x_i)}$$
 
-After taken the `log` features somhow look Gaussian, so we decided to opt for the standard scaler in this first milestone.
+After taken the `log` global features showed in the data exploration section somhow look Gaussian. Hence, we decided to opt for the standard scaler.
+
+Moreover, token pairs can have very different scales in terms of quote and gas prices. Therefore, it might be worthy to define a custom scaling mecanism for each of these pairs. As expected, the latter approach yields better performance in the following machine learning tasks. However, it requires more processing power than the first approach. We had to restrict the number of rows in the dataset to be able to leverage it.
 # Cycle embedding 
 
 ## Movitation
@@ -127,6 +139,31 @@ To create this embedding, multiple approaches can be considered. We propose the 
 The task of an autencoder is summarised in the following figure.
 
 <p align="center"> <img width="400" alt="Diagram encoder" src="figures/diagrams/encoder/encoder-diagram.drawio.svg"> </p>
+
+The dimension of the latent  dimension `Q` determines the reduction factor optained through this process. 
+
+> For example : with `Q = 100`, the eduction factor is `3600/100 = 36x` which is non-negligible.
+
+However, the more we lower `Q`, the more the signal is compressed which increases the amount of error in the decoding phase. 
+
+Using the `PCA` approach, we can easily understand how much is lost when `Q` varies.
+
+
+
+In the [Cycles profitability prediction](#cycles-profitability-prediction) task, we will be able to measure the gain of the embedding compared to the raw features (base model).
+
+
+## Autoencoder : different architectures
+
+### Linear autoencoder 
+
+### Convolutional autoencoder
+
+To better capture the structure of cycles, a convolutional `autoencoder` will be used to create the embedding. The idea is that when a cyclic arbitrage is implemented, the first transaction could affect some price/gas of the second token and similarly for other transactions. The convolution operations could extract these neighbouring relationships between tokens in order to build a better latent representation of cycles.
+
+anity check model
+
+
 
 Formally, we used the following architecture 
 
@@ -149,12 +186,6 @@ def build_model():
     
     return autoencoder
 ```
-
-> Note: through this process, we observe a reduction factor of `3600/100 = 36x` which is non-negligible.
-
-To better capture the structure of cycles, a convolutional `autoencoder` will be used to create the embedding. The idea is that when a cyclic arbitrage is implemented, the first transaction could affect some price/gas of the second token and similarly for other transactions. The convolution operations could extract these neighbouring relationships between tokens in order to build a better latent representation of cycles.
-
-In the [Cycles profitability prediction](#cycles-profitability-prediction) task, we will be able to measure the gain of the embedding compared to the raw features (base model).
 
 ## Performance
 
