@@ -1,8 +1,8 @@
 from tensorflow import keras
 from tensorflow.keras import layers
 
-def linear_simple():
-    model_name = "linear_with_reshape"
+def linear():
+    model_name = "linear"
     in_shape = (3,600, 2) 
     # build encoder
     input_layer = keras.Input(shape=in_shape)

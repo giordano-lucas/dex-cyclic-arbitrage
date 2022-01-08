@@ -5,16 +5,14 @@ from config.get import cfg
 import pandas as pd
 import numpy as np
 
-def load_cycles(type_="raw"):
-    if type_== "raw":
-        data_path = cfg['files']['cycles_in_Uniswap']
-    data = []
-    for line in open(cfg['files']['all_cycles']):
-        data.append(line)
-    return data
 
 def run(cycle_length = 6):
-    raw_cycles = load_cycles(type_="raw")
+    
+    raw_cycles = []
+    for line in open(cfg['files']['all_cycles']):
+        raw_cycles.append(line)
+        
+        
     f_out = open(cfg['files']['filtered_cycles'],"wt")
     cycle_id = 0
     for cycle in raw_cycles:
