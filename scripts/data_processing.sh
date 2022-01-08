@@ -2,7 +2,7 @@
 cd data_processing
 # create filter_cycles dataset
 python3 filter_cycles.py
-# merge cycles with uniswap dataset
+# merge downloaded uniswap datasets
 python3 combine_raw_data.py
 # build tensor for embedding
 python3 build_embedding_features.py
