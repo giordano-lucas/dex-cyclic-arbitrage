@@ -26,7 +26,8 @@ uni_raw_data_paths = glob.glob(cfg['directories']['uniswap_raw_data']+"*json.gz"
 print("Loading tx hashs")
 cycle_transaction_hashs = load_transaction_hashs()
 print("processing")
-uni_data_path = "/scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/uniswap_data.csv"
+#"/scratch/izar/kapps/DEX-Cyclic-Arbitrage/data/uniswap_data.csv"
+uni_data_path = cfg["files"]["preprocessed_data"] 
 count = 0
 with open(uni_data_path, mode='w') as f_out:
     csv_writer = csv.writer(f_out, delimiter=',')
