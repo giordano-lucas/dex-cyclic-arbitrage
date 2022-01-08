@@ -1,6 +1,7 @@
 directories:
     data_dir: data/
     uniswap_raw_data : data/uniswap_raw_data/
+    ML_features : data/ML_features/
         
 fig_dir:
     clustering: figures/clustering/
