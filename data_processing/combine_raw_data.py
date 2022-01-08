@@ -5,7 +5,7 @@ sys.path.append('/'.join(os.getcwd().split('/')[:4]))
 from helper import *
 import glob 
 from config.get import cfg
-
+import json
  
 def load_transaction_hashs():
     """load the cycles transaction hashs in a dictionary with cycle_id as key, only works on the filtered cycles dataset"""
@@ -58,7 +58,7 @@ def combine():
                     csv_writer.writerow([cycle_id, token1, token2,baseAmount,quoteAmount,quotePrice,gasPrice,gasValue,time])
                     count+=1
                     if count%10_000==0:
-                        print(count,end="\r")
+                        print(f"{count} lines written",end="\r")
             f_in.close()
 
 if __name__ == "__main__":
