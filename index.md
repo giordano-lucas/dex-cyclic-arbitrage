@@ -173,7 +173,7 @@ However, the more we lower `Q`, the more the signal is compressed which increase
 
 Using the `PCA` approach, we can easily understand how much is lost when `Q` varies.
 
-{% include_relative figures/embedding/XXX.html %}
+{% include_relative figures/embedding/latent_dimension_effect.html %}
 
 In the [Cycles profitability prediction](#cycles-profitability-prediction) task, we will be able to measure the gain of the embedding compared to the raw features (base model).
 
@@ -183,7 +183,7 @@ In the [Cycles profitability prediction](#cycles-profitability-prediction) task,
 
 As a first sanity check, we trained a single layer linear autoencoder. We should observe a similar peroformance as `PCA` and, as expected, it is indeed the case.
 
-{% include_relative figures/embedding/XXX.html %}
+
 
 ### Multilayer autoencoder
 
@@ -191,7 +191,7 @@ Let's go deep ! In this section, the number of layers is inscreased (XXX).
 
 The following plot displays the performance of this model.
 
-{% include_relative figures/embedding/XXX.html %}
+
 
 ### Convolutional autoencoder
 
