@@ -1,9 +1,7 @@
 import json
-import seaborn as sns
 import requests
 import time 
 import gzip
-import matplotlib.pyplot as plt
 import sys,os 
 sys.path.append('/'.join(os.getcwd().split('/')[:4]))
 from helper import *
