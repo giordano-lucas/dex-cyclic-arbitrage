@@ -57,6 +57,57 @@ def CNN():
     autoencoder.compile(optimizer='adam', loss='mean_squared_error',)
     return model_name, autoencoder
 
+def CNN_fully_connected():
+    model_name = "CNN_fully_connected"
+    # build encoder
+    # CNN
+    input_img = keras.Input(shape=(3,600, 2))
+    x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(input_img)
+    x = layers.MaxPooling2D((3, 3), padding='same')(x)
+    x = layers.Conv2D(4, (3, 3), activation='relu', padding='same')(x)
+    x = layers.MaxPooling2D((2, 2), padding='same')(x)
+    x = layers.Conv2D(1, (2, 2), activation='relu', padding='same')(x)
+    # Dense layers
+    x = layers.Dense(100,  activation='elu')(x)
+    encoded = layers.Dense(100,  activation='elu')(x)
+    x = layers.Dense(100,  activation='elu')(encoded)
+    x = layers.Dense(100,  activation='elu')(x)
+    # build decoder
+    x = layers.Conv2D(4, (2, 2), activation='relu', padding='same')(x)
+    x = layers.UpSampling2D((1, 2))(x)
+    x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+    x = layers.UpSampling2D((3, 3))(x)
+    decoded = layers.Conv2D(2, (3, 3), activation='relu', padding='same')(x)
+    # combine encoder and decoder
+    autoencoder = keras.Model(input_img, decoded)
+    autoencoder.compile(optimizer='adam', loss='mean_squared_error',)
+    return model_name, autoencoder
+
+def CNN_simpler_fully_connected():
+    model_name = "CNN_simpler_fully_connected"
+    # build encoder
+    input_img = keras.Input(shape=(3,600, 2))
+    x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(input_img)
+    x = layers.MaxPooling2D((1, 2), padding='same')(x)
+    x = layers.Conv2D(4, (3, 3), activation='relu', padding='same')(x)
+    x = layers.MaxPooling2D((3, 1), padding='same')(x)
+    encoded = layers.Conv2D(1, (1, 2), activation='relu', padding='same')(x)
+    # Dense layers
+    x = layers.Dense(300,  activation='elu')(x)
+    encoded = layers.Dense(100,  activation='elu')(x)
+    x = layers.Dense(100,  activation='elu')(encoded)
+    x = layers.Dense(300,  activation='elu')(x)
+    # build decoder
+    x = layers.Conv2D(4, (1, 2), activation='relu', padding='same')(x)
+    x = layers.UpSampling2D((3, 1))(x)
+    x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+    x = layers.UpSampling2D((1, 2))(x)
+    decoded = layers.Conv2D(2, (3, 3), activation='relu', padding='same')(x)
+    # combine encoder and decoder
+    autoencoder = keras.Model(input_img, decoded)
+    autoencoder.compile(optimizer='adam', loss='mean_squared_error',)
+    return model_name, autoencoder
+
 def talos_architecture(params):
     # unique name
     model_name = 'CNN_' + "_".join(params.values())
