@@ -1,4 +1,4 @@
-import sys 
+import sys, os 
 sys.path.append('/'.join(os.getcwd().split('/')[:4]))
 from config.get import cfg
 import tensorflow as tf
