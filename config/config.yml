@@ -20,9 +20,9 @@ files:
     cycle_ids : data/ML_features/cycle_ids.npy
     all_cycles : data/cycles_in_Uniswap.json
     filtered_cycles : data/filtered_cycles.json
-    features : data/features.csv
-    features_train : data/features_train.csv
-    features_test : data/features_test.csv
+    additional_features : data/addional_features.csv
+    additional_features_train : data/additional_features_train.csv
+    additional_features_test : data/additional_features_test.csv
     
     
 biquery:
