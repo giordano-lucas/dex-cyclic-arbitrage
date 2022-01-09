@@ -30,4 +30,4 @@ biquery:
     API_KEY2: BQYt1q57Typ8HsY7nxzqsGzmKA0u7FzS # Lucas's KEY
     
 models:
-    autoencoder: /models/embedding/autoencoder/results
+    autoencoder: models/embedding/autoencoder/results/

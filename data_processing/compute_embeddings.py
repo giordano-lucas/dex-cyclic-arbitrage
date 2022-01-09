@@ -18,7 +18,7 @@ def extract_layers(main_model, starting_layer_ix, ending_layer_ix):
 
 
 def compute(model_name = "CNN",encoding_layer = 5):
-    autoencoder = keras.models.load_model(cfg["models"]["autoencoder"]+"/"+model_name)
+    autoencoder = keras.models.load_model(f"{cfg['models']['autoencoder']}{model_name}")
     
     # extract en encoder part of the autoencoder
     encoder = extract_layers(autoencoder,0,encoding_layer)
@@ -51,3 +51,8 @@ def compute(model_name = "CNN",encoding_layer = 5):
     np.save(cfg['files']['encoded_train_features'] , train_encoded)
     np.save(cfg['files']['encoded_test_features'] ,test_encoded)
     print("Done!")
+
+if __name__ == "__main__":
+    print("==== Run : compute embedding ====")
+    compute()
+    print("==== Done ====")
