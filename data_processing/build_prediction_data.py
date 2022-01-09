@@ -1,9 +1,7 @@
 import json
-import seaborn as sns
 import requests
 import time 
 import gzip
-import matplotlib.pyplot as plt
 import sys,os 
 sys.path.append('/'.join(os.getcwd().split('/')[:4]))
 from helper import *
@@ -62,8 +60,8 @@ def run():
     f_test  = test_ids.join(features_i,on="cycle_id",lsuffix="_")
     
     # save the extracted data as a train and test sets
-    f_train.to_csv(cfg["files"]["features_train"])
-    f_test.to_csv(cfg["files"]["features_test"])
+    f_train.to_csv(cfg["files"]["additional_features_train"])
+    f_test.to_csv(cfg["files"]["additional_features_test"])
 
 if __name__ == "__main__":
     print("==== Run : build prediction data ====")
