@@ -34,7 +34,6 @@ def pad(X):
     X[1] = X.reset_index().groupby(["cycle_id","token1","token2"]).cumcount().values
     return X.reset_index().set_index(["cycle_id","token1","token2",1]).reindex(padded_index,fill_value=0)
 
-
 def build_tensor(X_padded):
     cycle_ids = []
     tensor    = []
