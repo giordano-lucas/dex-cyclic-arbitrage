@@ -463,7 +463,15 @@ In section [Data preprocessing](#data-preprocessing), `0-padding` was introduced
 
 Moreover, if we keep increasing the number of padded `Os`, we can make the `MSE` arbitrary close to 0 (perfect model). 
 
-These undesired behaviours could be addressed by introducing a special token `PAD` which has no intrinsic value (similarly as in the `BERT Transformer` model). Defining a custom `keras model` and `MSE` that simply ignore these `PAD` tokens would increase the quality of the embedding.
+These undesired behaviours could be addressed by introducing a special token `PAD` which has no intrinsic value.
+
+A classical way to solve this problem is to use attention learning as we have in Natural Language Processing tasks such as the `BERT Transformer` model. 
+
+The idea is to define, for each data point, a mask containing 0 and 1 entries that specifies which part of the data point shall be considered valid by the Neural Network layers. This mask is therefore passed along each layer, until the final loss function which is only be evaluated for the valid (non-padded) entries. 
+
+Keras offers two build-in constructs for [mask-generating layers](https://keras.io/guides/understanding_masking_and_padding/): `Embedding` and `Masking`. 
+
+Using them would increase the quality of the embedding. However due to time constrains, we did not consider it in this study.
 
 ### Circular Convolutions
 
