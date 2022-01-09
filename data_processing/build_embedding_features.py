@@ -35,7 +35,7 @@ def build_tensor(X_padded):
     return np.array(cycle_ids),np.array(tensor) 
 
 def run():   
-    data = pd.read_csv(cfg['files']['preprocessed_data'],nrows=10_000_000).drop(columns=["time"]) 
+    data = pd.read_csv(cfg['files']['preprocessed_data'],nrows=7_000_000).drop(columns=["time"]) 
     data = data.set_index(["cycle_id","token1","token2"])
 
 

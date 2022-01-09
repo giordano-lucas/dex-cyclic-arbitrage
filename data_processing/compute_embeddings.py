@@ -1,4 +1,5 @@
 import sys 
+import os 
 sys.path.append('/'.join(os.getcwd().split('/')[:4]))
 from config.get import cfg
 import tensorflow as tf
@@ -17,7 +18,7 @@ def extract_layers(main_model, starting_layer_ix, ending_layer_ix):
     return new_model
 
 
-def compute(model_name = "CNN",encoding_layer = 5):
+def compute(model_name = "fully_connected_3L",encoding_layer = 5):
     autoencoder = keras.models.load_model(cfg["models"]["autoencoder"]+"/"+model_name)
     
     # extract en encoder part of the autoencoder
