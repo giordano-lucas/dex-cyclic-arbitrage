@@ -31,3 +31,7 @@ biquery:
     
 models:
     autoencoder: models/embedding/autoencoder/results/
+    encoding_layer :
+        fully_connected_3L : 3
+        CNN : 5
+    
