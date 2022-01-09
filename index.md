@@ -89,6 +89,10 @@ As a result, we computed again the basic descriptive statistics but this time in
 |75%|6.11|6.08|5.35|5.82|-2.94|
 |max|24.38|24.38|42.51|11.51|2.57|
 
+We also would like to draw the readers attention of the fact that this global heavy tail phenonom also appears at the token pair scale. However, we observe more variability in the distributions. We took a liquid token pool (lots of transactions within a small time frame) to compute the following graph.
+
+{% include_relative figures/data_exploration/quote_price_liquid_pair_small.html %}
+
 Furthermore, some tokens were partially illiquid which negatively affects the number of transactions available in the dataset. To better understand this phenomenon, we plotted the distrbution of transaction per token pair.
 
 {% include_relative figures/data_exploration/nb_transaction_small.html %}
@@ -98,6 +102,10 @@ Futhermore, it is likely that for illiquid uniswap pools the time between the fi
 We provide more detail information of the time-span distribution in the following plot.
 
 {% include_relative figures/data_exploration/time_span_small.html %}
+
+A large disparity is observed with respect to the time span distribution. Some of the tokens present in the dataset are fairly illiquid. However the median time span is still fairly reasonable : `1 days 21:52:20`
+
+Therefore, we propose to first keep these illiquid tokens for this study. In a latter stage, we will compare the results obtained on the full dataset to the one for the liquid dataset.
 
 ## Data preprocessing
 
