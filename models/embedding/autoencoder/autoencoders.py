@@ -19,8 +19,8 @@ def linear():
     return model_name ,autoencoder
 
 
-def fully_connected():
-    model_name = "fully_connected"
+def fully_connected_3L():
+    model_name = "fully_connected_3L"
     in_shape = (3,600, 2) 
     # build encoder
     input_layer = keras.Input(shape=in_shape)
