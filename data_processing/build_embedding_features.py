@@ -34,11 +34,17 @@ def build_tensor(X_padded):
     print(f"{errors} errors")   
     return np.array(cycle_ids),np.array(tensor) 
 
-def run():   
-    data = pd.read_csv(cfg['files']['preprocessed_data'],nrows=7_000_000).drop(columns=["time"]) 
-    data = data.set_index(["cycle_id","token1","token2"])
+def run():  
+    cols = ["quotePrice","gasPrice"]
+    
+    print("loading data")
+    data = pd.read_csv(cfg['files']['preprocessed_data'],nrows=10_000_000).drop(columns=["time"]) 
+    data = data.set_index(["cycle_id","token1","token2"])[cols]
+    
 
-
+    print(f"taking the log of {cols}")
+    data = np.log(data).dropna()
+    
     # train test split
     print("splitting")
     train_ix, test_ix = train_test_split(data.index.levels[0],train_size=0.8)

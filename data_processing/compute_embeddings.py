@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import sys 
 import os 
+=======
+import sys, os 
+>>>>>>> 758b5695c1e2c965e2d0c72caa67e27a2d47390d
 sys.path.append('/'.join(os.getcwd().split('/')[:4]))
 from config.get import cfg
 import tensorflow as tf
@@ -18,8 +22,13 @@ def extract_layers(main_model, starting_layer_ix, ending_layer_ix):
     return new_model
 
 
+<<<<<<< HEAD
 def compute(model_name = "fully_connected_3L",encoding_layer = 5):
     autoencoder = keras.models.load_model(cfg["models"]["autoencoder"]+"/"+model_name)
+=======
+def compute(model_name = "CNN",encoding_layer = 5):
+    autoencoder = keras.models.load_model(f"{cfg['models']['autoencoder']}{model_name}")
+>>>>>>> 758b5695c1e2c965e2d0c72caa67e27a2d47390d
     
     # extract en encoder part of the autoencoder
     encoder = extract_layers(autoencoder,0,encoding_layer)
@@ -52,3 +61,8 @@ def compute(model_name = "fully_connected_3L",encoding_layer = 5):
     np.save(cfg['files']['encoded_train_features'] , train_encoded)
     np.save(cfg['files']['encoded_test_features'] ,test_encoded)
     print("Done!")
+
+if __name__ == "__main__":
+    print("==== Run : compute embedding ====")
+    compute()
+    print("==== Done ====")
