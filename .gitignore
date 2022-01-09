@@ -159,3 +159,4 @@ old_opt/
 */core.*
 models/*_model/
 config/__pycache__
+.~*
