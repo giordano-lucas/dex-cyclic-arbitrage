@@ -116,25 +116,6 @@ In this first milestone, we propose to model each cycle as a list of 3 nodes whi
 ### Logarithmic transformation
 
 As shown in section [Data Exploration](#data-exploration), it is probably a good idea to apply the `element-wise logarithm` to the `quotePrice` and `gasPrice` features as a first step.
-### Zero-Padding
-
-In this study, each cycle is represented as a tensor with the following 3 dimensions:
-
-| Name | Size |  Description                                                           |
-|:----:|-----:|:-----------------------------------------------------------------------|
-| `D`  | 3    | the length of the cycle, aka the number of tokens                      |
-| `P`  | 600  | the length of the time series of swap transactions                     |
-| `K`  | 2    | the amount of time series/features (`quotePrice` and `gasPrice`)       |
-
-However, due to lack of liquidity in Uniswap pools for a given pair of tokens, there could be less than `P = 600` swap transaction fetched from `bitquery`.  Since machine learning models required to fix the input size for their functioning, we need to pad the shorter time series. To this end, the fixed length `P =600` was chosen, as well as the `zero-padding` technique for simplicity reasons.
-
->  Note: the spanned period was fixed to be `P = 600` is this first milestone. It will be backtested (e.g. fixed or mean frequency between two cycles) later on.
-
-### Building the feature tensor
-
-`The dataset` is not directly shaped to build the tensor feature for the machine learning models. Indeed it simply contains a list of swap transactions in `csv` format. We need to massage using with multiple operations to group transactions associated to the same cycle together and pad each time series independently. 
-
-> Note: hardware capacities of the cluster only allowed us to process `25 000 000` swap transactions at once. We could, later on, consider batch processing to handle more transactions. 
 
 ### Train/Test split
 
@@ -151,7 +132,32 @@ To avoid the effect of the scales of the features in our results we have to re-s
 
 After taken the `log` global features showed in the data exploration section somhow look Gaussian. Hence, we decided to opt for the standard scaler.
 
-Moreover, token pairs can have very different scales in terms of quote and gas prices. Therefore, it might be worthy to define a custom scaling mecanism for each of these pairs. As expected, the latter approach yields better performance in the following machine learning tasks. However, it requires more processing power than the first approach. We had to restrict the number of rows in the dataset to be able to leverage it.
+Moreover, token pairs can have very different scales in terms of quote and gas prices. Therefore, it might be worthy to define a custom scaling mecanism for each of these pairs. 
+
+As expected, the latter approach yields better performance in the following machine learning tasks. However, it requires more processing power than the first approach. We had to restrict the number of rows in the dataset to be able to leverage it.
+
+### Zero-Padding
+
+In this study, each cycle is represented as a tensor with the following 3 dimensions:
+
+| Name | Size |  Description                                                           |
+|:----:|-----:|:-----------------------------------------------------------------------|
+| `D`  | 3    | the length of the cycle, aka the number of tokens                      |
+| `P`  | 600  | the length of the time series of swap transactions                     |
+| `K`  | 2    | the amount of time series/features (`quotePrice` and `gasPrice`)       |
+
+However, due to lack of liquidity in Uniswap pools for a given pair of tokens, there could be less than `P = 600` swap transaction fetched from `bitquery`.  Since machine learning models required to fix the input size for their functioning, we need to pad the shorter time series. To this end, the fixed length `P =600` was chosen, as well as the `zero-padding` technique for simplicity reasons. An extensive backtesting process could be performed later on (e.g. fixed or mean frequency between two cycles). However, due to time constrains, we decided not to explore further in this direction.
+
+>  Note: in both train and test splits the `zero-padding` artictial values account for roughly `17-18%` of the whole data set. In the [further steps section](#further-steps), we propose alternative to reduce this overhead.
+
+### Building the feature tensor
+
+`The dataset` is not directly shaped to build the tensor feature for the machine learning models. Indeed it simply contains a list of swap transactions in `csv` format. We need to massage using with multiple operations to group transactions associated to the same cycle together and pad each time series independently. 
+
+> Note: hardware capacities of the cluster only allowed us to process `10 000 000` swap transactions.
+
+
+
 # Cycle embedding 
 
 ## Movitation
@@ -314,15 +320,48 @@ In the following set of plots, the same metrics are recomputed but this time on 
 
 # Cycles profitability prediction
 
-The goal of the project also consists of testing the predictability of the cycle's profitability. The return of a given cycle is defined by its `revenues` minus its `cost` (fees). `Profitability` is a Boolean value indicating if the corresponding cycle has positive or negative `profitability`. `Profitability` is then used as a target/label for classification tasks. 94% of the cycles have a positive return. This imbalance can badly affect the training process: The models will tend to always output true and will obtain a precision of 94% despite being meaningless.  Thus, we need to take this imbalance into the prediction process. The target imbalance is handled through the `class_weight` module of  Sklearn . It reweights the samples during training to obtain a 1:1 balance between positive and negative data points. Two different features are used as input for prediction : 
+## Motivation
+
+The goal of the project also consists of testing the predictability of the cycle's profitability. The return of a given cycle is defined by its `revenues` minus its `cost` (fees). `Profitability` is a Boolean value indicating if the corresponding cycle has positive or negative `profitability`. `Profitability` is then used as a target/label for classification tasks. 94% of the cycles have a positive return. This imbalance can badly affect the training process: The models will tend to always output true and will obtain a precision of 94% despite being meaningless.  Thus, we need to take this imbalance into the prediction process. The target imbalance is handled through the `class_weight` module of  Sklearn . It reweights the samples during training to obtain a 1:1 balance between positive and negative data points. 
+
+## Features
+
+Two different features are used as input for prediction : 
 * `Embeddings`  : At first, the models use embeddings produced by the autoencoder as features. 
 * `Embeddings + tokens` : Then, additional features are added : for each cycles we add to  its embedding an encoding (one hot) of the tokens it involves. 
  
 These two types of featuere are used and scores are compared to see if names of involved tokens brings relevant information to the prediction. 
 
+In our initial dataset, we also have access to the names of the 3 tokens particpating in the cyclic arbitrage, which could potentially be used as extra features ! 
+
+However, machine learning models usually don't like strings features. Let's tokenize them !
+
+Since we are dealing with a fixed (categorical) set of non-ordered features, a `one-hot` encoding is probaly a good way to go. 
+
+For instance, imagine we only have 3 tokens in our dataset : 
+
+> `ETH`, `DAI` and `AAVE`
+
+Then one could use the following `one-hot` encoding to represent them. We have 3 tokens so the encoding will be 3-dimensional 
+
+| Token Name | \| | Dim 1 | Dim 2 | Dim 3  |
+|:----------:|:--:|:-----:|:-----:|:------:|
+| `ETH`      | \| |  1    |   0   |   0    |
+| `DAI`      | \| |  0    |   1   |   0    |
+| `AAVE`     | \| |  0    |   0   |   1    |
+
+
+For a linear algebra persective, we observe that all rows have the same norm and are linearly independent, this is what makes this `one-hot` encoding a excellent choice for our purposes.
+
+We draw the attention of the reader on the fact that these extra features should not be added as input to the convolutional autoencoder. Indeed, there is not translation bias to exploit here. In order to ease the performance comparision with other types of embedding model, we decided not to use them in any of the embedding related tasks.
+
+However,  the profitability prediction. 
+
+## Different models
+
 First, simple models such as logistic regression and SVM are used. These models take the previously computed embeddings as features. Then a more complex model consisting of a neural network is used, it is fed with the raw features. Namely, the swap rates and gas fees.
 
-## Logistic regression
+### Logistic regression
 The first model consists of logistic regression. It is fitted on the standardized embeddings using a grid search cross-validation process to tune the hyperparameter C (regularizer). The following confusion matrices (one per type of features) are obtained on the test set : 
 
 
@@ -350,7 +389,7 @@ Corresponding f1 scores :
 | f1 score    | 0.7312       |   1544      |
 
 
-## Support vector machine (SVM)
+### Support vector machine (SVM)
 The second model is a support vector machine trained on the standardized embeddings to find the optimal boundary between profitable and non-profitable cycles. Again, cross-validation is used to tune the hyperparameters. Namely: the kernel of the SVM (`linear`, `rbf`, or `poly`) and the regularizer (`C`). The selected model produces the following confusion matrix on the test set : 
 
 
@@ -382,7 +421,7 @@ Corresponding f1 scores :
 | f1 score    | 0.7403      |   1544      |
 
 
-## Neural network (NN)
+### Neural network (NN)
 The last classification model is a complex neural network. it takes the raw standardized data as features.  The network has the following architecture:[TODO](#neural-network-nn).
 
 It consists of XXXX parameters, which is comparable to the encoding part of the embedding's autoencoder. We chose the number of parameters to be comparable to the encoder to allow the classification network to create its own embedding. We expect this network to perform better than the previous one since it creates an embedding designed for the given classification task.
@@ -416,7 +455,9 @@ Corresponding f1 scores :
 
 
 # Further steps 
-## Embedding improvement
+## Embedding improvement 
+
+### Attention Learning 
 
 In section [Data preprocessing](#data-preprocessing), `0-padding` was introduced to standardise the length of each time series. However, the choice of `0s` is rather arbitrary and can introduce many problems upon training the `autoencoder` (as well as scaling the data). Indeed, a small computation shows that introducing this padding technique adds `7 500 000 000` zeros which corresponds to a fraction `17%` of the training set entries. This means that the `autoencoder` can do a decent only by trying to improve the reconstruction of `0s`is the training set. 
 
@@ -424,11 +465,15 @@ Moreover, if we keep increasing the number of padded `Os`, we can make the `MSE`
 
 These undesired behaviours could be addressed by introducing a special token `PAD` which has no intrinsic value (similarly as in the `BERT Transformer` model). Defining a custom `keras model` and `MSE` that simply ignore these `PAD` tokens would increase the quality of the embedding.
 
-Another possible improvement is to define a custom convolutional layer that can take advantage of the cyclic nature of the arbitrage. Circular convolution is a step towards this direction.
+### Circular Convolutions
 
-Finally, we should include other features (e.g. the 3 encodings of the tokens present in the cycle) to the model. We draw the attention of the reader on the fact that these extra features should not be added as input to the convolutional autoencoder. Indeed, there is not translation bias to exploit here. However, we can use them for the clustering or the profitability prediction.
+In the above sections, we defined a fairly complex convolutional architecture for the autoencoder. In the scheme, we use standard `zero-padded` convolutions. However, due to the cyclic nature of the arbitrages, a possible improvement would be use circular convolutions instead. However, since no default implementation in keras was available, a custom layer needs to defined. 
 
-If we have time, we could also compare performance of the encoder with Fourier/Wavelet transform or Signature transform.
+Since this process is time consuming and error-prone, we decided to stick with keras basic implementation but circular convolution is definitely a step that is worth exploring.
+
+### In depth comparision
+
+The performance of the encoder could be compared with more complex embedding techniques than `PCA` such as `Fourier/Wavelet transform` or `Signature transform`.
 
 ## Clustering improvement 
 
@@ -439,3 +484,7 @@ In this first milestone, we only trained basic model to set up the whole project
 
 To this end, we will use the `talos` library to test various possible architectures for the `autoencoder`.
 
+# Resources 
+
+1. [Attention learning in Keras](https://keras.io/guides/understanding_masking_and_padding/)
+2. [Selecting the number of clusters with silhouette analysis](https://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_silhouette_analysis.html)
