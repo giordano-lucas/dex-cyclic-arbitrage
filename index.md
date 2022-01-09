@@ -314,29 +314,74 @@ In the following set of plots, the same metrics are recomputed but this time on 
 
 # Cycles profitability prediction
 
-The goal of the project also consists of testing the predictability of the cycle's profitability. The return of a given cycle is defined by its `revenues` minus its `cost` (fees). `Profitability` is a Boolean value indicating if the corresponding cycle has positive or negative `profitability`. `Profitability` is then used as a target/label for classification tasks. 94% of the cycles have a positive return. This imbalance can badly affect the training process: The models will tend to always output true and will obtain a precision of 94% despite being meaningless.  Thus, we need to take this imbalance into the prediction process. The target imbalance is handled through the `class_weight` module of  Sklearn . It reweights the samples during training to obtain a 1:1 balance between positive and negative data points.
+The goal of the project also consists of testing the predictability of the cycle's profitability. The return of a given cycle is defined by its `revenues` minus its `cost` (fees). `Profitability` is a Boolean value indicating if the corresponding cycle has positive or negative `profitability`. `Profitability` is then used as a target/label for classification tasks. 94% of the cycles have a positive return. This imbalance can badly affect the training process: The models will tend to always output true and will obtain a precision of 94% despite being meaningless.  Thus, we need to take this imbalance into the prediction process. The target imbalance is handled through the `class_weight` module of  Sklearn . It reweights the samples during training to obtain a 1:1 balance between positive and negative data points. Two different features are used as input for prediction : 
+* `Embeddings`  : At first, the models use embeddings produced by the autoencoder as features. 
+* `Embeddings + tokens` : Then, additional features are added : for each cycles we add to  its embedding an encoding (one hot) of the tokens it involves. 
+ 
+These two types of featuere are used and scores are compared to see if names of involved tokens brings relevant information to the prediction. 
 
 First, simple models such as logistic regression and SVM are used. These models take the previously computed embeddings as features. Then a more complex model consisting of a neural network is used, it is fed with the raw features. Namely, the swap rates and gas fees.
 
 ## Logistic regression
-The first model consists of logistic regression. It is fitted on the standardized embeddings using a grid search cross-validation process to tune the hyperparameter C (regularizer). The following confusion matrix is obtained on the test set : 
+The first model consists of logistic regression. It is fitted on the standardized embeddings using a grid search cross-validation process to tune the hyperparameter C (regularizer). The following confusion matrices (one per type of features) are obtained on the test set : 
+
+
+<table>
+<tr><th> Embeddings </th><th>Embeddings + tokens </th></tr>
+<tr><td>
 
 | /           |True(pred) | False(pred) |
 |------------:|:---------:|:------------|
 | True(real)  | 2241      |   1544      |
 | False(real) |  104      |   112       |
 
-What correponsds to a f1 score of : 0.7312
+</td><td>
+
+| /           |True(pred) | False(pred) |
+|------------:|:---------:|:------------|
+| True(real)  | 2241      |   1544      |
+| False(real) |  104      |   112       |
+
+</td></tr> </table>
+
+Corresponding f1 scores : 
+| /           |`Embeddings ` | `Embeddings + tokens`|
+|------------:|:------------:|:---------------------|
+| f1 score    | 0.7312       |   1544      |
+
 
 ## Support vector machine (SVM)
 The second model is a support vector machine trained on the standardized embeddings to find the optimal boundary between profitable and non-profitable cycles. Again, cross-validation is used to tune the hyperparameters. Namely: the kernel of the SVM (`linear`, `rbf`, or `poly`) and the regularizer (`C`). The selected model produces the following confusion matrix on the test set : 
+
+
+
+
+<table>
+<tr><th> Embeddings </th><th>Embeddings + tokens </th></tr>
+<tr><td>
 
 | /           |True(pred) | False(pred) |
 |------------:|:---------:|:------------|
 | True(real)  | 2276      |   1509      |
 | False(real) |  88       |   128       |
 
-What correponsds to a f1 score of : 0.7403
+
+</td><td>
+
+| /           |True(pred) | False(pred) |
+|------------:|:---------:|:------------|
+| True(real)  | 2276      |   1509      |
+| False(real) |  88       |   128       |
+
+
+</td></tr> </table>
+
+Corresponding f1 scores : 
+| /           |`Embeddings ` | `Embeddings + tokens`|
+|------------:|:------------:|:---------------------|
+| f1 score    | 0.7403      |   1544      |
+
+
 ## Neural network (NN)
 The last classification model is a complex neural network. it takes the raw standardized data as features.  The network has the following architecture:[TODO](#neural-network-nn).
 
@@ -344,12 +389,31 @@ It consists of XXXX parameters, which is comparable to the encoding part of the 
 Dropout ?
 The performance obtain on the test set are the following :
 
+<table>
+<tr><th> Embeddings </th><th>Embeddings + tokens </th></tr>
+<tr><td>
+
+| /           |True(pred) | False(pred) |
+|------------:|:---------:|:------------|
+| True(real)  | 2276      |   1509      |
+| False(real) |  88       |   128       |
+
+
+</td><td>
+
 | /           |True(pred) | False(pred) |
 |------------:|:---------:|:------------|
 | True(real)  | XXXX      |   XXXX      |
-| False(real) |  XXXX     |   XXXX      |
+| False(real) |  XXXX       |   XXXX       |
 
-What correponsds to a f1 score of : XXXX
+
+</td></tr> </table>
+
+Corresponding f1 scores : 
+| /           |`Embeddings ` | `Embeddings + tokens`|
+|------------:|:------------:|:---------------------|
+| f1 score    | XXXX     |   XXXX      |
+
 
 # Further steps 
 ## Embedding improvement
