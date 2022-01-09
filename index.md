@@ -365,23 +365,17 @@ First, simple models such as logistic regression and SVM are used. These models 
 The first model consists of logistic regression. It is fitted on the standardized embeddings using a grid search cross-validation process to tune the hyperparameter C (regularizer). The following confusion matrices (one per type of features) are obtained on the test set : 
 
 
-<table>
-<tr><th> Embeddings </th><th>Embeddings + tokens </th></tr>
-<tr><td>
-
+`Embeddings` confusion matrix :
 | /           |True(pred) | False(pred) |
 |------------:|:---------:|:------------|
 | True(real)  | 2241      |   1544      |
 | False(real) |  104      |   112       |
 
-</td><td>
-
+`Embeddings + tokens` confusion matrix :
 | /           |True(pred) | False(pred) |
 |------------:|:---------:|:------------|
 | True(real)  | 2241      |   1544      |
 | False(real) |  104      |   112       |
-
-</td></tr> </table>
 
 Corresponding f1 scores : 
 | /           |`Embeddings ` | `Embeddings + tokens`|
