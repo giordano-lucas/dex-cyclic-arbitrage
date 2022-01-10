@@ -20,5 +20,8 @@ def add_base_dir(value, acc, key):
 with open(f"{base_dir}/config/config.yml", "r") as ymlfile:
     raw_cfg = yaml.safe_load(ymlfile)
     cfg = add_base_dir(raw_cfg, {}, None)
+    
+with open(f"{base_dir}/config/models_config.yml", "r") as ymlfile:
+    models_cfg = yaml.safe_load(ymlfile)
 
 

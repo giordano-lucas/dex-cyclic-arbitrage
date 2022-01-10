@@ -158,5 +158,8 @@ opt/
 old_opt/
 */core.*
 models/*_model/
+models/*_model/
+models/embedding/autoencoder/results/*
+models/embedding/autoencoder/talos-autoencoder/*
 config/__pycache__
 .~*
