@@ -103,15 +103,20 @@ We provide more detail information of the time-span distribution in the followin
 
 {% include_relative figures/data_exploration/time_span_small.html %}
 
-A large disparity is observed with respect to the time span distribution. Some of the tokens present in the dataset are fairly illiquid. However the median time span is still fairly reasonable : `1 days 21:52:20`
+A large disparity is observed with respect to the time span distribution. Furthermore, some transactions have more than 100 days gap for the same token which characterise the illiquity of the underlying tokens. However, the observed median time span is still fairly reasonable : `1 days 21:52:20`.
 
-Therefore, we propose to first keep these illiquid tokens for this study. In a latter stage, we will compare the results obtained on the full dataset to the one for the liquid dataset.
+After a quick data exploration on these illiquid tokens, we realised they have a very different feature distribution than the other. They can be considered as outliers and therefore negatively impact the training of our machine learning tasks. Futhermore, one might argue that abitrage on illiquid tokens are hard to realise in practice and they there less incentive in studying them.
+
+At this stage, we propose develop two sub-datasets for the rest of the tasks, one qualified as `full` since it contains all cycles and another qualified as `liquid` containing only those that are considered liquid enough, meaning that they satisfy the following conditions:
+
+1. Each token in the cycle has at least half of transactions that should have been fetched (i.e. 300 out of 600). 
+2. Each token in the cycle is in the `80%` quantile of the time-span distribution defined above (i.e. span less than 15 days).
+
+As we will later see, the `full dataset` is harder to train and we decided to only use the `liquid` at some point. 
 
 ## Data preprocessing
 
-As it was previously said, the focus of this study is on cycles of length 3. 
-
-In this first milestone, we propose to model each cycle as a list of 3 nodes which are themselves represented as 2-dimensional time series: `quote prices` and `gas prices`. These time series have length at most `P = 600` (data fetched from `bitquery`).
+As it was previously said, the focus of this study is on cycles of length 3. We propose to model each cycle as a list of 3 nodes which are themselves represented as 2-dimensional time series: `quote prices` and `gas prices`. These time series have length at most `P = 600` (transaction data fetched from `bitquery`).
 
 ### Logarithmic transformation
 
@@ -119,7 +124,7 @@ As shown in section [Data Exploration](#data-exploration), it is probably a good
 
 ### Train/Test split
 
-In order to test our models with the least amount of bias possible,we randomly split the datasets into a training and testing set (`30%`). 
+In order to test our models with the least amount of bias possible, we randomly split the datasets into a training and testing set (`20%`). 
 ### Scaling the features
 
 To avoid the effect of the scales of the features in our results we have to re-scale them. To do so, we can consider two different approaches:
@@ -132,7 +137,7 @@ To avoid the effect of the scales of the features in our results we have to re-s
 
 After taken the `log` global features showed in the data exploration section somhow look Gaussian. Hence, we decided to opt for the standard scaler.
 
-Moreover, token pairs can have very different scales in terms of quote and gas prices. Therefore, it might be worthy to define a custom scaling mecanism for each of these pairs. 
+Moreover, token pairs can have very different scales in terms of quote and gas prices. Therefore, it might be worthy to define a custom scaling mecanism for each of these pairs. We refer to this as a `TokenStandardScaler` in the code.
 
 As expected, the latter approach yields better performance in the following machine learning tasks. However, it requires more processing power than the first approach. We had to restrict the number of rows in the dataset to be able to leverage it.
 
@@ -148,15 +153,13 @@ In this study, each cycle is represented as a tensor with the following 3 dimens
 
 However, due to lack of liquidity in Uniswap pools for a given pair of tokens, there could be less than `P = 600` swap transaction fetched from `bitquery`.  Since machine learning models required to fix the input size for their functioning, we need to pad the shorter time series. To this end, the fixed length `P =600` was chosen, as well as the `zero-padding` technique for simplicity reasons. An extensive backtesting process could be performed later on (e.g. fixed or mean frequency between two cycles). However, due to time constrains, we decided not to explore further in this direction.
 
->  Note: in both train and test splits the `zero-padding` artictial values account for roughly `17-18%` of the whole data set. In the [further steps section](#further-steps), we propose alternative to reduce this overhead.
+>  Note: in both train and test splits the `zero-padding` artictial values account for roughly `17-18%` of the `full` data set. In the [further steps section](#further-steps), we propose alternative to reduce this overhead.
 
 ### Building the feature tensor
 
 `The dataset` is not directly shaped to build the tensor feature for the machine learning models. Indeed it simply contains a list of swap transactions in `csv` format. We need to massage using with multiple operations to group transactions associated to the same cycle together and pad each time series independently. 
 
 > Note: hardware capacities of the cluster only allowed us to process `10 000 000` swap transactions.
-
-
 
 # Cycle embedding 
 
@@ -195,17 +198,13 @@ In the [Cycles profitability prediction](#cycles-profitability-prediction) task,
 
 ### Linear autoencoder 
 
-As a first sanity check, we trained a single layer linear autoencoder. We should observe a similar peroformance as `PCA` and, as expected, it is indeed the case.
-
-
+As a first sanity check, we trained a single layer linear autoencoder. We should observe a similar peroformance as `PCA` for this model.
 
 ### Multilayer autoencoder
 
 Let's go deep ! In this section, the number of layers is inscreased (XXX). 
 
 The following plot displays the performance of this model.
-
-
 
 ### Convolutional autoencoder
 
@@ -235,17 +234,19 @@ def build_model():
     return autoencoder
 ```
 
-## Performance
+## Performance Analysis
+
+### Basic
 
 An `autoencoder` is trained to produce an output as close as possible to the corresponding input. 
 
 A classical way to evaluate the performance (reconstruction error) of an `autoencoder` is through the `Mean Square Error (MSE)` loss 
 
-The following plots display the difference in terms of `MSE` for the `autoencoder` and the `PCA` methods.
+The following plots display the difference in terms of `MSE` for the the different architectures mentioned above.
 
 {% include_relative figures/embedding/performance_autoencoder.html %}
 
-> Note: `0` corresponds to the best possible model.
+> **Note**: `0` corresponds to the best possible model.
 
 Surprisingly, the `autoencoder` performs worse in terms of reconstruction than `PCA`. However, in this first milestone, since we only trained:
 
@@ -258,6 +259,32 @@ It may well be that we did not fully exploit the capacity of the neural network.
 For the reader's information, the evolution  of the `train loss` is shown below:
 
 ![simple_model_2_train_loss](https://user-images.githubusercontent.com/43466781/147818924-278bd5f8-7b78-440a-883e-35f9e8134464.png)
+
+
+In this section, we only tested a few architectures to have a rough idea of their overall performance. Indeed, training these model is time consuming and we wanted to prune some of the configurations for the real hyper-parameter optimisation of the next section. 
+
+To sum up, we realised that the proposed CNN architecture did not reached the expected performance. In fact, we were not able to outperform `PCA`. We decided not to explore further in this direction and therfore stick with the fully connected multilayer architecture.
+
+### Advanced
+
+Now that we selected our main architecture for our autoencoder, namely a fully connected MLP, let's optimise our loss. They are multiple hyperparameters that can be tune for this model. We selected the following : 
+
+| Parameter name                   | Option 1 | Option 2 | Option 3 | 
+|:---------------------------------|---------:|---------:|---------:|
+| `activation function`            | `selu`   | `elu`    |          |
+| `# dense layers`                 | `1`      | `2`      |   `5`    |
+| `# neurons in first/last layer ` | `200`    | `300`    |   `500`  |
+| `dropout factor`                 | `0%`     | `25%`    |   `50%`  |
+| `optimizer`                      | `adam`   | `nadam`  |          |
+| `# epochs`                       | `20`     | `100`    |   `160`  |
+
+In order preform this best parameter search, we used the `Talos` python library which makes it fairly easy to test hundreds of parameter combinaisons in a few lines of code. 
+
+After running not less than `XXXXXXXXXXXXXXXXXXX` hours on the IZAR EPFL cluster, we got the following results: 
+
+XXXX
+
+Note that `Talos` does not support `K-fold` cross-validation yet, so we had to use a single validation set (`20%`) for this task. 
 
 # Cycle clustering
 
