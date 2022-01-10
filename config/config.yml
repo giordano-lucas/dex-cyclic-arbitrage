@@ -4,9 +4,15 @@ directories:
     ML_features : data/ML_features/
         
 fig_dir:
-    clustering: figures/clustering/
     data_exploration: figures/data_exploration/
-    embedding: figures/embedding/
+    full:
+        clustering: figures/full/clustering/
+        embedding: figures/full/embedding/
+        prediction: figures/full/prediction/
+    liquid:
+        clustering: figures/liquid/clustering/
+        embedding: figures/liquid/embedding/
+        prediction: figures/liquid/prediction/
 
 files: 
     cycles_in_Uniswap : data/cycles_in_Uniswap.json
