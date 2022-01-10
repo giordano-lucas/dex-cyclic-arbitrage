@@ -158,5 +158,10 @@ opt/
 old_opt/
 */core.*
 models/*_model/
+models/*_model/
+
+models/embedding/autoencoder/results/
+/models/embedding/autoencoder/results/
+core.*
 config/__pycache__
 .~*
