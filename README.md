@@ -111,6 +111,7 @@ XXX
 | Autencoder manual tests for several architectures        | Augustin       |    5h        |
 | Talos setup                             | Lucas                           |    2h        |
 | Hyperparameter opmisation               | Lucas & Augustin                |    4h        |
+| Kmeans : better silouhette analysis     | Lucas                           |    1h        |
 | Notebook comments and markdown          | Lucas & Augustin                |    3h        |
 | Data story (4)                          | Lucas & Augustin                |    5h        |
 
@@ -119,7 +120,7 @@ XXX
 | Team member                     | work hours   |
 |:--------------------------------| ------------:|
 | Lucas Giordano                  |    50h       |
-| Augustin Kapps                  |    56h       |
+| Augustin Kapps                  |    57h       |
 
 # Notes to the reader
 ## Organisation of the repository
