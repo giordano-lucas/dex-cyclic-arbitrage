@@ -45,6 +45,7 @@ def compute(model_name = "fully_connected_3L", use_liquid=True):
     train_encoded = encoder(train_raw).numpy()
     test_encoded = encoder(test_raw).numpy()
 
+
     print("SHAPES:")
     print("     train encoded features : ",train_encoded.shape)
     print("     test encoded features : ",test_encoded.shape)
