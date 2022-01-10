@@ -20,6 +20,56 @@ def pad(X):
     X[1] = X.reset_index().groupby(["cycle_id","token1","token2"]).cumcount().values
     return X.reset_index().set_index(["cycle_id","token1","token2",1]).reindex(padded_index,fill_value=0).dropna()
 
+<<<<<<< HEAD
+def build_tensor(data):
+    data = data.reset_index()
+    
+    
+    N_TOKEN = 3 # cycle length
+    K = 2       # quote price & gasPrice
+    N =data.cycle_id.nunique() # number of cycles
+    P = 600     # max time series length per cycle
+    
+    tensor = np.zeros((N, N_TOKEN,P, K))
+    cycle_ids = np.zeros(N)
+    i = 0
+    def get_sorted_token_map(g):
+        t = g[['token1','token2']].values
+        u, ind = np.unique(t, return_index=True)
+        u_sorted =  u[np.argsort(ind)]
+        return dict(zip(u_sorted, range(len(u_sorted))))
+
+    for cycle_id, group in iter(data.groupby('cycle_id')):
+        token_map = get_sorted_token_map(group)
+        cycle_ids[i] =cycle_id
+        for _, g in iter(group.groupby(['token1','token2'])):
+            a = g[['quotePrice','gasPrice']].values 
+            # zero padding
+            padded = np.pad(a, [(0, P - len(a)),(0,0)])
+            # assign and reshape into a matrix
+            first_token = g.token1.iloc[0]
+            token_ind = token_map[first_token]
+            tensor[i,token_ind,:,:] = padded.reshape(1,P,K)
+        i = i+1
+    return cycle_ids[:-1],tensor[:-1]
+
+
+def run(use_liquid = True ,nrows=10_000_000):  
+    cols = ["quotePrice","gasPrice"]
+    
+    print("loading data")
+    if use_liquid:
+        data = pd.read_csv(cfg['files']['liquid_preprocessed_data'],nrows=nrows)
+    else :
+        data = pd.read_csv(cfg['files']['preprocessed_data'],nrows=nrows)
+        
+    data = data.drop(columns=["time"]).set_index(["cycle_id","token1","token2"])[cols]
+    
+
+#     print(f"taking the log of {cols}")
+#     data = np.log(data).dropna()
+    
+=======
 
 def build_tensor(X_padded):
     cycle_ids = []
@@ -39,6 +89,7 @@ def run():
     data = data.set_index(["cycle_id","token1","token2"])
 
 
+>>>>>>> 2b113825b93622f4f7acce54610bc578cff984a4
     # train test split
     print("splitting")
     train_ix, test_ix = train_test_split(data.index.levels[0],train_size=0.8)
@@ -51,7 +102,10 @@ def run():
     tX_test  = scaler.transform(X_test)
 
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 2b113825b93622f4f7acce54610bc578cff984a4
     print("padding")
     train_padded = pad(tX_train)
     test_padded = pad(tX_test)
@@ -65,6 +119,20 @@ def run():
 
 
     print("Saving")
+<<<<<<< HEAD
+    if use_liquid:
+        np.save(cfg['files']['raw_test_features_liquid'] , test_tensor)
+        np.save(cfg['files']['raw_train_features_liquid'] ,train_tensor)
+        np.save(cfg['files']['test_ids_liquid'] , test_ids)
+        np.save(cfg['files']['train_ids_liquid'] , train_ids)
+    else : 
+        np.save(cfg['files']['raw_test_features'] , test_tensor)
+        np.save(cfg['files']['raw_train_features'] ,train_tensor)       
+        np.save(cfg['files']['test_ids'] , test_ids)
+        np.save(cfg['files']['train_ids'] , train_ids)
+
+    
+=======
  
     np.save(cfg['files']['raw_test_features'] , test_tensor)
     np.save(cfg['files']['raw_train_features'] ,train_tensor)
@@ -72,6 +140,7 @@ def run():
     np.save(cfg['files']['train_ids'] , train_ids)
     print("Done")
 
+>>>>>>> 2b113825b93622f4f7acce54610bc578cff984a4
 if __name__ == "__main__":
     print("==== Run : build embedding features ====")
     check_and_create_dir(cfg['directories']['ML_features'])
