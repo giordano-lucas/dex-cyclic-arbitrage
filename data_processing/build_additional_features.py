@@ -60,10 +60,10 @@ def run():
     # split the extracted data
     f_train = train_ids.join(features_i,on="cycle_id",lsuffix="_")
     f_test  = test_ids.join(features_i,on="cycle_id",lsuffix="_")
-    
+    print(f"{f_train.shape},{f_test.shape}")
     # save the extracted data as a train and test sets
-    f_train.to_csv(cfg["files"]["features_train"])
-    f_test.to_csv(cfg["files"]["features_test"])
+    f_train.to_csv(cfg["files"]["additional_features_train"])
+    f_test.to_csv(cfg["files"]["additional_features_test"])
 
 if __name__ == "__main__":
     print("==== Run : build prediction data ====")
