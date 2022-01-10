@@ -29,12 +29,12 @@ def compute(model_name = "fully_connected_3L", use_liquid=True):
     
     if use_liquid:
         print("loading liquid data")
-        train_raw = np.load(cfg["files"]["raw_train_features_liquid"])
-        test_raw  = np.load(cfg["files"]["raw_test_features_liquid"])
+        train_raw = np.load(cfg["files"]["liquid"]["raw_train_features_liquid"])
+        test_raw  = np.load(cfg["files"]["liquid"]["raw_test_features_liquid"])
     else : 
         print("loading all data (liquid+illiquid)")
-        train_raw = np.load(cfg["files"]["raw_train_features"])
-        test_raw  = np.load(cfg["files"]["raw_test_features"])
+        train_raw = np.load(cfg["files"]["full"]["raw_train_features"])
+        test_raw  = np.load(cfg["files"]["full"]["raw_test_features"])
     #print(encoder(train_raw[:2]))
     print("SHAPES:")
     print("     train raw features : ",train_raw.shape)
@@ -51,8 +51,12 @@ def compute(model_name = "fully_connected_3L", use_liquid=True):
     print("==========================================")
     print("                 saving                 ")
     print("==========================================")
-    np.save(cfg['files']['encoded_train_features'] , train_encoded)
-    np.save(cfg['files']['encoded_test_features'] ,test_encoded)
+    if use_liquid:
+        np.save(cfg['files']["liquid"]['encoded_train_features'] , train_encoded)
+        np.save(cfg['files']["liquid"]['encoded_test_features'] ,test_encoded)
+    else : 
+        np.save(cfg['files']["full"]['encoded_train_features'] , train_encoded)
+        np.save(cfg['files']["full"]['encoded_test_features'] ,test_encoded)
     print("Done!")
 
 if __name__ == "__main__":
