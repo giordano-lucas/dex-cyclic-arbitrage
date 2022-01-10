@@ -160,6 +160,8 @@ old_opt/
 models/*_model/
 models/*_model/
 models/embedding/autoencoder/results/*
+models/embedding/autoencoder/results/fully_connected_5L/variables/variables.data-00000-of-00001
+models/embedding/autoencoder/results
 models/embedding/autoencoder/talos-autoencoder/*
 config/__pycache__
 .~*
