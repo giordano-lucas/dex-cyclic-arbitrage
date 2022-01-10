@@ -13,7 +13,7 @@ def build_tensor(data):
     
     N_TOKEN = 3 # cycle length
     K = 2       # quote price & gasPrice
-    N =data.cycle_id.nunique() # number of cycles
+    N = data.cycle_id.nunique() # number of cycles
     P = 600     # max time series length per cycle
     
     tensor = np.zeros((N, N_TOKEN,P, K))
@@ -45,12 +45,11 @@ def build_tensor(data):
 def run(use_liquid = True ,nrows=10_000_000):  
     # when files are loaded or store => add _liquid at the end of the name
     features_dir = 'liquid' if use_liquid else 'full'
+    check_and_create_dir(cfg['directories'][features_dir]['ML_features'])
+
     cols = ["quotePrice","gasPrice"]
     print("loading data")
-    if use_liquid:
-        data = pd.read_csv(cfg['files'][features_dir]['preprocessed_data'],nrows=nrows)
-    else :
-        data = pd.read_csv(cfg['files'][features_dir]['preprocessed_data'],nrows=nrows)
+    data = pd.read_csv(cfg['files'][features_dir]['preprocessed_data'],nrows=nrows)
         
     data = data.drop(columns=["time"]).set_index(["cycle_id","token1","token2"])[cols]
     
@@ -83,20 +82,13 @@ def run(use_liquid = True ,nrows=10_000_000):
     print(f"Shapes : train_tensor={train_tensor.shape}, test_tensor={test_tensor.shape}")
 
     print("Saving")
-    if use_liquid:
-        np.save(cfg['files'][features_dir]['raw_test_features'] , test_tensor)
-        np.save(cfg['files'][features_dir]['raw_train_features'] ,train_tensor)
-        np.save(cfg['files'][features_dir]['test_ids'] , test_ids)
-        np.save(cfg['files'][features_dir]['train_ids'] , train_ids)
-    else : 
-        np.save(cfg['files'][features_dir]['raw_test_features'] , test_tensor)
-        np.save(cfg['files'][features_dir]['raw_train_features'] ,train_tensor)       
-        np.save(cfg['files'][features_dir]['test_ids'] , test_ids)
-        np.save(cfg['files'][features_dir]['train_ids'] , train_ids)
+    np.save(cfg['files'][features_dir]['raw_test_features'] , test_tensor)
+    np.save(cfg['files'][features_dir]['raw_train_features'] ,train_tensor)       
+    np.save(cfg['files'][features_dir]['test_ids'] , test_ids)
+    np.save(cfg['files'][features_dir]['train_ids'] , train_ids)
 
     
 if __name__ == "__main__":
     print("==== Run : build embedding features ====")
-    check_and_create_dir(cfg['directories']['ML_features'])
     run()
     print("==== Done ====")
