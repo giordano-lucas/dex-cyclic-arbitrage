@@ -101,4 +101,8 @@ def talos_architecture(params):
     # combine encoder and decoder
     autoencoder = keras.Model(input_layer, output_layer)
     autoencoder.compile(optimizer=params['optimizer'], loss='mean_squared_error',)
+<<<<<<< HEAD
     return model_name ,autoencoder
+=======
+    return model_name ,autoencoder
+>>>>>>> 2b113825b93622f4f7acce54610bc578cff984a4
