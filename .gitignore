@@ -163,5 +163,6 @@ models/*_model/
 models/embedding/autoencoder/results/
 /models/embedding/autoencoder/results/
 core.*
-config/__pycache__
+config/__pycache__/
 .~*
+config/__pycache__/get.cpython-37.pyc

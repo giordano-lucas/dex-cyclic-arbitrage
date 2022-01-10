@@ -42,7 +42,8 @@ bash scripts/data_processing.sh
 ```
 # Methods
 
-XXX
+1. **Cycles embedding**:
+    1.1
 
 # Timeline and contributions :
 
