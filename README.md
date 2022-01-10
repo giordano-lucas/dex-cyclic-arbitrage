@@ -105,6 +105,7 @@ XXX
 | Task                                    | Team member(s)                  | work hours  |
 | :---------------------------------------|:--------------------------------| -----------:|
 | Filter illiquid data                    | Lucas                           |    1h        |
+| Update architecture for liquid data     | Augustin                        |    3h        |
 | Research on attention learning          | Lucas                           |    2h        |
 | Data processing simpler pipeline        | Augustin                        |    2h        |
 | Autencoder improvement and debug        | Augustin                        |    3h        |
@@ -119,8 +120,8 @@ XXX
 
 | Team member                     | work hours   |
 |:--------------------------------| ------------:|
-| Lucas Giordano                  |    50h       |
-| Augustin Kapps                  |    57h       |
+| Lucas Giordano                  |    57h       |
+| Augustin Kapps                  |    53h       |
 
 # Notes to the reader
 ## Organisation of the repository
