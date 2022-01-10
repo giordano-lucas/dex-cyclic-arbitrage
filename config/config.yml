@@ -10,20 +10,29 @@ fig_dir:
 
 files: 
     cycles_in_Uniswap : data/cycles_in_Uniswap.json
-    preprocessed_data: data/uniswap_data.csv
-    raw_test_features  : data/ML_features/raw_test_features.npy
-    raw_train_features : data/ML_features/raw_train_features.npy
-    test_ids  : data/ML_features/test_ids.npy
-    train_ids : data/ML_features/train_ids.npy
-    encoded_test_features  : data/ML_features/encoded_test_features.npy
-    encoded_train_features : data/ML_features/encoded_train_features.npy
-    cycle_ids : data/ML_features/cycle_ids.npy
     all_cycles : data/cycles_in_Uniswap.json
     filtered_cycles : data/filtered_cycles.json
-    additional_features : data/addional_features.csv
-    additional_features_train : data/additional_features_train.csv
-    additional_features_test : data/additional_features_test.csv
-    
+    full:
+        cycle_ids : data/full/ML_features/cycle_ids.npy
+        preprocessed_data : data/full/uniswap_data.csv
+        raw_test_features : data/full/ML_features/raw_test_features.npy
+        raw_train_features    : data/full/ML_features/raw_train_features.npy
+        test_ids  : data/full/ML_features/test_ids.npy
+        train_ids : data/full/ML_features/train_ids.npy
+        encoded_test_features  : data/full/ML_features/encoded_test_features.npy
+        encoded_train_features : data/full/ML_features/encoded_train_features.npy
+        additional_features_train : data/full/additional_features_train.csv
+        additional_features_test : data/full/additional_features_test.csv
+    liquid:
+        preprocessed_data  : data/liquid/uniswap_data_liquid.csv    
+        raw_test_features  : data/liquid/ML_features/raw_test_features_liquid.npy
+        raw_train_features : data/liquid/ML_features/raw_train_features_liquid.npy
+        test_ids  : data/liquid/ML_features/test_ids_liquid.npy
+        train_ids : data/liquid/ML_features/train_ids_liquid.npy
+        encoded_test_features  : data/liquid/ML_features/encoded_test_features_liquid.npy
+        encoded_train_features : data/liquid/ML_features/encoded_train_features_liquid.npy
+        additional_features_train : data/liquid/additional_features_train_liquid.csv
+        additional_features_test : data/liquid/additional_features_test_liquid.csv
     
 biquery:
     API_KEY1: BQYd6qf95gjz6MU3FTP9yQegkGVkuQ4r # Augustin's KEY
