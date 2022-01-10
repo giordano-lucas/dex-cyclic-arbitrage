@@ -113,6 +113,7 @@ XXX
 | Talos setup                             | Lucas                           |    2h        |
 | Hyperparameter opmisation               | Lucas & Augustin                |    4h        |
 | Kmeans : better silouhette analysis     | Lucas                           |    1h        |
+| Kmeans : update results for liquid data | Lucas                           |    2h        |
 | Notebook comments and markdown          | Lucas & Augustin                |    3h        |
 | Data story (4)                          | Lucas & Augustin                |    5h        |
 
@@ -120,7 +121,7 @@ XXX
 
 | Team member                     | work hours   |
 |:--------------------------------| ------------:|
-| Lucas Giordano                  |    57h       |
+| Lucas Giordano                  |    59h       |
 | Augustin Kapps                  |    53h       |
 
 # Notes to the reader
