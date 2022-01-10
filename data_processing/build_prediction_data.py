@@ -10,7 +10,9 @@ import pandas as pd
 import numpy as np
 
 
-def run():
+def run(use_liquid = True):
+    # when files are loaded or store => add _liquid at the end of the name
+    features_dir = 'liquid' if use_liquid else 'full'
     print("Loading filtered cycles...")
     # load filtered cycles
     filtered_cycles = load_cycles("filtered")
@@ -48,8 +50,8 @@ def run():
     #features.to_csv(cfg["files"]["features"])
     
     # load the train and test ids
-    train_ids = np.load(cfg['files']['train_ids']).astype(int)
-    test_ids  = np.load(cfg['files']['test_ids']).astype(int)
+    train_ids = np.load(cfg['files'][features_dir]['train_ids']).astype(int)
+    test_ids  = np.load(cfg['files'][features_dir]['test_ids']).astype(int)
     train_ids = pd.DataFrame({"cycle_id":train_ids})
     test_ids  = pd.DataFrame({"cycle_id":test_ids})
 
@@ -60,10 +62,10 @@ def run():
     f_test  = test_ids.join(features_i,on="cycle_id",lsuffix="_")
     
     # save the extracted data as a train and test sets
-    f_train.to_csv(cfg["files"]["additional_features_train"])
-    f_test.to_csv(cfg["files"]["additional_features_test"])
+    f_train.to_csv(cfg["files"][features_dir]["additional_features_train"])
+    f_test.to_csv(cfg["files"][features_dir]["additional_features_test"])
 
 if __name__ == "__main__":
     print("==== Run : build prediction data ====")
-    run()
+    run(True)
     print("==== Done ====")
