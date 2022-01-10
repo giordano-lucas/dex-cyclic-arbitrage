@@ -1,12 +1,5 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import plotly.express as px
-from plotly.subplots import make_subplots
-import plotly.graph_objects as go
-%load_ext autoreload
-%autoreload 2
-plt.style.use('ggplot')
 import sys, os 
 sys.path.append('/'.join(os.getcwd().split('/')[:4]))
 from config.get import cfg
@@ -15,9 +8,12 @@ from tensorflow.keras import layers
 from tensorflow.keras.activations import relu, elu
 from tensorflow.keras import optimizers
 from tensorflow.keras import regularizers
+import helper
 import autoencoders
 import talos
-
+import plotly.express as px
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
 
 # fit function for talos
 def fit_model(x_train, y_train, x_val, y_val, params):
@@ -38,8 +34,8 @@ def fit_model(x_train, y_train, x_val, y_val, params):
     return out, autoencoder
 
 def train():
-    X_train = np.load(cfg['files']["raw_train_features"])
-    X_test  = np.load(cfg['files']["raw_test_features"])
+    X_train = np.load(cfg['files']["liquid"]["raw_train_features"])
+    X_test  = np.load(cfg['files']["liquid"]["raw_test_features"])
     
     print(f"Prencentage of padded zero in the training set : {100* np.mean(np.isclose(X_train, 0.0)): 2.2f} %")
     print(f"Prencentage of padded zero in the test set     : {100* np.mean(np.isclose(X_test, 0.0)): 2.2f} %")
@@ -54,7 +50,7 @@ def train():
         'dropout': [0, .25, .5],
         'batch_size': [16,32],
         'optimizer': ['adam', 'nadam'],
-        'epochs': [20,80,160]
+        'epochs': [70,120]  
     }
 
     scan_object = talos.Scan(
@@ -66,8 +62,8 @@ def train():
         minimize_loss=True,
     ) 
     
+    
 if __name__ == "__main__":
     print("==== Run : build embedding features ====")
-    check_and_create_dir(cfg['directories']['ML_features'])
     train()
     print("==== Done ====")

@@ -160,6 +160,8 @@ old_opt/
 models/*_model/
 models/*_model/
 
+models/embedding/autoencoder/talos-autoencoder/
+models/embedding/autoencoder/ml4f-autoencoder
 models/embedding/autoencoder/results/
 /models/embedding/autoencoder/results/
 core.*

@@ -29,8 +29,8 @@ def compute(model_name = "fully_connected_3L", use_liquid=True):
     
     if use_liquid:
         print("loading liquid data")
-        train_raw = np.load(cfg["files"]["liquid"]["raw_train_features_liquid"])
-        test_raw  = np.load(cfg["files"]["liquid"]["raw_test_features_liquid"])
+        train_raw = np.load(cfg["files"]["liquid"]["raw_train_features"])
+        test_raw  = np.load(cfg["files"]["liquid"]["raw_test_features"])
     else : 
         print("loading all data (liquid+illiquid)")
         train_raw = np.load(cfg["files"]["full"]["raw_train_features"])
@@ -44,7 +44,6 @@ def compute(model_name = "fully_connected_3L", use_liquid=True):
     print("==========================================")
     train_encoded = encoder(train_raw).numpy()
     test_encoded = encoder(test_raw).numpy()
-
 
     print("SHAPES:")
     print("     train encoded features : ",train_encoded.shape)
