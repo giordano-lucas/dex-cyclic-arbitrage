@@ -11,10 +11,16 @@ fig_dir:
 files: 
     cycles_in_Uniswap : data/cycles_in_Uniswap.json
     preprocessed_data: data/uniswap_data.csv
+    liquid_preprocessed_data: data/liquid_uniswap_data.csv
     raw_test_features  : data/ML_features/raw_test_features.npy
     raw_train_features : data/ML_features/raw_train_features.npy
+    raw_test_features_liquid  : data/ML_features/raw_test_features_liquid.npy
+    raw_train_features_liquid : data/ML_features/raw_train_features_liquid.npy
     test_ids  : data/ML_features/test_ids.npy
     train_ids : data/ML_features/train_ids.npy
+    test_ids_liquid  : data/ML_features/test_ids_liquid.npy
+    train_ids_liquid : data/ML_features/train_ids_liquid.npy
+    
     encoded_test_features  : data/ML_features/encoded_test_features.npy
     encoded_train_features : data/ML_features/encoded_train_features.npy
     cycle_ids : data/ML_features/cycle_ids.npy
@@ -31,7 +37,4 @@ biquery:
     
 models:
     autoencoder: models/embedding/autoencoder/results/
-    encoding_layer :
-        fully_connected_3L : 3
-        CNN : 5
     

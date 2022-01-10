@@ -7,8 +7,9 @@ def linear():
     # build encoder
     input_layer = keras.Input(shape=in_shape)
     x = layers.Reshape([in_shape[0]*in_shape[1]*in_shape[2]])(input_layer)
+    x = layers.Dense(1800,  activation='linear')(x)
     x = layers.Dense(100,  activation='linear')(x)
-   
+    x = layers.Dense(1800,  activation='linear')(x)
     x = layers.Dense(in_shape[0]*in_shape[1]*in_shape[2],  activation='linear')(x)
     output_layer =layers.Reshape(in_shape)(x)
     
@@ -17,7 +18,6 @@ def linear():
     autoencoder = keras.Model(input_layer, output_layer)
     autoencoder.compile(optimizer='adam', loss='mean_squared_error',)
     return model_name ,autoencoder
-
 
 def fully_connected_3L():
     model_name = "fully_connected_3L"
@@ -59,32 +59,6 @@ def CNN():
 
 def CNN_fully_connected():
     model_name = "CNN_fully_connected"
-    # build encoder
-    # CNN
-    input_img = keras.Input(shape=(3,600, 2))
-    x = layers.Conv2D(8, (3, 3), activation='elu', padding='same')(input_img)
-    x = layers.MaxPooling2D((3, 3), padding='same')(x)
-    x = layers.Conv2D(4, (3, 3), activation='elu', padding='same')(x)
-    x = layers.MaxPooling2D((2, 2), padding='same')(x)
-    x = layers.Conv2D(1, (2, 2), activation='elu', padding='same')(x)
-    # Dense layers
-    x = layers.Dense(100,  activation='elu')(x)
-    encoded = layers.Dense(100,  activation='elu')(x)
-    x = layers.Dense(100,  activation='elu')(encoded)
-    x = layers.Dense(100,  activation='elu')(x)
-    # build decoder
-    x = layers.Conv2D(4, (2, 2), activation='elu', padding='same')(x)
-    x = layers.UpSampling2D((1, 2))(x)
-    x = layers.Conv2D(8, (3, 3), activation='elu', padding='same')(x)
-    x = layers.UpSampling2D((3, 3))(x)
-    decoded = layers.Conv2D(2, (3, 3), activation='elu', padding='same')(x)
-    # combine encoder and decoder
-    autoencoder = keras.Model(input_img, decoded)
-    autoencoder.compile(optimizer='adam', loss='mean_squared_error',)
-    return model_name, autoencoder
-
-def CNN_simpler_fully_connected():
-    model_name = "CNN_simpler_fully_connected"
     # build encoder
     input_img = keras.Input(shape=(3,600, 2))
     x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(input_img)

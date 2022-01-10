@@ -3,7 +3,7 @@ import sys
 import os 
 import sys, os 
 sys.path.append('/'.join(os.getcwd().split('/')[:4]))
-from config.get import cfg
+from config.get import cfg,models_cfg
 import tensorflow as tf
 import numpy as np
 from tensorflow import keras
@@ -20,16 +20,21 @@ def extract_layers(main_model, starting_layer_ix, ending_layer_ix):
     return new_model
 
 
-def compute(model_name = "fully_connected_3L"):
+def compute(model_name = "fully_connected_3L", use_liquid=True):
     autoencoder = keras.models.load_model(cfg["models"]["autoencoder"]+model_name)
-    encoding_layer = cfg["models"]["encoding_layer"][model_name]
+    encoding_layer = int(models_cfg["encoding_layer"][model_name])
     # extract en encoder part of the autoencoder
     encoder = extract_layers(autoencoder,0,encoding_layer)
-
     encoder.summary()
-
-    train_raw = np.load(cfg["files"]["raw_train_features"])
-    test_raw  = np.load(cfg["files"]["raw_test_features"])
+    
+    if use_liquid:
+        print("loading liquid data")
+        train_raw = np.load(cfg["files"]["raw_train_features_liquid"])
+        test_raw  = np.load(cfg["files"]["raw_test_features_liquid"])
+    else : 
+        print("loading all data (liquid+illiquid)")
+        train_raw = np.load(cfg["files"]["raw_train_features"])
+        test_raw  = np.load(cfg["files"]["raw_test_features"])
     #print(encoder(train_raw[:2]))
     print("SHAPES:")
     print("     train raw features : ",train_raw.shape)
@@ -40,11 +45,6 @@ def compute(model_name = "fully_connected_3L"):
     train_encoded = encoder(train_raw).numpy()
     test_encoded = encoder(test_raw).numpy()
 
-    n_train,_,d,_ = train_encoded.shape
-    n_test,_,d,_ = test_encoded.shape
-
-    train_encoded = train_encoded.reshape((n_train,d))
-    test_encoded  = test_encoded.reshape((n_test,d))
     print("SHAPES:")
     print("     train encoded features : ",train_encoded.shape)
     print("     test encoded features : ",test_encoded.shape)
