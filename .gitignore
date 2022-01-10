@@ -160,6 +160,8 @@ old_opt/
 models/*_model/
 models/*_model/
 
+models/embedding/autoencoder/results/
+/models/embedding/autoencoder/results/
 
 config/__pycache__
 .~*
