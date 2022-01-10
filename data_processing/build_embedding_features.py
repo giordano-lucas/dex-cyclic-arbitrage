@@ -31,6 +31,8 @@ def build_tensor(data):
         for _, g in iter(group.groupby(['token1','token2'])):
             a = g[['quotePrice','gasPrice']].values 
             # zero padding
+            if (len(a) < 300):
+                print("eeeeerrrrrrroorror")
             padded = np.pad(a, [(0, P - len(a)),(0,0)])
             # assign and reshape into a matrix
             first_token = g.token1.iloc[0]
@@ -46,15 +48,15 @@ def run(use_liquid = True ,nrows=10_000_000):
     cols = ["quotePrice","gasPrice"]
     print("loading data")
     if use_liquid:
-        data = pd.read_csv(cfg['files'][features_dir]['liquid_preprocessed_data'],nrows=nrows)
+        data = pd.read_csv(cfg['files'][features_dir]['preprocessed_data'],nrows=nrows)
     else :
         data = pd.read_csv(cfg['files'][features_dir]['preprocessed_data'],nrows=nrows)
         
     data = data.drop(columns=["time"]).set_index(["cycle_id","token1","token2"])[cols]
     
 
-#     print(f"taking the log of {cols}")
-#     data = np.log(data).dropna()
+    print(f"taking the log of {cols}")
+    data = np.log(data).dropna()
     
     # train test split
     print("splitting")
@@ -82,10 +84,10 @@ def run(use_liquid = True ,nrows=10_000_000):
 
     print("Saving")
     if use_liquid:
-        np.save(cfg['files'][features_dir]['raw_test_features_liquid'] , test_tensor)
-        np.save(cfg['files'][features_dir]['raw_train_features_liquid'] ,train_tensor)
-        np.save(cfg['files'][features_dir]['test_ids_liquid'] , test_ids)
-        np.save(cfg['files'][features_dir]['train_ids_liquid'] , train_ids)
+        np.save(cfg['files'][features_dir]['raw_test_features'] , test_tensor)
+        np.save(cfg['files'][features_dir]['raw_train_features'] ,train_tensor)
+        np.save(cfg['files'][features_dir]['test_ids'] , test_ids)
+        np.save(cfg['files'][features_dir]['train_ids'] , train_ids)
     else : 
         np.save(cfg['files'][features_dir]['raw_test_features'] , test_tensor)
         np.save(cfg['files'][features_dir]['raw_train_features'] ,train_tensor)       
