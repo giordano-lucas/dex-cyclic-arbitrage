@@ -15,7 +15,10 @@ fig_dir:
         prediction: figures/liquid/prediction/
 
 files: 
+<<<<<<< HEAD
     cycles_in_Uniswap : data/cycles_in_Uniswap.json
+=======
+>>>>>>> ae43ca54d6fa4c6ab045d83f1c4e1d4f9e2ecd99
     all_cycles : data/cycles_in_Uniswap.json
     filtered_cycles : data/filtered_cycles.json
     full:
@@ -46,4 +49,8 @@ biquery:
     
 models:
     autoencoder: models/embedding/autoencoder/results/
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> ae43ca54d6fa4c6ab045d83f1c4e1d4f9e2ecd99

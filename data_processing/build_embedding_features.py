@@ -8,6 +8,7 @@ from sklearn.preprocessing import StandardScaler
 from TokenStandardScaler import TokenStandardScaler
 from sklearn.model_selection import train_test_split
 
+<<<<<<< HEAD
 
 def pad(X):
     def pad_index(index,P=600):
@@ -21,9 +22,10 @@ def pad(X):
     return X.reset_index().set_index(["cycle_id","token1","token2",1]).reindex(padded_index,fill_value=0).dropna()
 
 
+=======
+>>>>>>> ae43ca54d6fa4c6ab045d83f1c4e1d4f9e2ecd99
 def build_tensor(data):
     data = data.reset_index()
-    
     
     N_TOKEN = 3 # cycle length
     K = 2       # quote price & gasPrice
@@ -55,17 +57,19 @@ def build_tensor(data):
 
 
 def run(use_liquid = True ,nrows=10_000_000):  
+    # when files are loaded or store => add _liquid at the end of the name
+    features_dir = 'liquid' if use_liquid else 'full'
     cols = ["quotePrice","gasPrice"]
-    
     print("loading data")
     if use_liquid:
-        data = pd.read_csv(cfg['files']['liquid_preprocessed_data'],nrows=nrows)
+        data = pd.read_csv(cfg['files'][features_dir]['liquid_preprocessed_data'],nrows=nrows)
     else :
-        data = pd.read_csv(cfg['files']['preprocessed_data'],nrows=nrows)
+        data = pd.read_csv(cfg['files'][features_dir]['preprocessed_data'],nrows=nrows)
         
     data = data.drop(columns=["time"]).set_index(["cycle_id","token1","token2"])[cols]
     
 
+<<<<<<< HEAD
     print(f"taking the log of {cols}")
     data = np.log(data).dropna()
 
@@ -87,6 +91,11 @@ def run():
     data = pd.read_csv(cfg['files']['preprocessed_data'],nrows=10_000_000).drop(columns=["time"]) 
     data = data.set_index(["cycle_id","token1","token2"])
 
+=======
+#     print(f"taking the log of {cols}")
+#     data = np.log(data).dropna()
+    
+>>>>>>> ae43ca54d6fa4c6ab045d83f1c4e1d4f9e2ecd99
     # train test split
     print("splitting")
     train_ix, test_ix = train_test_split(data.index.levels[0],train_size=0.8)
@@ -98,9 +107,18 @@ def run():
     tX_train = scaler.fit_transform(X_train)
     tX_test  = scaler.transform(X_test)
 
+<<<<<<< HEAD
     print("padding")
     train_padded = pad(tX_train)
     test_padded = pad(tX_test)
+=======
+
+    #print("padding")
+    #train_padded = pad(tX_train)
+    #test_padded = pad(tX_test)
+    train_padded = tX_train
+    test_padded  = tX_test
+>>>>>>> ae43ca54d6fa4c6ab045d83f1c4e1d4f9e2ecd99
     print(f"Shapes : train_padded={train_padded.shape}, test_padded={test_padded.shape}")
 
     print("building tensor")
@@ -108,27 +126,28 @@ def run():
     test_ids  , test_tensor  = build_tensor(test_padded)
     print(f"Shapes : train_tensor={train_tensor.shape}, test_tensor={test_tensor.shape}")
 
-
-
     print("Saving")
     if use_liquid:
-        np.save(cfg['files']['raw_test_features_liquid'] , test_tensor)
-        np.save(cfg['files']['raw_train_features_liquid'] ,train_tensor)
-        np.save(cfg['files']['test_ids_liquid'] , test_ids)
-        np.save(cfg['files']['train_ids_liquid'] , train_ids)
+        np.save(cfg['files'][features_dir]['raw_test_features_liquid'] , test_tensor)
+        np.save(cfg['files'][features_dir]['raw_train_features_liquid'] ,train_tensor)
+        np.save(cfg['files'][features_dir]['test_ids_liquid'] , test_ids)
+        np.save(cfg['files'][features_dir]['train_ids_liquid'] , train_ids)
     else : 
-        np.save(cfg['files']['raw_test_features'] , test_tensor)
-        np.save(cfg['files']['raw_train_features'] ,train_tensor)       
-        np.save(cfg['files']['test_ids'] , test_ids)
-        np.save(cfg['files']['train_ids'] , train_ids)
+        np.save(cfg['files'][features_dir]['raw_test_features'] , test_tensor)
+        np.save(cfg['files'][features_dir]['raw_train_features'] ,train_tensor)       
+        np.save(cfg['files'][features_dir]['test_ids'] , test_ids)
+        np.save(cfg['files'][features_dir]['train_ids'] , train_ids)
 
     
+<<<<<<< HEAD
 
     np.save(cfg['files']['raw_test_features'] , test_tensor)
     np.save(cfg['files']['raw_train_features'] ,train_tensor)
     np.save(cfg['files']['test_ids'] , test_ids)
     np.save(cfg['files']['train_ids'] , train_ids)
     print("Done")
+=======
+>>>>>>> ae43ca54d6fa4c6ab045d83f1c4e1d4f9e2ecd99
 if __name__ == "__main__":
     print("==== Run : build embedding features ====")
     check_and_create_dir(cfg['directories']['ML_features'])
