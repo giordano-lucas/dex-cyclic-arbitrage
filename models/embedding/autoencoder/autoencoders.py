@@ -110,4 +110,21 @@ def CNN_simpler_fully_connected():
 
 def talos_architecture(params):
     # unique name
-    model_name = 'CNN_' + "_".join(params.values())
+    model_name = 'talos_' + "_".join([str(v) for v in params.values()])
+    in_shape = (3,600, 2) 
+    # build encoder
+    input_layer = keras.Input(shape=in_shape)
+    x = layers.Reshape([in_shape[0]*in_shape[1]*in_shape[2]])(input_layer)
+    for l in range(params['dense_layers']):
+        x = layers.Dropout(params['dropout'])(x)
+        if l == 0 or l == params['dense_layers'] - 1:
+            x = layers.Dense(params['first_neuron'],  activation=params["activation"])(x)
+        else:
+            x = layers.Dense(100,  activation=params["activation"])(x)
+    x = layers.Dense(in_shape[0]*in_shape[1]*in_shape[2],  activation=params["activation"])(x)
+    output_layer =layers.Reshape(in_shape)(x)
+
+    # combine encoder and decoder
+    autoencoder = keras.Model(input_layer, output_layer)
+    autoencoder.compile(optimizer=params['optimizer'], loss='mean_squared_error',)
+    return model_name ,autoencoder
