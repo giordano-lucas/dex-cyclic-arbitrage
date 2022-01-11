@@ -1,8 +1,8 @@
 import sys, os 
 sys.path.append('/'.join(os.getcwd().split('/')[:4]))
 
-from data_processing.build_embedding_features import run
-
+import data_processing.build_embedding_features as bef
+import models.prediction.build_ruled_based_features.build_ruled_based_encoded_features as brbef
 base_config = {
         'use_liquid': True , 
         'nrows':10_000_000, 
@@ -11,6 +11,5 @@ base_config = {
         'new_train_idx':False,
         'extra_dir': 'ruled_based'
 }
-run(**base_config)
-
-run(skip_split=True, features_name='encoded', **base_config)
+brbef.run()
+bef.run(skip_split=True, feature_name='encoded', **base_config, scaling=False)

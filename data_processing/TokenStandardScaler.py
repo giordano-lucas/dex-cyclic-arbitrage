@@ -8,7 +8,7 @@ class TokenStandardScaler(_OneToOneFeatureMixin, TransformerMixin, BaseEstimator
         self.moments   = None
         self.copy = copy
         
-    def transform(self, X, copy=None):
+    def transform(self, X):
         """Perform standardization by centering and scaling.
         Parameters
         ----------
@@ -24,20 +24,17 @@ class TokenStandardScaler(_OneToOneFeatureMixin, TransformerMixin, BaseEstimator
         if self.copy:
             X=X.copy()
             
-        tX = X.reset_index()
-                              
-        t_moments = self.moments.reindex(tX.groupby(["token1","token2"]).count().index)
+        X = X.reset_index()
+        t_moments = self.moments.reindex(X.groupby(["token1","token2"]).count().index)
         t_moments.loc[pd.isna(t_moments).any(axis=1),"mean"] = self.default_mean.values 
         t_moments.loc[pd.isna(t_moments).any(axis=1),"std"] = self.default_std.values
-        
-        X_tr = (tX.set_index(["token1","token2"])-t_moments["mean"])/t_moments["std"]
+        X_tr = (X.set_index(["token1","token2"])-t_moments["mean"])/t_moments["std"]
     
-        
         X_tr["cycle_id"] = X_tr["cycle_id"].astype("int32")
         X_tr = X_tr.reset_index().set_index(["cycle_id","token1","token2"])
         return X_tr
     
-    def inverse_transform(self, X, copy=None):
+    def inverse_transform(self, X):
         """Scale back the data to the original representation.
         Parameters
         ----------
@@ -70,12 +67,10 @@ class TokenStandardScaler(_OneToOneFeatureMixin, TransformerMixin, BaseEstimator
         self : object
             Fitted scaler.
         """
-
         self.moments = (X.reset_index()
                         .groupby(["token1","token2"])
                         .agg(["mean","std"])
                         .swaplevel(axis=1))
-        
         self.moments["mean","cycle_id"] = 0
         self.moments["std","cycle_id"]  = 1 
         self.default_mean = self.moments["mean"].mean()

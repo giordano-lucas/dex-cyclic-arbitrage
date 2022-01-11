@@ -38,7 +38,7 @@ def fit_model(x_train, y_train, x_val, y_val, params):
     return out, autoencoder
 
 def train():
-    X_train = np.load(cfg['files']["raw_train_features"])
+    X_train = np.load(cfg['files']["scaled_ae_train_features"])
     X_test  = np.load(cfg['files']["raw_test_features"])
     
     print(f"Prencentage of padded zero in the training set : {100* np.mean(np.isclose(X_train, 0.0)): 2.2f} %")

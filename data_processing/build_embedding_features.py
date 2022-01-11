@@ -4,15 +4,14 @@ from config.get import cfg
 import pandas as pd
 import numpy as np
 from helper import check_and_create_dir
-from sklearn.preprocessing import StandardScaler
 from data_processing.TokenStandardScaler import TokenStandardScaler
 from sklearn.model_selection import train_test_split
 
 def build_tensor(data):
     data = data.reset_index()
-    data.columns
+    cols = list(filter(lambda c: c not in ['cycle_id', 'token1','token2'], data.columns))
     N_TOKEN = 3 # cycle length
-    K = len(list(filter(lambda c: c not in ['cycle_id', 'token1','token2'], data.columns)))  # nb of features (eg. quote price & gasPrice)
+    K = len(cols)  # nb of features (eg. quote price & gasPrice)
     N = data.cycle_id.nunique() # number of cycles
     P = 600     # max time series length per cycle
     
@@ -30,7 +29,7 @@ def build_tensor(data):
         token_map = get_sorted_token_map(group)
         cycle_ids[i] =cycle_id
         for _, g in iter(group.groupby(['token1','token2'])):
-            a = g[['quotePrice','gasPrice']].values 
+            a = g[cols].values 
             # zero padding
             padded = np.pad(a, [(0, P - len(a)),(0,0)])
             # assign and reshape into a matrix
@@ -47,7 +46,8 @@ def run(use_liquid = True ,
         new_train_idx=True,
         skip_split=False,
         extra_dir = None,
-        features_name='ae',
+        feature_name='ae',
+        scaling = True,
         ):  
     # when files are loaded or store => add _liquid at the end of the name
     features_dir = 'liquid' if use_liquid else 'full'
@@ -59,7 +59,7 @@ def run(use_liquid = True ,
     check_and_create_dir(ml_data_dir['ML_features'])
 
     cols = ["quotePrice","gasPrice"]
-    print(f"loading data at {data_dir['preprocessed_data']}")
+    print(f"loading data ...")
     if not skip_split:
         data = pd.read_csv(data_dir['preprocessed_data'],nrows=nrows)
         if drop_columns is not None:
@@ -82,8 +82,9 @@ def run(use_liquid = True ,
         print(f"Shapes : X_train={X_train.shape}, X_test={X_test.shape}")
     else:
         # skip until end of spliting phase
-        X_train = pd.read_csv(data_dir[f'{features_name}_train_features']).drop(columns=['Unnamed: 0'])
-        X_test  = pd.read_csv(data_dir[f'{features_name}_test_features']).drop(columns=['Unnamed: 0'])
+        X_train = pd.read_csv(data_dir[f'{feature_name}_train_features']).drop(columns=['Unnamed: 0'])
+        print(X_train.shape)
+        X_test  = pd.read_csv(data_dir[f'{feature_name}_test_features']).drop(columns=['Unnamed: 0'])
     
     # log transformation
     if log_transformation:
@@ -91,18 +92,18 @@ def run(use_liquid = True ,
         X_train = np.log(X_train).dropna()   
         X_test = np.log(X_test).dropna()   
     # personal rescaling
-    scaler   = TokenStandardScaler()
-    tX_train = scaler.fit_transform(X_train)
-    tX_test  = scaler.transform(X_test)
-
+    if scaling:
+        scaler  = TokenStandardScaler()
+        X_train = scaler.fit_transform(X_train)
+        X_test  = scaler.transform(X_test)
     print("building tensor")
-    train_ids , train_tensor = build_tensor(tX_train)
-    test_ids  , test_tensor  = build_tensor(tX_test)
+    train_ids , train_tensor = build_tensor(X_train)
+    test_ids  , test_tensor  = build_tensor(X_test)
     print(f"Shapes : train_tensor={train_tensor.shape}, test_tensor={test_tensor.shape}")
 
     print("Saving")
-    np.save(data_dir[f'scaled_{features_name}_train_features'] ,train_tensor)   
-    np.save(data_dir[f'scaled_{features_name}_test_features'] , test_tensor)
+    np.save(data_dir[f'scaled_{feature_name}_train_features'] ,train_tensor)   
+    np.save(data_dir[f'scaled_{feature_name}_test_features'] , test_tensor)
     np.save(data_dir['train_ids'] , train_ids)   
     np.save(data_dir['test_ids'] , test_ids)
 

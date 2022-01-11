@@ -48,14 +48,10 @@ files:
         additional_features_train   : data/liquid/additional_features_train_liquid.csv
         additional_features_test    : data/liquid/additional_features_test_liquid.csv
         ruled_based:
-            ae_test_features   : data/liquid/ruled_based/ML_features/ae_test_features_liquid.csv
-            ae_train_features  : data/liquid/ruled_based/ML_features/ae_train_features_liquid.csv
-            scaled_ae_test_features   : data/liquid/ruled_based/ML_features/scaled_ae_test_features_liquid.csv
-            scaled_ae_train_features  : data/liquid/ruled_based/ML_features/scaled_ae_train_features_liquid.csv
             encoded_test_features   : data/liquid/ruled_based/ML_features/encoded_test_features_liquid.csv
             encoded_train_features  : data/liquid/ruled_based/ML_features/encoded_train_features_liquid.csv
-            scaled_encoded_test_features   : data/liquid/ruled_based/ML_features/scaled_encoded_test_features_liquid.csv
-            scaled_encoded_train_features  : data/liquid/ruled_based/ML_features/scaled_encoded_train_features_liquid.csv
+            scaled_encoded_test_features   : data/liquid/ruled_based/ML_features/scaled_encoded_test_features_liquid.npy
+            scaled_encoded_train_features  : data/liquid/ruled_based/ML_features/scaled_encoded_train_features_liquid.npy
             test_ids            : data/liquid/ruled_based/ML_features/test_ids_liquid.npy
             train_ids           : data/liquid/ruled_based/ML_features/train_ids_liquid.npy
     
