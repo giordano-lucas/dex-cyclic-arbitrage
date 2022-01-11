@@ -41,6 +41,8 @@ files:
         encoded_train_features : data/liquid/ML_features/encoded_train_features_liquid.npy
         additional_features_train : data/liquid/additional_features_train_liquid.csv
         additional_features_test : data/liquid/additional_features_test_liquid.csv
+        ruled_based:
+            raw_features: data/liquid/ruled_based/ruled_based_raw_features_liquid.csv
     
 biquery:
     API_KEY1: BQYd6qf95gjz6MU3FTP9yQegkGVkuQ4r # Augustin's KEY
