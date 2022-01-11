@@ -42,8 +42,33 @@ bash scripts/data_processing.sh
 ```
 # Methods
 
-1. **Cycles embedding**:
-    1.1
+1. **Data preprocessing**: 
+
+    1. Keep only cycles of length 3.
+    2. Filter out illiquid tokens.
+    3. Log-transformation for heavy-tailed features
+    4. Token-based standard scaling
+    5. Zero padding for length standardisation.
+
+2. **Cycles embedding**:
+
+    1. After preprocessing an autencoder is built.
+    2. Multiple architectures are tested (linear, multilayer densly connected, convolutional layer). 
+    3. Their performance is compared to a classical PCA approach. 
+    4. In part 4. Profitablity prediction, the performance of the different embeddings techniques is evaluated on the accuracy of the task.
+
+3. **Cycles clustering**:
+
+    1. Use the autoencoder embedding, a KMeans clustering is constructed. 
+    2. Clusters in the training set are analysed 
+    3. Based on the test set results, we can understand whether or not there is predictibility in the results obtained in point 2.
+
+4. **Cycle profitablity prediction**:
+
+    1. Study profitability prediction for arbitrage cycles.
+    2. Multiples models are tested (logistic regression, SVM).
+    3. The impact of adding token encoding to the models is tested.
+    4. The performance of the different embeddings is evaluated.
 
 # Timeline and contributions :
 
@@ -99,21 +124,23 @@ bash scripts/data_processing.sh
 | Improved data exploration               | Lucas                           |    3h        |
 | Better understanding of PCA output      | Augustin                        |    1h        |
 | Autencoder testing                      | Augustin                        |    2h        |
-| Data story (3)                          | Lucas                           |    1h        |        
+| Data story (3)                          | Lucas                           |    1h        |
+| Add ruled based indicators for autoencoder performance comparision | Lucas |    2h       |        
 
 ### Week 6 : Hyperparameter opmisation, improvements & report writing
 
-| Task                                    | Team member(s)                  | work hours  |
-| :---------------------------------------|:--------------------------------| -----------:|
-| Filter illiquid data                    | Lucas                           |    1h        |
+| Task                                    | Team member(s)                  | work hours   |
+| :---------------------------------------|:--------------------------------| ------------:|
+| Filter illiquid data & debug            | Lucas                           |    3h        |
 | Update architecture for liquid data     | Augustin                        |    3h        |
 | Research on attention learning          | Lucas                           |    2h        |
 | Data processing simpler pipeline        | Augustin                        |    2h        |
 | Autencoder improvement and debug        | Augustin                        |    3h        |
-| Autencoder manual tests for several architectures        | Augustin       |    5h        |
+| Autencoder manual tests for several architectures        | Augustin       |    8h        |
 | Talos setup                             | Lucas                           |    2h        |
 | Hyperparameter opmisation               | Lucas & Augustin                |    4h        |
 | Kmeans : better silouhette analysis     | Lucas                           |    1h        |
+| Kmeans : update results for liquid data | Lucas                           |    2h        |
 | Kmeans : update results for liquid data | Lucas                           |    2h        |
 | Notebook comments and markdown          | Lucas & Augustin                |    3h        |
 | Data story (4)                          | Lucas & Augustin                |    5h        |
@@ -122,8 +149,8 @@ bash scripts/data_processing.sh
 
 | Team member                     | work hours   |
 |:--------------------------------| ------------:|
-| Lucas Giordano                  |    59h       |
-| Augustin Kapps                  |    53h       |
+| Lucas Giordano                  |    63h       |
+| Augustin Kapps                  |    56h       |
 
 # Notes to the reader
 ## Organisation of the repository
