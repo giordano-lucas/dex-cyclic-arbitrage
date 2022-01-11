@@ -179,7 +179,12 @@ bash scripts/data_processing.sh
     
 ## How to run the code 
 
-XXX
+1. Follow the steps in [Data Acquisition](#data-acquisition) to get and preprocess the data
+2. Run the `data_exploration/data_exploration.ipynb` notebook to see the data exploration steps taken.
+3. Open the `models/embedding` folder:
+    1. XXXX
+4. Run the `models/clustering/Kmeans.ipynb` notebook to see the code related to the clustering.
+5. Run the `models/prediction/prediction.ipynb` notebook for the profitablity prediction task.
 
 ## Dependencies requirement
 
