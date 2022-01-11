@@ -196,15 +196,60 @@ In the [Cycles profitability prediction](#cycles-profitability-prediction) task,
 
 ## Autoencoder : different architectures
 
+### PCA 
+The first model chosen for embedding representation is a PCA having a latent space of 100 dimensions. note that `dim=100` will be used for all next models. PCA only considers linear transformations. However, it is fast to train (around 30s in our case) and can act as a baseline comparison for other models.
+
 ### Linear autoencoder 
 
-As a first sanity check, we trained a single layer linear autoencoder. We should observe a similar peroformance as `PCA` for this model.
+Secondly, we trained an autoencoder with linear activations only. The purpose of this choice is to compare the autoencoder architecture with the PCA. Indeed, when using linear activations on all layers of the model, it should perform similarly to PCA. Thus, we expect the performances of this model to be comparable with the ones of PCA. 
+The model has the following architecture :  
+
+```python
+def linear():
+    model_name = "linear"
+    in_shape = (3,600, 2) 
+    # build encoder
+    input_layer = keras.Input(shape=in_shape)
+    x = layers.Reshape([in_shape[0]*in_shape[1]*in_shape[2]])(input_layer)
+    x = layers.Dense(in_shape[0]*in_shape[1]*in_shape[2],  activation='linear')(x)
+    x = layers.Dense(100,  activation='linear')(x)
+    x = layers.Dense(in_shape[0]*in_shape[1]*in_shape[2],  activation='linear')(x)
+    output_layer =layers.Reshape(in_shape)(x)
+    
+    # combine encoder and decoder
+    autoencoder = keras.Model(input_layer, output_layer)
+    autoencoder.compile(optimizer='SGD', loss='mean_squared_error',)
+    return model_name ,autoencoder
+```
+It is trained using Stochastic gradient descent and the following losses are obtained :
+XXXXXXXXXXXXXXXXXXXX
 
 ### Multilayer autoencoder
 
-Let's go deep ! In this section, the number of layers is inscreased (XXX). 
-
-The following plot displays the performance of this model.
+Let's go deep! In this section, the number of layers is increased and activation functions are changed to be non-linear("relu","elu","selu"...). 
+A first neural network is trained using the following architecture : 
+```python
+def fully_connected_3L():
+    model_name = "fully_connected_3L"
+    in_shape = (3,600, 2) 
+    # build encoder
+    input_layer = keras.Input(shape=in_shape)
+    x = layers.Reshape([in_shape[0]*in_shape[1]*in_shape[2]])(input_layer)
+    x = layers.Dense(600,  activation='elu')(x)
+    x = layers.Dense(100,  activation='elu')(x)
+    x = layers.Dense(600,  activation='elu')(x)
+    x = layers.Dense(in_shape[0]*in_shape[1]*in_shape[2],  activation='elu')(x)
+    output_layer =layers.Reshape(in_shape)(x)
+    
+    
+    # combine encoder and decoder
+    autoencoder = keras.Model(input_layer, output_layer)
+    autoencoder.compile(optimizer='adam', loss='mean_squared_error',)
+    return model_name ,autoencoder
+```
+This model is named `fully_connected_3L` and the obtained losses are :
+XXXXX
+Note that more variants of neural network architectures will be trained and tested later on using the `Talos` library.
 
 ### Convolutional autoencoder
 
