@@ -5,14 +5,14 @@ import pandas as pd
 import numpy as np
 from helper import check_and_create_dir
 from sklearn.preprocessing import StandardScaler
-from TokenStandardScaler import TokenStandardScaler
+from data_processing.TokenStandardScaler import TokenStandardScaler
 from sklearn.model_selection import train_test_split
 
 def build_tensor(data):
     data = data.reset_index()
-    
+    data.columns
     N_TOKEN = 3 # cycle length
-    K = 2       # quote price & gasPrice
+    K = len(list(filter(lambda c: c not in ['cycle_id', 'token1','token2'], data.columns)))  # nb of features (eg. quote price & gasPrice)
     N = data.cycle_id.nunique() # number of cycles
     P = 600     # max time series length per cycle
     
@@ -20,6 +20,7 @@ def build_tensor(data):
     cycle_ids = np.zeros(N)
     i = 0
     def get_sorted_token_map(g):
+        """Preserve token ordering (token at index j is the jth token in the cycle"""
         t = g[['token1','token2']].values
         u, ind = np.unique(t, return_index=True)
         u_sorted =  u[np.argsort(ind)]
@@ -31,8 +32,6 @@ def build_tensor(data):
         for _, g in iter(group.groupby(['token1','token2'])):
             a = g[['quotePrice','gasPrice']].values 
             # zero padding
-            if (len(a) < 300):
-                print("eeeeerrrrrrroorror")
             padded = np.pad(a, [(0, P - len(a)),(0,0)])
             # assign and reshape into a matrix
             first_token = g.token1.iloc[0]
@@ -41,53 +40,72 @@ def build_tensor(data):
         i = i+1
     return cycle_ids[:-1],tensor[:-1]
 
-
-def run(use_liquid = True ,nrows=10_000_000):  
+def run(use_liquid = True , 
+        nrows=10_000_000, 
+        drop_columns=["time"],
+        log_transformation=True,
+        new_train_idx=True,
+        skip_split=False,
+        extra_dir = None,
+        features_name='ae',
+        ):  
     # when files are loaded or store => add _liquid at the end of the name
     features_dir = 'liquid' if use_liquid else 'full'
-    check_and_create_dir(cfg['directories'][features_dir]['ML_features'])
+    data_dir = cfg['files'][features_dir]
+    ml_data_dir = cfg['directories'][features_dir]
+    if extra_dir is not None:
+        data_dir = data_dir[extra_dir]
+        ml_data_dir = ml_data_dir[extra_dir]
+    check_and_create_dir(ml_data_dir['ML_features'])
 
     cols = ["quotePrice","gasPrice"]
-    print("loading data")
-    data = pd.read_csv(cfg['files'][features_dir]['preprocessed_data'],nrows=nrows)
+    print(f"loading data at {data_dir['preprocessed_data']}")
+    if not skip_split:
+        data = pd.read_csv(data_dir['preprocessed_data'],nrows=nrows)
+        if drop_columns is not None:
+            data = data.drop(columns=["time"])
+        data = data.set_index(["cycle_id","token1","token2"])[cols]
         
-    data = data.drop(columns=["time"]).set_index(["cycle_id","token1","token2"])[cols]
-    
+        # train test split
+        print("splitting")
+        if new_train_idx:
+            train_idx, test_idx = train_test_split(data.index.levels[0],train_size=0.8)
+        else:
+            idx_dir = cfg['files'][features_dir]
+            train_idx, test_idx = np.load(idx_dir['train_ids']), np.load(idx_dir['test_ids'])
+        X_train = data.loc[train_idx]
+        X_test = data.loc[test_idx]
 
-    print(f"taking the log of {cols}")
-    data = np.log(data).dropna()
+        X_train.reset_index().to_csv(data_dir['ae_train_features'])
+        X_test.reset_index().to_csv(data_dir['ae_test_features'])  
+        
+        print(f"Shapes : X_train={X_train.shape}, X_test={X_test.shape}")
+    else:
+        # skip until end of spliting phase
+        X_train = pd.read_csv(data_dir[f'{features_name}_train_features']).drop(columns=['Unnamed: 0'])
+        X_test  = pd.read_csv(data_dir[f'{features_name}_test_features']).drop(columns=['Unnamed: 0'])
     
-    # train test split
-    print("splitting")
-    train_ix, test_ix = train_test_split(data.index.levels[0],train_size=0.8)
-    X_train = data.loc[train_ix]
-    X_test = data.loc[test_ix]
-    print(f"Shapes : X_train={X_train.shape}, X_test={X_test.shape}")
+    # log transformation
+    if log_transformation:
+        print(f"taking the log of all columns")
+        X_train = np.log(X_train).dropna()   
+        X_test = np.log(X_test).dropna()   
     # personal rescaling
     scaler   = TokenStandardScaler()
     tX_train = scaler.fit_transform(X_train)
     tX_test  = scaler.transform(X_test)
 
-
-    #print("padding")
-    #train_padded = pad(tX_train)
-    #test_padded = pad(tX_test)
-    train_padded = tX_train
-    test_padded  = tX_test
-    print(f"Shapes : train_padded={train_padded.shape}, test_padded={test_padded.shape}")
-
     print("building tensor")
-    train_ids , train_tensor = build_tensor(train_padded)
-    test_ids  , test_tensor  = build_tensor(test_padded)
+    train_ids , train_tensor = build_tensor(tX_train)
+    test_ids  , test_tensor  = build_tensor(tX_test)
     print(f"Shapes : train_tensor={train_tensor.shape}, test_tensor={test_tensor.shape}")
 
     print("Saving")
-    np.save(cfg['files'][features_dir]['raw_test_features'] , test_tensor)
-    np.save(cfg['files'][features_dir]['raw_train_features'] ,train_tensor)       
-    np.save(cfg['files'][features_dir]['test_ids'] , test_ids)
-    np.save(cfg['files'][features_dir]['train_ids'] , train_ids)
+    np.save(data_dir[f'scaled_{features_name}_train_features'] ,train_tensor)   
+    np.save(data_dir[f'scaled_{features_name}_test_features'] , test_tensor)
+    np.save(data_dir['train_ids'] , train_ids)   
+    np.save(data_dir['test_ids'] , test_ids)
 
-    
 if __name__ == "__main__":
     print("==== Run : build embedding features ====")
     run()

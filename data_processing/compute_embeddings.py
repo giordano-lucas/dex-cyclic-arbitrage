@@ -21,29 +21,26 @@ def extract_layers(main_model, starting_layer_ix, ending_layer_ix):
 
 
 def compute(model_name = "fully_connected_3L", use_liquid=True):
+    features_dir = 'liquid' if use_liquid else 'full'
     autoencoder = keras.models.load_model(cfg["models"]["autoencoder"]+model_name)
     encoding_layer = int(models_cfg["encoding_layer"][model_name])
     # extract en encoder part of the autoencoder
     encoder = extract_layers(autoencoder,0,encoding_layer)
     encoder.summary()
     
-    if use_liquid:
-        print("loading liquid data")
-        train_raw = np.load(cfg["files"]["liquid"]["raw_train_features_liquid"])
-        test_raw  = np.load(cfg["files"]["liquid"]["raw_test_features_liquid"])
-    else : 
-        print("loading all data (liquid+illiquid)")
-        train_raw = np.load(cfg["files"]["full"]["raw_train_features"])
-        test_raw  = np.load(cfg["files"]["full"]["raw_test_features"])
-    #print(encoder(train_raw[:2]))
+    print("loading data")
+    train_ae = np.load(cfg["files"][features_dir]["scaled_ae_train_features"])
+    test_ae  = np.load(cfg["files"][features_dir]["scaled_ae_test_features"])
+
+    #print(encoder(train_ae[:2]))
     print("SHAPES:")
-    print("     train raw features : ",train_raw.shape)
-    print("     test raw features : ",test_raw.shape)
+    print("     train ae features : ",train_ae.shape)
+    print("     test ae features : ",test_ae.shape)
     print("==========================================")
     print("                 encoding                 ")
     print("==========================================")
-    train_encoded = encoder(train_raw).numpy()
-    test_encoded = encoder(test_raw).numpy()
+    train_encoded = encoder(train_ae).numpy()
+    test_encoded = encoder(test_ae).numpy()
 
 
     print("SHAPES:")
@@ -52,12 +49,8 @@ def compute(model_name = "fully_connected_3L", use_liquid=True):
     print("==========================================")
     print("                 saving                 ")
     print("==========================================")
-    if use_liquid:
-        np.save(cfg['files']["liquid"]['encoded_train_features'] , train_encoded)
-        np.save(cfg['files']["liquid"]['encoded_test_features'] ,test_encoded)
-    else : 
-        np.save(cfg['files']["full"]['encoded_train_features'] , train_encoded)
-        np.save(cfg['files']["full"]['encoded_test_features'] ,test_encoded)
+    np.save(cfg['files'][features_dir]['encoded_train_features'] , train_encoded)
+    np.save(cfg['files'][features_dir]['encoded_test_features'] ,test_encoded)
     print("Done!")
 
 if __name__ == "__main__":
