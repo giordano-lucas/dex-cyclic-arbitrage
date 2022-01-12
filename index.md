@@ -298,7 +298,20 @@ The starting point of the analysis is to understand which values of ```k``` (the
 
 {% include_relative figures/clustering/kmeans_k_metrics.html %}
 
-The elbow method applied on the SSE graph seems to indicate that 3 might be a relevant choice from ```k```. However, the silhouette graph suggests that 4 and 8 are better choices. From these plots, we believe that `k=4` is a fair tradeoff between the goodness of the fit and the number of clusters. 
+Usually, we should observe a maximum spike in the silhouette method plot. This is not the case here. The curve has a clear growing trend but there is no clear reason, at least for our analysis, why we should go above 20 clusters. Hence the silhouette plot is not particularly useful in the task of choosing the best `k`.
+
+However, the elbow method applied on the SSE graph seems to indicate that the steepest slope is in the range $[0, 20]$. For $k > 20$ there is less evidence than, increasing `k` improves the quality of the clustering.
+
+Individual area silhoutte scores are also worth looking at. They can found in the next plot, sorted and grouped by clusters for convinence.
+
+Since the elbow method did not allowed us to exclude any values of `k` before 20, we choose a some values for which there was a spike in the silhouette score (indicating that there was a jump in clustering performance). 
+
+Therefore, we believe that `k=5, 7, 13, 19` may be fair tradeoffs between the goodness of the fit and the number of clusters. In the following plot, we will investigate the quality of the individual cluster to choose our final value.
+
+![Alt text](/figures/clustering/silhouette-analysis.png){:class="img-responsive"}
+
+
+
 
 ## Clustering validation
 
@@ -357,7 +370,7 @@ Two different features are used as input for prediction :
 * `Embeddings`  : At first, the models use embeddings produced by the autoencoder as features. 
 * `Embeddings + tokens` : Then, additional features are added : for each cycles we add to  its embedding an encoding (one hot) of the tokens it involves. 
  
-These two types of featuere are used and scores are compared to see if names of involved tokens brings relevant information to the prediction. 
+These two types of featuere are used and scores are compared to see if names of involved tokens bring relevant information to the prediction. 
 
 In our initial dataset, we also have access to the names of the 3 tokens particpating in the cyclic arbitrage, which could potentially be used as extra features ! 
 
