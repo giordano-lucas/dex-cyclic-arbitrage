@@ -1,5 +1,5 @@
+# Scripts and notebooks : 
 This folder is dedicated to the study of autoencoder models for embedding computation. We focus here on obtaining a dimension reduction method having the smallest reconstruction error (MSE) focusing on autoencoders.	The study is divided into following files :
-
 *`autoencoders.py`:Python file containing the architecture of the autoencoders to train
 *`models training.ipynb`:notebook where the complex models (CNN and fully connected) are trained 
 * `linear_vs_PCA.ipynb` : Note where the linear model is trained and compared to PCA. 
@@ -9,5 +9,6 @@ This folder is dedicated to the study of autoencoder models for embedding comput
 * `compute_embeddings.py` python script that uses one of the trained models to compute embeddings of given datasets.
 The results are saved in the following folders : 
 
+# Result folders
 *`results`: Resulting models trained by `models training.ipynb` and `linear_vs_PCA.ipynb` . It contains the trained models and their losses. 
 *`talos-autoencoder`: Results of architecture trained  and tested by `Talos`
