@@ -1,3 +1,6 @@
+# Autoencoder
+---
+
 # Scripts and notebooks : 
 This folder is dedicated to the study of autoencoder models for embedding computation. We focus here on obtaining a dimension reduction method having the smallest reconstruction error (MSE) focusing on autoencoders.	The study is divided into following files :
 
