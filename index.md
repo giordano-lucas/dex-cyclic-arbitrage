@@ -469,8 +469,8 @@ In the following set of plots, the same metrics are recomputed but this time on 
 
 # Conclusion
 
-XXXXXXX
-
+The acquisition of data took quite some time but we managed to create a big set of data in relation to the one used in the arxiv paper. Data exploration has proven that the obtained set is diverse: a lot of tokens having different liquidities were involved in the cycles. Data are processed in a particular way:  a different scaling is applied on each token pair, missing data are filled with 0 (padding).
+Then, `Liquid` data were used to compute 100-dimensional (36x smaller than original) embeddings using autoencoders and PCA. The autoencoders did not perform great regarding the reconstruction MSE but the produced embeddings were better than PCA for clustering. The clustering based on `liquid` embeddings produced XXX meaningful clusters: profitable cycles were clustered together. Contrary to clustering, the PCA embedding performed better than autoencoders on the prediction task that we defined (binary prediction on cycle's profitability). We also noticed that the identification of the involved tokens has a positive impact on the prediction. The conducted study can be improved:  models used for embedding extraction are not satisfying (MSE wise) but because of lack of time, we do not implement improvements of next section. 
 # Further steps 
 
 We concluded the project, but there is still lots of opportunities for improvement. Some of them are described below.
