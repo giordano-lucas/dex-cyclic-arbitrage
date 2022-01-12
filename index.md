@@ -466,7 +466,7 @@ However, surprisingly, using the `AE` embedding, the performance is improved. Cl
 
 The starting point of the analysis is to understand which values of ```k``` (the number of clusters) lead to a relevant clustering assignment. ```silhouette``` and ```sse``` plots are the standard way to go.  
 
-{% include_relative figures/clustering/kmeans_k_metrics.html %}
+{% include_relative figures/liquid/clustering/kmeans_k_metrics.html %}
 
 Usually, we should observe a maximum spike in the silhouette method plot. This is not the case here. The curve has a clear growing trend but there is no clear reason, at least for our analysis, why we should go above 20 clusters. Hence the silhouette plot is not particularly useful in the task of choosing the best `k`.
 
@@ -478,7 +478,7 @@ Since the elbow method did not allow us to exclude any values of `k` before 20e)
 
 Therefore, we propose to further investigate `k=4, 9, 16, 22` which may be fair tradeoffs between the goodness of the fit and the number of clusters. In the following plot, we will investigate the quality of the individual cluster to choose our final value.
 
-![Alt text](/figures/clustering/silhouette-analysis.png){:class="img-responsive"}
+![Alt text](/figures/liquid/clustering/silhouette-analysis.png){:class="img-responsive"}
 
 **Guidelines to interpret the plot**:
 
@@ -535,15 +535,15 @@ For instance, we could consider the following :
 
 These metrics, computed on the training set, are shown below.
 
-{% include_relative figures/clustering/Number_of_cycles_per_cluster_train_small.html %}
+{% include_relative figures/liquid/clustering/Number_of_cycles_per_cluster_train_small.html %}
 
-{% include_relative figures/clustering/Profit_per_cluster_train_small.html %}
+{% include_relative figures/liquid/clustering/Profit_per_cluster_train_small.html %}
 
-{% include_relative figures/clustering/Profitability_of_each_cluster_train_small.html %}
+{% include_relative figures/liquid/clustering/Profitability_of_each_cluster_train_small.html %}
 
-{% include_relative figures/clustering/Median_of_token_distribution_within_each_cluster_train_small.html %}
+{% include_relative figures/liquid/clustering/Median_of_token_distribution_within_each_cluster_train_small.html %}
 
-{% include_relative figures/clustering/Entropy_of_token_distribution_within_each_cluster_train_small.html %}
+{% include_relative figures/liquid/clustering/Entropy_of_token_distribution_within_each_cluster_train_small.html %}
 
 {% include_relative figures/liquid/clustering/token_distribution_train_small.html %}
 
@@ -564,15 +564,15 @@ Let's dive into the details :
 
 In the following set of plots, the same metrics are recomputed but this time on the test set. Interestingly, the conclusions that were drawn for the train set can be extended for the test, demonstrating some degree of predictability/persistence.
 
-{% include_relative figures/clustering/Number_of_cycles_per_cluster_test_small.html %}
+{% include_relative figures/liquid/clustering/Number_of_cycles_per_cluster_test_small.html %}
 
-{% include_relative figures/clustering/Profit_per_cluster_test_small.html %}
+{% include_relative figures/liquid/clustering/Profit_per_cluster_test_small.html %}
 
-{% include_relative figures/clustering/Profitability_of_each_cluster_test_small.html %}
+{% include_relative figures/liquid/clustering/Profitability_of_each_cluster_test_small.html %}
 
-{% include_relative figures/clustering/Median_of_token_distribution_within_each_cluster_test_small.html %}
+{% include_relative figures/liquid/clustering/Median_of_token_distribution_within_each_cluster_test_small.html %}
 
-{% include_relative figures/clustering/Entropy_of_token_distribution_within_each_cluster_test_small.html %}
+{% include_relative figures/liquid/clustering/Entropy_of_token_distribution_within_each_cluster_test_small.html %}
 
 {% include_relative figures/liquid/clustering/token_distribution_test_small.html %}
 
