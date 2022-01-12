@@ -23,5 +23,3 @@ with open(f"{base_dir}/config/config.yml", "r") as ymlfile:
     
 with open(f"{base_dir}/config/models_config.yml", "r") as ymlfile:
     models_cfg = yaml.safe_load(ymlfile)
-
-

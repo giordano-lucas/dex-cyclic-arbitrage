@@ -7,17 +7,17 @@ def linear():
     # build encoder
     input_layer = keras.Input(shape=in_shape)
     x = layers.Reshape([in_shape[0]*in_shape[1]*in_shape[2]])(input_layer)
-    x = layers.Dense(1800,  activation='linear')(x)
+    x = layers.Dense(in_shape[0]*in_shape[1]*in_shape[2],  activation='linear')(x)
     x = layers.Dense(100,  activation='linear')(x)
-    x = layers.Dense(1800,  activation='linear')(x)
     x = layers.Dense(in_shape[0]*in_shape[1]*in_shape[2],  activation='linear')(x)
     output_layer =layers.Reshape(in_shape)(x)
     
     
     # combine encoder and decoder
     autoencoder = keras.Model(input_layer, output_layer)
-    autoencoder.compile(optimizer='adam', loss='mean_squared_error',)
+    autoencoder.compile(optimizer='Adamax', loss='mean_squared_error',)
     return model_name ,autoencoder
+
 
 def fully_connected_3L():
     model_name = "fully_connected_3L"
@@ -34,7 +34,7 @@ def fully_connected_3L():
     
     # combine encoder and decoder
     autoencoder = keras.Model(input_layer, output_layer)
-    autoencoder.compile(optimizer='adam', loss='mean_squared_error',)
+    autoencoder.compile(optimizer='Adamax', loss='mean_squared_error',)
     return model_name ,autoencoder
 
 def CNN():
@@ -54,7 +54,7 @@ def CNN():
     decoded = layers.Conv2D(2, (3, 3), activation='relu', padding='same')(x)
     # combine encoder and decoder
     autoencoder = keras.Model(input_img, decoded)
-    autoencoder.compile(optimizer='adam', loss='mean_squared_error',)
+    autoencoder.compile(optimizer='Adamax', loss='mean_squared_error',)
     return model_name, autoencoder
 
 def CNN_fully_connected():
@@ -91,7 +91,7 @@ def talos_architecture(params):
     x = layers.Reshape([in_shape[0]*in_shape[1]*in_shape[2]])(input_layer)
     for l in range(params['dense_layers']):
         x = layers.Dropout(params['dropout'])(x)
-        if l == 0 or l == params['dense_layers'] - 1:
+        if l == int(params['dense_layers']/2)+1:
             x = layers.Dense(params['first_neuron'],  activation=params["activation"])(x)
         else:
             x = layers.Dense(100,  activation=params["activation"])(x)

@@ -1,3 +1,0 @@
-round_epochs,loss,val_loss,activation,batch_size,dense_layers,dropout,epochs,first_neuron,optimizer
-2,0.22066353261470795,0.0,selu,16,3,0,2,200,adam
-2,0.3585047423839569,0.0,selu,16,3,0.25,2,200,adam

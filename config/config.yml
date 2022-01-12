@@ -7,7 +7,6 @@ directories:
         ML_features         : data/liquid/ML_features/
         ruled_based:
              ML_features    : data/liquid/ruled_based/ML_features/
-        
 fig_dir:
     data_exploration: figures/data_exploration/
     full:
@@ -59,4 +58,4 @@ biquery:
     
 models:
     autoencoder: models/embedding/autoencoder/results/
-    
+
