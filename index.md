@@ -439,11 +439,9 @@ For the rule-based encoding, we have
 
 XXXX
 
-
 Unfortulately, the conclusions drawn in the [Performance Analysis section of the AE training](#performance-analysis) can also be applied here. Namely, the `AE` is not able to reach the same level of f1-score as the `PCA` and `rule-based` embedding. 
 
 We would like to draw the attention to the reader on the fact that even though the `MSE Loss` was higher for the `AE` than for `PCA`, it is not obvious that the performance of `embeddings` themselves are comparable in the same way. Indeed, the `AE` was trained to procuce recontruct the input data not to be construct a relevant `embedding` in the latent dimensions.  
-
 
 # Cycle clustering
 
@@ -453,7 +451,18 @@ Cycles clustering can be understood as an unsupervised method to classify cycles
 
 To this end, we will start by studying the output of a standard clustering algorithm named [K-means](https://en.wikipedia.org/wiki/K-means_clustering).
 
-> **Note**: given the poor results of the `AE` embedding in the previous tasks, we chose to only use the  `PCA` embedding in this section.
+## Which embedding ?
+
+Given the poor results of the `AE` embedding in the previous tasks, we first try to use the `PCA` embedding in this section. However, for almost all `k` values, most of the data points are clustered together (see example below for `k = 22`)
+
+{% include_relative figures/clustering/PCA/PCA_Number_of_cycles_per_cluster_train_small.html %}
+
+Furthermore, we observed little persistence for the patterns observed on the training train and test sets (especially when `k` increases). In other words, a KMeans model trained on training set will probably not hold enough predictive power to be used test set which makes it almost useless in practice. This is mostly true for the `k-1` ***small*** clusters.
+
+
+However, surprisingly, using the `AE` embedding, the performance is improved. Clusters are much more balanced and we observe more predictable behaviours between the training set and test sets. Therefore, we propose to conduct the following analysis using the latter embedding.
+
+## Choosing the right value for `k`
 
 The starting point of the analysis is to understand which values of ```k``` (the number of clusters) lead to a relevant clustering assignment. ```silhouette``` and ```sse``` plots are the standard way to go.  
 
@@ -461,17 +470,54 @@ The starting point of the analysis is to understand which values of ```k``` (the
 
 Usually, we should observe a maximum spike in the silhouette method plot. This is not the case here. The curve has a clear growing trend but there is no clear reason, at least for our analysis, why we should go above 20 clusters. Hence the silhouette plot is not particularly useful in the task of choosing the best `k`.
 
-However, the elbow method applied on the SSE graph seems to indicate that the steepest slope is in the range $[0, 17]$. For $k > 17$ there is less evidence than, increasing `k` improves the quality of the clustering.
+However, the elbow method applied on the SSE graph seems to indicate that the steepest slope is in the range $[0, 22]$. For $k > 22$ there is less evidence than, increasing `k` improves the quality of the clustering.
 
-Individual area silhoutte scores are also worth looking at. They can found in the next plot, sorted and grouped by clusters for convinence.
+Individual area silhouette scores are also worth looking at. They can be found in the next plot, sorted and grouped by clusters for convenience.
 
-Since the elbow method did not allowed us to exclude any values of `k` before 20, we choose a some values for which there was a spike in the silhouette score (indicating that there was a jump in clustering performance). 
+Since the elbow method did not allow us to exclude any values of `k` before 20e). 
 
-Therefore, we believe that `k=4, 9, 12, 17` may be fair tradeoffs between the goodness of the fit and the number of clusters. In the following plot, we will investigate the quality of the individual cluster to choose our final value.
+Therefore, we propose to further investigate `k=4, 9, 16, 22` which may be fair tradeoffs between the goodness of the fit and the number of clusters. In the following plot, we will investigate the quality of the individual cluster to choose our final value.
 
 ![Alt text](/figures/clustering/silhouette-analysis.png){:class="img-responsive"}
 
+**Guidelines to interpret the plot**:
 
+1. Silhouette scores can be interpreted as follows :
+    * 1  indicates that the sample is far away from the neighbouring clusters
+    * 0  indicates that the sample is on or very close to the decision boundary between two neighbouring clusters
+    * <0 indicates that those samples might have been assigned to the wrong cluster. 
+
+2. On the y-axis, the width of clustering is an indicator of the number of data points assigned to the cluster. 
+3. The red line indicates an average threshold. Bad clusters are those that fail to reach that target for all data_points assigned to them.
+
+**Key observations from the plot**
+
+1. For `k = 4`:
+    * The below-avarage ratio is 20% (number of below average clusters divided by `k`)
+    * Only cluster 0 is below average (red dotted lines) but it is the largest cluster. 
+    * The laregest clusters (0 and 3) contain negative silhouette scores
+    
+2. For `k = 9`:
+    * The below-avarage ratio is 33% 
+    * Negative silhouette scores occur in 33% of the clusters
+    * Clusters 4, 5, 8 look terrible (lots of negative values and below average score) and contain lots of data point
+    * The other clusters are fairly shaped and look decent
+
+3. For `k = 16`:
+    * The below-avarage ratio is 25% 
+    * Negative silhouette scores occur in 31% of the clusters
+    * Clusters 1 and 14 are bad
+    * Clusters 4 and 7 almost reach the average target
+    * All other clusters look good
+
+4. For `k = 22`:
+    * The below-avarage ratio is 27% 
+    * Negative silhouette scores occur in 27% of the clusters
+    * In this case only cluster 5 contains very negative values
+    * However most clusters that are below-average fail to meet the required target by a large value
+    * Cluster contains, on average, less data points than for `k = 16`
+
+Overall, we observe high variability in the silhouette scores for all values of `k`. There is no clear answer to which value of `k` is best. However, in our opinion, the plot suggests that `k = 16` may be slightly better. 
 
 
 ## Clustering validation
@@ -499,13 +545,22 @@ These metrics, computed on the training set, are shown below.
 
 {% include_relative figures/clustering/Entropy_of_token_distribution_within_each_cluster_train_small.html %}
 
-At first sight, it already looks quite promising. Let's dive into the details:
+{% include_relative figures/liquid/clustering/token_distribution_train_small.html %}
 
-1. Cluster `0` appears to be the one generating the larger amount of profits, with slightly better profitability but nothing astonishing.
-2. On the contrary, cluster `1` is below average in terms of profits.
+At first sight, it already looks quite promising. We can group cluster together in terms of behaviour. There are two main trends :
+
+1. Profitable clusters (group `A`): `1` `2`, `3`, `4`, `9`, `10`, `12`, `13`, `14`
+2. Less profitable clusters (group `B`): `5` `6`, `7`, `8`, `11` and `15`
+
+Let's dive into the details :
+
+1. Group `A` appears to be the one generating the larger amount of profits, with slightly better profitability but nothing astonishing.
+2. On the contrary, group `B` is below average in terms of profits.
 3. There is no outstanding differences in terms of profitability across clusters. However, one should note that the global average is already at `95%` which shows that most of the cycles are profitable anyway.
-4. Cluster `0` contains more data points than the others. When it comes to the token distribution, it is more random than the rest (see large entropy and low median), perhaps a catch-all cluster ?
-5. Cluster `3` has a very large median and low entropy for its token distribution. It is also the second most profitable cluster. We can understand that it is likely to always use the same tokens to generate high returns. Given the fact that it contains a relatively small number of tokens, we should definitely investigate it further.
+4. Clusters `2` and `12` (which below to group `A`) contain far more data points than the others. 
+5. When it comes to the token distribution entropy, group `A` is more random than the rest. However there is not clear different in terms of the median distribution across groups.
+6. The full token distribution plots shows that clusters grouped together (`A` and `B`) follow a similar distribution. For instance, for group `B`, there is not bulk at the very left but rather a smaller bulk around mid-right. Since we are dealing with a less profitable group, by hovering the plot, we may be able to indentify tokens that do not have a very good overall performance.
+
 
 In the following set of plots, the same metrics are recomputed but this time on the test set. Interestingly, the conclusions that were drawn for the train set can be extended for the test, demonstrating some degree of predictability/persistence.
 
@@ -518,6 +573,8 @@ In the following set of plots, the same metrics are recomputed but this time on 
 {% include_relative figures/clustering/Median_of_token_distribution_within_each_cluster_test_small.html %}
 
 {% include_relative figures/clustering/Entropy_of_token_distribution_within_each_cluster_test_small.html %}
+
+{% include_relative figures/liquid/clustering/token_distribution_test_small.html %}
 
 # Conclusion
 
