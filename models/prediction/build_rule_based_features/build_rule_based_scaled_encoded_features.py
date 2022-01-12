@@ -2,7 +2,7 @@ import sys, os
 sys.path.append('/'.join(os.getcwd().split('/')[:4]))
 
 import data_processing.build_embedding_features as bef
-import models.prediction.build_rule_based_features.build_rule_based_encoded_features.py as brbef
+import models.prediction.build_rule_based_features.build_rule_based_encoded_features as brbef
 
 base_config = {
         'use_liquid': True , 
