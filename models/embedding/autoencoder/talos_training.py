@@ -29,8 +29,8 @@ def fit_model(x_train, y_train, x_val, y_val, params):
         validation_data=(x_val, y_val),
         callbacks=[talos.utils.early_stopper(params['epochs'])],
     )
-    fig = px.line(x=range(params['epochs']), y=out.history["loss"], title=f'MSE Loss for model : {model_name}')
-    fig.show()
+    #fig = px.line(x=range(params['epochs']), y=out.history["loss"], title=f'MSE Loss for model : {model_name}')
+    #fig.show()
     return out, autoencoder
 
 def train():
@@ -45,14 +45,19 @@ def train():
     ## the parameter that you want to be optimized are defined in this dictionnary
     p = {
         'activation':['selu', 'elu'],
-        'dense_layers' : [1,3,5],
-        'first_neuron': [200,300,500],
+        'dense_layers' : [3,5],
+        'first_neuron': [100,300,600],
         'dropout': [0, .25, .5],
         'batch_size': [16,32],
-        'optimizer': ['adam', 'nadam'],
-        'epochs': [70,120]  
+        'optimizer': ['Adamax'],
+        'epochs': [70]  
     }
 
+
+
+    print("============== CONFIG ================")
+    print(p)
+    print("======================================")
     scan_object = talos.Scan(
         x=X_train, y=X_train, 
         params=p, 
