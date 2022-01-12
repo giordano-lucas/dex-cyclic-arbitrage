@@ -202,115 +202,65 @@ The first model chosen for embedding representation is a PCA having a latent spa
 ### Linear autoencoder 
 
 Secondly, we trained an autoencoder with linear activations only. The purpose of this choice is to compare the autoencoder architecture with the PCA. Indeed, when using linear activations on all layers of the model, it should perform similarly to PCA. Thus, we expect the performances of this model to be comparable with the ones of PCA. 
-The model has the following architecture :  
-
-```python
-def linear():
-    model_name = "linear"
-    in_shape = (3,600, 2) 
-    # build encoder
-    input_layer = keras.Input(shape=in_shape)
-    x = layers.Reshape([in_shape[0]*in_shape[1]*in_shape[2]])(input_layer)
-    x = layers.Dense(in_shape[0]*in_shape[1]*in_shape[2],  activation='linear')(x)
-    x = layers.Dense(100,  activation='linear')(x)
-    x = layers.Dense(in_shape[0]*in_shape[1]*in_shape[2],  activation='linear')(x)
-    output_layer =layers.Reshape(in_shape)(x)
-    
-    # combine encoder and decoder
-    autoencoder = keras.Model(input_layer, output_layer)
-    autoencoder.compile(optimizer='SGD', loss='mean_squared_error',)
-    return model_name ,autoencoder
-```
+The model consists of 3 fully connected linear layers, one of them being the bottleneck (`dim=100`). 
 It is trained using Stochastic gradient descent and the following losses are obtained :
-XXXXXXXXXXXXXXXXXXXX
+{% include_relative figures/liquid/embedding/linear_losses.html %}
 
 ### Multilayer autoencoder
 
-Let's go deep! In this section, the number of layers is increased and activation functions are changed to be non-linear("relu","elu","selu"...). 
-A first neural network is trained using the following architecture : 
-```python
-def fully_connected_3L():
-    model_name = "fully_connected_3L"
-    in_shape = (3,600, 2) 
-    # build encoder
-    input_layer = keras.Input(shape=in_shape)
-    x = layers.Reshape([in_shape[0]*in_shape[1]*in_shape[2]])(input_layer)
-    x = layers.Dense(600,  activation='elu')(x)
-    x = layers.Dense(100,  activation='elu')(x)
-    x = layers.Dense(600,  activation='elu')(x)
-    x = layers.Dense(in_shape[0]*in_shape[1]*in_shape[2],  activation='elu')(x)
-    output_layer =layers.Reshape(in_shape)(x)
-    
-    
-    # combine encoder and decoder
-    autoencoder = keras.Model(input_layer, output_layer)
-    autoencoder.compile(optimizer='adam', loss='mean_squared_error',)
-    return model_name ,autoencoder
-```
+Let's go deep! In this section, the number of layers is increased and activation functions are changed to be non-linear(`elu`,`relu`,`selu`...). 
+The neural network used here has 2 fully connected layers of 600 neurons each. They are symmetric to the bottleneck layer and uses `elu` activations.
+
 This model is named `fully_connected_3L` and the obtained losses are :
-XXXXX
+{% include_relative figures/liquid/embedding/fully_connected_3L_losses.html %}
 Note that more variants of neural network architectures will be trained and tested later on using the `Talos` library.
 
 ### Convolutional autoencoder
 
-To better capture the structure of cycles, we propose an alternative to the fully dense model of last section : a convolutional `autoencoder`. The motivation to introduce this complex architecture is that when a cyclic arbitrage is implemented, the first transaction could affect some price/gas of the second token and similarly for other transactions. The convolution operations could extract these neighbouring relationships between tokens in order to build a better latent representation of cycles.
+To better capture the structure of cycles, we propose an alternative to the fully dense model of the previous section: a convolutional `autoencoder`. The motivation to introduce this complex architecture is that when a cyclic arbitrage is implemented, the first transaction could affect some price/gas of the second token and similarly for other transactions. The convolution operations could extract these neighbouring relationships between tokens to build a better latent representation of cycles.
+In addition to the convolutional layers of the network, we added 2 dense layers of 300 neurons symmetrically connected to the bottleneck. 
+We hope that a convolutional layer will allow us to leverage this structural bias.
 
-We hope that a convolutional layer will allow us to leverge this structural bias.
-
-Formally, we used the following architecture 
+Formally, we used the following architecture :
 
 ```python
-def build_model():
+def CNN_fully_connected():
+    model_name = "CNN_fully_connected"
+    # build encoder
     input_img = keras.Input(shape=(3,600, 2))
     x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(input_img)
-    x = layers.MaxPooling2D((3, 3), padding='same')(x)
+    x = layers.MaxPooling2D((1, 2), padding='same')(x)
     x = layers.Conv2D(4, (3, 3), activation='relu', padding='same')(x)
-    x = layers.MaxPooling2D((2, 2), padding='same')(x)
-    encoded = layers.Conv2D(1, (2, 2), activation='relu', padding='same')(x)
-    # at this point the representation is 100-dimensional
-    x = layers.Conv2D(4, (2, 2), activation='relu', padding='same')(encoded)
-    x = layers.UpSampling2D((1, 2))(x)
+    x = layers.MaxPooling2D((3, 1), padding='same')(x)
+    encoded = layers.Conv2D(1, (1, 2), activation='relu', padding='same')(x)
+    # Dense layers
+    x = layers.Dense(300,  activation='elu')(x)
+    encoded = layers.Dense(100,  activation='elu')(x)
+    x = layers.Dense(100,  activation='elu')(encoded)
+    x = layers.Dense(300,  activation='elu')(x)
+    # build decoder
+    x = layers.Conv2D(4, (1, 2), activation='relu', padding='same')(x)
+    x = layers.UpSampling2D((3, 1))(x)
     x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(x)
-    x = layers.UpSampling2D((3, 3))(x)
+    x = layers.UpSampling2D((1, 2))(x)
     decoded = layers.Conv2D(2, (3, 3), activation='relu', padding='same')(x)
+    # combine encoder and decoder
     autoencoder = keras.Model(input_img, decoded)
-    autoencoder.compile(optimizer='adam',loss='mean_squared_error',)
-    
-    return autoencoder
+    autoencoder.compile(optimizer='adam', loss='mean_squared_error',)
+    return model_name, autoencoder
 ```
+This model is named `CNN_fully_connected` and produces following losses : 
+
 
 ## Performance Analysis
-
-### Basic
-
-An `autoencoder` is trained to produce an output as close as possible to the corresponding input. 
-
-A classical way to evaluate the performance (reconstruction error) of an `autoencoder` is through the `Mean Square Error (MSE)` loss 
-
-The following plots display the difference in terms of `MSE` for the the different architectures mentioned above.
-
-{% include_relative figures/embedding/performance_autoencoder.html %}
-
-> **Note**: `0` corresponds to the best possible model.
-
-Surprisingly, the `autoencoder` performs worse in terms of reconstruction than `PCA`. However, in this first milestone, since we only trained:
-
-1. For a few epochs (`600`).
-2. Without hyper-parameter optimisation. 
-3. Using a subset of the dataset available (`10 000` cycles).
-
-It may well be that we did not fully exploit the capacity of the neural network.
-
-For the reader's information, the evolution  of the `train loss` is shown below:
-
-![simple_model_2_train_loss](https://user-images.githubusercontent.com/43466781/147818924-278bd5f8-7b78-440a-883e-35f9e8134464.png)
+The following figure illustrates the losses obtained by each described model : 
 
 
-In this section, we only tested a few architectures to have a rough idea of their overall performance. Indeed, training these model is time consuming and we wanted to prune some of the configurations for the real hyper-parameter optimisation of the next section. 
 
-To sum up, we realised that the proposed CNN architecture did not reached the expected performance. In fact, we were not able to outperform `PCA`. We decided not to explore further in this direction and therfore stick with the fully connected multilayer architecture.
+Unfortunately, the obtained results do not correspond to expectations. The fully connected network performs poorly compare to PCA. It should not be the case (at least for the training loss) since it is a more complex model. PCA is restrained to linear transformations and `fully_connected_3L` is not. 
 
-### Advanced
+
+## hyper-parameter optimisation using Talos
 
 Now that we selected our main architecture for our autoencoder, namely a fully connected MLP, let's optimise our loss. They are multiple hyperparameters that can be tune for this model. We selected the following : 
 
