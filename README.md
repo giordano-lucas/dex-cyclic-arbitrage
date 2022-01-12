@@ -1,6 +1,6 @@
 <img width="1665" alt="Screenshot 2021-12-29 at 09 52 48" src="https://user-images.githubusercontent.com/43466781/147819628-ed23274e-8d05-487d-b499-2b7a51e36eee.png">
 
-Read our data story online [using the following link]() ! 
+:point_right: Read our **data story** online [using the following link](https://giordano-lucas.github.io/dex-cyclic-arbitrage/) :rocket: 
 
 # Abstract
 
@@ -16,33 +16,85 @@ These features could potentially be high dimensional (depending on the length of
 
 Then, we will cluster the arbitrages based on the computed features. Ideally, we would like to observe meaningful clusterings: profitable cycles get clustered together, cycles having similar duration (how long it is profitable) also end up in the same cluster, etc. Once meaningful clusters are obtained, it gets interesting to use the same features in a prediction model having profitability of the arbitrage as a target.
 
-# Data Acquisition
-
-In this study, we propose to use the following datasets 
-1. [Cyclic transaction dataset](https://disco.ethz.ch/misc/uniswap/cycles_in_Uniswap.json) : dataset made available in [Cyclic Arbitrage in Decentralized Exchange Markets](https://arxiv.org/abs/2105.02784). It contains information about arbitrage cycles that were exploited on DEXes. 
-2. [Uniswap rates preceeding cyclic transaction dataset](https://www.kaggle.com/ogst68/uniswap-rates-preceeding-cyclic-arbitrages-raw/download) : dataset gathered in this study. It contains  the rates and gas prices preceeding cycles (600 transaction for each token pair uniswap pool).
-
-To obtain these datasets, please follow the instruction below: 
-1. Run the script : `download_uniswap_cycles.sh`. It download the  `Cyclic transaction dataset`.
-2. Download the `Uniswap rates preceeding cyclic transaction dataset` that was poseted on kaggle [here](https://www.kaggle.com/ogst68/uniswap-rates-preceeding-cyclic-arbitrages-raw/download) these data were previously fetched using the Bitquery platform (using the script `rates_from_Bitquery.py`). 
-
-> **Note**: if you have access to the [IZAR EPFL cluster](https://www.epfl.ch/research/facilities/scitas/hardware/izar/), the simplest solution to get the datasets is to our `data` directory that was made available publicly under the following folder `scratch/izar/kapps/data/`.
-
-## Data Processing
-To process the downloaded data one need to follow these steps :
-    1. run `filter_cycles.py` to filter cycles of  `cycles_in_Uniswap.json` on their lenghts. Give the desired lenght in argument (default is 6). The script produces a new dataset : `data/filtered_cycles.json`
-    2. run `combine_raw_data.py` to combine the multiple fetched files available at `data/uniswap_raw_data/`. It produces a single .csv file (`data/uniswap_data.csv`)containing all rates and gas prices that were queried from bitQuery.   
-    3. run `build_embedding_features.py` to create, scale and pad a train (`data/ML_features/raw_train_features.npy`) and test (`data/ML_features/raw_test_features.npy`) set out of `data/uniswap_data.csv`. These set a meant to be used to train an autoencoder for feature extraction.
-    4. run `compute_embeddings.py` using the model we trained or yours (see models section) in argument to compute the embeddings of the previously generated train and test sets. The execution produces 2 new datasets : `data/ML_features/encoded_train_features.npy` and `data/ML_features/encoded_test_features.npy`
-    5. run `build_prediction_data.py` to prepare the data needed for the prediction task. It produces train and test sets containing the profitability ofeach cycles as well as the tokens involved in the cycles.    
-
-> **Note**: to simply the the data processing procedure for the reader, we created a shell script. In the base directory, run the following command:
-```bash
-bash scripts/data_processing.sh
-```
 # Methods
 
-XXX
+1. **Data preprocessing**: 
+
+    1. Keep only cycles of length 3.
+    2. Filter out illiquid tokens.
+    3. Log-transformation for heavy-tailed features
+    4. Token-based standard scaling
+    5. Zero padding for length standardisation.
+
+2. **Cycles embedding**:
+
+    1. After preprocessing an autencoder is built.
+    2. Multiple architectures are tested (linear, multilayer densly connected, convolutional layer). 
+    3. Their performance is compared to a classical PCA approach. 
+    4. In part 4. Profitablity prediction, the performance of the different embeddings techniques is evaluated on the accuracy of the task.
+
+3. **Cycles clustering**:
+
+    1. Use the autoencoder embedding, a KMeans clustering is constructed. 
+    2. Clusters in the training set are analysed 
+    3. Based on the test set results, we can understand whether or not there is predictibility in the results obtained in point 2.
+
+4. **Cycle profitablity prediction**:
+
+    1. Study profitability prediction for arbitrage cycles.
+    2. Multiples models are tested (logistic regression, SVM).
+    3. The impact of adding token encoding to the models is tested.
+    4. The performance of the different embeddings is evaluated.
+
+# Notes to the reader
+
+Each folder contains a decidaced `README` where extra instruction and details are given.
+
+## Organisation of the repository
+
+    .
+    ├── data                                      # Data folder
+    │ ├── uniswap_raw_data                        # data fetched from bitquery
+    │ │  ├── uniswap_raw_data_0_1000.json.gz     # example of file
+    │ │  ├── ...
+    │ ├── additional_features_XXX.csv             #  data fetched from bitquery
+    │ ├── cycles_in_Uniswap.json                  # dataset from the paper
+    │ ├── filtered_cycles.json                    # only cycles of length 3 
+    │ ├── uniswap_data.csv                        # csv version of the dataset fetched from biquery 
+    │ ├── liquid_uniswap_data.csv                 # filter out illiquid token pair
+    │ ├── additional_features_XXX.csv             # file used by the clustering and prediction task with extra features
+    ├── data_acquisition                    # Scripts to fetch the datasets (from bitquery and from the paper)
+    ├── data_exploration                    # Contains visualisations of the datasets
+    ├── data_processing                     # All scripts to process the raw data into usables features for ML
+    ├── models                              # all ML related tasks
+    │ ├── clustering                        # files related to the clustering task
+    │ ├── embedding                         # files related to the embedding task
+    │ ├── prediction                        # files related to the profitablity prediction task
+    ├── figures                             # Contains the ouput images and html used for the data story
+    ├── requirements.txt                    # Dependencies
+    └── README.md               
+    
+## How to run the code 
+
+1. Follow the steps in [Data Acquisition](data_acquisition/README.md) to download the raw datasets 2. Follow the steps in [Data Processing](data_processing/README.md) to generate the preprocessed data
+2. **Data exploration**: run the `data_exploration/data_exploration.ipynb` notebook to see the data exploration steps taken.
+3. **Embeddings**: open the `models/embedding` folder:
+    1. XXXX
+4. **Clustering**: run the `models/clustering/Kmeans.ipynb` notebook to see the code related to the clustering.
+5. **Profitablity prediction**: 
+    1. Follow the steps in [Build Rule-based features](models/prediction/build_rule_based_features/README.md) to generate preprocessed data usefull for performance comparision
+    2. Run the `models/prediction/prediction.ipynb` notebook for the profitablity prediction task.
+
+## Dependencies requirement
+
+In the repository, we provide a `requirement.txt` file from which you can create a virtual python environment.
+
+## Side note on the Scitas Cluster
+
+If you want to run our code in the scitas cluster, you will need several additional steps for the  set-up:
+
+1. Create a compatible Jupyter/Tensorflow environment using the [following official tutotrial](https://scitas-data.epfl.ch/confluence/display/DOC/How+to+use+Jupyter+and+Tensorflow+on+Izar)
+2. To be able to import `talos` on the Scitas cluster, we need to update line 8 of `opt/venv-gcc/lib/python3.7/site-packages/kerasplotlib/traininglog.py` from `from keras.callbacks import Callback` to `from tensorflow.keras.callbacks import Callback`
 
 # Timeline and contributions :
 
@@ -98,63 +150,33 @@ XXX
 | Improved data exploration               | Lucas                           |    3h        |
 | Better understanding of PCA output      | Augustin                        |    1h        |
 | Autencoder testing                      | Augustin                        |    2h        |
-| Data story (3)                          | Lucas                           |    1h        |        
+| Data story (3)                          | Lucas                           |    1h        |
+| Add ruled based indicators for autoencoder performance comparision | Lucas |    2h       |        
 
 ### Week 6 : Hyperparameter opmisation, improvements & report writing
 
-| Task                                    | Team member(s)                  | work hours  |
-| :---------------------------------------|:--------------------------------| -----------:|
-| Filter illiquid data                    | Lucas                           |    1h        |
+| Task                                    | Team member(s)                  | work hours   |
+| :---------------------------------------|:--------------------------------| ------------:|
+| Filter illiquid data & debug            | Lucas                           |    3h        |
 | Update architecture for liquid data     | Augustin                        |    3h        |
 | Research on attention learning          | Lucas                           |    2h        |
 | Data processing simpler pipeline        | Augustin                        |    2h        |
 | Autencoder improvement and debug        | Augustin                        |    3h        |
-| Autencoder manual tests for several architectures        | Augustin       |    5h        |
+| Autencoder manual tests for several architectures        | Augustin       |    8h        |
 | Talos setup                             | Lucas                           |    2h        |
 | Hyperparameter opmisation               | Lucas & Augustin                |    4h        |
 | Kmeans : better silouhette analysis     | Lucas                           |    1h        |
-| Kmeans : update results for liquid data | Lucas                           |    2h        |
-| Notebook comments and markdown          | Lucas & Augustin                |    3h        |
-| Data story (4)                          | Lucas & Augustin                |    5h        |
+| Kmeans : update results for liquid data | Lucas                           |    3h        |
+| Ruled based data : pandas-ta implementation    | Lucas                    |    1h        |
+| Ruled based data : pandas implementation       | Lucas                    |    3h        |
+| Ruled based data : code optimisation           | Lucas                    |    3h        |
+| Ruled based data : performance comparision with AE  | Lucas               |    1h        |
+| Notebook comments and markdown          | Lucas & Augustin                |    4h        |
+| Data story (4)                          | Lucas & Augustin                |    6h        |
 
 ## Total contribution:
 
 | Team member                     | work hours   |
 |:--------------------------------| ------------:|
-| Lucas Giordano                  |    59h       |
-| Augustin Kapps                  |    53h       |
-
-# Notes to the reader
-## Organisation of the repository
-
-    .
-    ├── data                                      # Data folder
-    │ ├── uniswap_raw_data                        # data fetched from bitquery
-    │ │  ├── uniswap_raw_data_0_1000.json.gz     # example of file
-    │ │  ├── ...
-    │ ├── additional_features_XXX.csv             #  data fetched from bitquery
-    │ ├── cycles_in_Uniswap.json                  # dataset from the paper
-    │ ├── filtered_cycles.json                    # only cycles of length 3 
-    │ ├── uniswap_data.csv                        # csv version of the dataset fetched from biquery 
-    │ ├── liquid_uniswap_data.csv                 # filter out illiquid token pair
-    │ ├── additional_features_XXX.csv             # file used by the clustering and prediction task with extra features
-    ├── data_acquisition                    # Scripts to fetch the datasets (from bitquery and from the paper)
-    ├── data_exploration                    # Contains visualisations of the datasets
-    ├── data_processing                     # All scripts to process the raw data into usables features for ML
-    ├── models                              # all ML related tasks
-    │ ├── clustering                        # files related to the clustering task
-    │ ├── embedding                         # files related to the embedding task
-    │ ├── prediction                        # files related to the profitablity prediction task
-    ├── figures                             # Contains the ouput images and html used for the data story
-    ├── requirements.txt                    # Dependencies
-    └── README.md               
-    
-## How to run the code 
-
-XXX
-
-## Dependencies requirement
-
-In the repository, we provide a `requirement.txt` file from which you can create a virutatal python environment.
-
-> Note : to be able to import `talos` on the Scitas cluster, we need to update line 8 of `opt/venv-gcc/lib/python3.7/site-packages/kerasplotlib/traininglog.py` from `from keras.callbacks import Callback` to `from tensorflow.keras.callbacks import Callback`
+| Lucas Giordano                  |    63h       |
+| Augustin Kapps                  |    56h       |

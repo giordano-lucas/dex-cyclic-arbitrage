@@ -1,6 +1,7 @@
 absl-py==0.7.1
 argcomplete==1.12.3
 argon2-cffi==21.1.0
+argon2-cffi-bindings==21.2.0
 astetik==1.11.1
 astunparse==1.6.3
 attrs==21.2.0
@@ -68,6 +69,7 @@ oauthlib==3.1.1
 opt-einsum==3.1.0
 packaging==21.3
 pandas==1.0.5
+pandas-ta==0.3.14b0
 pandocfilters==1.5.0
 parso==0.8.3
 patsy==0.5.2
@@ -107,6 +109,7 @@ six==1.14.0
 sklearn==0.0
 statsmodels==0.13.1
 sympy==1.4
+tabulate==0.8.9
 talos @ git+https://github.com/autonomio/talos@b4c823ccae9db2d4815cf468c22362af2b9e0c21
 tenacity==8.0.1
 tensorboard==2.7.0
