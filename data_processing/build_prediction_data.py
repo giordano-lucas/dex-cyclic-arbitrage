@@ -67,5 +67,5 @@ def run(use_liquid = True):
 
 if __name__ == "__main__":
     print("==== Run : build prediction data ====")
-    run(True)
+    run(use_liquid = True)
     print("==== Done ====")

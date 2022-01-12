@@ -35,7 +35,7 @@ Then, we will cluster the arbitrages based on the computed features. Ideally, we
 
 3. **Cycles clustering**:
 
-    1. Use the autoencoder embedding, a KMeans clustering is constructed. 
+    1. Use the embedding, a KMeans clustering is constructed. 
     2. Clusters in the training set are analysed 
     3. Based on the test set results, we can understand whether or not there is predictibility in the results obtained in point 2.
 
