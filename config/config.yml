@@ -46,6 +46,9 @@ files:
         encoded_train_features      : data/liquid/ML_features/encoded_train_features_liquid.npy
         additional_features_train   : data/liquid/additional_features_train_liquid.csv
         additional_features_test    : data/liquid/additional_features_test_liquid.csv
+        pca:
+            encoded_test_features   : data/liquid/pca/ML_features/encoded_test_features_liquid_pca.npy
+            encoded_train_features  : data/liquid/pca/ML_features/encoded_train_features_liquid_pca.npy
         rule_based:
             encoded_test_features   : data/liquid/rule_based/ML_features/encoded_test_features_liquid_rule_based.csv
             encoded_train_features  : data/liquid/rule_based/ML_features/encoded_train_features_liquid_rule_based.csv
