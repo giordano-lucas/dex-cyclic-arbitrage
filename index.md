@@ -194,7 +194,7 @@ In the [Cycles profitability prediction](#cycles-profitability-prediction) task,
 
 ## Autoencoder : different architectures
 In this section, we tried multiple models (mainly focusing on autoencoders) for embedding computation through dimensionality reduction. As a first step, we trained the described models on the entire dataset that we have. However, we realized that some data points of the set were not `liquid` at all. These data points were represented by rates spanning over hundreds of days. The models performed poorly on this set so we decided to focus on `liquid` data only (see Data exploration). Multiple optimizers  (`Adam`,`SGD`,`NAdam`,`Adamax`,`RSMprop`) were tested for training. It appears that `Adamax` is the one working the best on these tasks. It was not always the case (no free lunch theorem) but `Adamax` was faster than the other optimizers by a factor of 10 when working on the `liquid` data.  
-
+Manually defining and testing architectures was a tedious and time-consuming task, multiple days of the study were dedicated to this section. 
 ### PCA 
 The first model chosen for embedding representation is a PCA having a latent space of 100 dimensions. note that `dim=100` will be used for all next models. PCA only considers linear transformations. However, it is fast to train (around 30s in our case) and can act as a baseline comparison for other models.
 
