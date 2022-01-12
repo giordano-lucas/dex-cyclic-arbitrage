@@ -12,7 +12,7 @@ This folder is dedicated to the study of autoencoder models for embedding comput
 * `talos_training.py`: Python script that runs `Talos`on a given set of parameters to tune. `Talos` is a library for architecture testing. It allows us to train and test multiple architectures of neural networks.It saves the results (architecture: test loss) into the Talos-autoencoder folder 
 
 * `compute_embeddings.py` python script that uses one of the trained models to compute embeddings of given datasets.
-The results are saved in the following folders : 
+The results are saved in the following folders. The script takes the name of the autoencoder to use as input, the default value is: `fully_connected_3L`. 
 
 # Result folders
 
