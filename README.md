@@ -79,7 +79,7 @@ Each folder contains a decidaced `README` where extra instruction and details ar
 1. Follow the steps in [Data Acquisition](data_acquisition/README.md) to download the raw datasets 2. Follow the steps in [Data Processing](data_processing/README.md) to generate the preprocessed data
 2. **Data exploration**: run the `data_exploration/data_exploration.ipynb` notebook to see the data exploration steps taken.
 3. **Embeddings**: open the `models/embedding` folder:
-    1. Autoencoder: follow the steps in [Build Rule-based features](models/embedding/autoencoder/README.md) to understand how to train the autoencoders
+    1. Autoencoder: follow the steps in [Train Autoencoders](models/embedding/autoencoder/README.md) to understand how to train and use the available autoencoders
     2. PCA: run the `pca_embedding.ipynb` notebook to create the `PCA` embedding.
     3. Rule-based: follow the steps in [Build Rule-based features](models/embedding/rule_based/README.md) to generate preprocessed data usefull for performance comparision.
 4. **Clustering**: run the `models/clustering/Kmeans.ipynb` notebook to see the code related to the clustering.
