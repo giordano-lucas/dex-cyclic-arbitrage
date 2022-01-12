@@ -193,6 +193,7 @@ Using the `PCA` approach, we can easily understand how much is lost when `Q` var
 In the [Cycles profitability prediction](#cycles-profitability-prediction) task, we will be able to measure the gain of the embedding compared to the raw features (base model).
 
 ## Autoencoder : different architectures
+In this section, we tried multiple models (mainly focusing on autoencoders) for embedding computation through dimensionality reduction. As a first step, we trained the described models on the entire dataset that we have. However, we realized that some data points of the set were not `liquid` at all. These data points were represented by rates spanning over hundreds of days. The models performed poorly on this set so we decided to focus on `liquid` data only (see Data exploration). Multiple optimizers  (`Adam`,`SGD`,`NAdam`,`Adamax`,`RSMprop`) were tested for training. It appears that `Adamax` is the one working the best on these tasks. It was not always the case (no free lunch theorem) but `Adamax` was faster than the other optimizers by a factor of 10 when working on the `liquid` data.  
 
 ### PCA 
 The first model chosen for embedding representation is a PCA having a latent space of 100 dimensions. note that `dim=100` will be used for all next models. PCA only considers linear transformations. However, it is fast to train (around 30s in our case) and can act as a baseline comparison for other models.
@@ -208,16 +209,19 @@ It is trained using Stochastic gradient descent and the following losses are obt
 
 Let's go deep! In this section, the number of layers is increased and activation functions are changed to be non-linear(`elu`,`relu`,`selu`...). 
 The neural network used here has 2 fully connected layers of 600 neurons each. They are symmetric to the bottleneck layer and uses `elu` activations.
-
+Multiple activation functions were tested on this architecture and `elu` was retained to be the best one (based on test MSE). 
 This model is named `fully_connected_3L` and the obtained losses are :
 
+
+Surprisingly, the best loss obtained by this complex model does not beat the PCA model. It is the reason why training goes up to `500 epochs`. We wanted to see how the loss behaves and if it drops later on. But it did not happen. This model has the same number of layers as the `linear` one but it has mode neurons and the activations are more complex. Since the model is more complex we expect it to outperform the  `linear`  and `PCA` models on the training loss.  
 Note that more variants of neural network architectures will be trained and tested later on using the `Talos` library.
 
 ### Convolutional autoencoder
 
 To better capture the structure of cycles, we propose an alternative to the fully dense model of the previous section: a convolutional `autoencoder`. The motivation to introduce this complex architecture is that when a cyclic arbitrage is implemented, the first transaction could affect some price/gas of the second token and similarly for other transactions. The convolution operations could extract these neighbouring relationships between tokens to build a better latent representation of cycles.
-In addition to the convolutional layers of the network, we added 2 dense layers of 300 neurons symmetrically connected to the bottleneck. 
 We hope that a convolutional layer will allow us to leverage this structural bias.
+First, we tried to train a "simple" CNN but it did not perform well. CNN are a simpler model than fully connected networks, having a limited number of parameters that are shared might cause some bias in the prediction. So we decided to add complexity to this model :  
+In addition to the convolutional layers of the network, we added 2 dense layers of 300 neurons symmetrically connected to the bottleneck. 
 
 Formally, we used the following architecture :
 
@@ -254,9 +258,9 @@ This model is named `CNN_fully_connected` and produces following losses :
 The following figure illustrates the losses obtained by each described model : 
 
 
-
-Unfortunately, the obtained results do not correspond to our expectations. The fully connected network performs poorly compared to PCA. It should not be the case (at least for the training loss) since it is a more complex model. PCA is restrained to linear transformations and `fully_connected_3L` is not. 
-This poor performance might come from the choice of the network architecture: number of layers/neurons, activation functions... To find the optimal architecture we tune these parameters in the following section. 
+As expected, the linear model's performances are close to the ones of PCA. However, the results obtained for more complex models do not meet our expectations. The fully connected network and the CNN perform poorly compare to PCA. They should perform better on the training data at least because they are more flexible. PCA is restrained to linear transformations which is not the case for CNN and  `fully_connected_3L`. 
+This poor performance might come from the choice of the network architecture: number of layers/neurons, activation functions...
+To find the optimal architecture we tune these parameters in the following section.
 
 ## Hyper-parameter optimisation
 
@@ -265,13 +269,15 @@ Now that we selected our main architecture for our autoencoder, namely a fully c
 | Parameter name                   | Option 1 | Option 2 | Option 3 | 
 |:---------------------------------|---------:|---------:|---------:|
 | `activation function`            | `selu`   | `elu`    |          |
-| `# dense layers`                 | `1`      | `2`      |   `5`    |
-| `# neurons in first/last layer ` | `200`    | `300`    |   `500`  |
+| `# dense layers`                 | `3`      | `5`      |          |
+| `# neurons in first/last layer ` | `100`    | `300`    |   `600`  |
 | `dropout factor`                 | `0%`     | `25%`    |   `50%`  |
-| `optimizer`                      | `adam`   | `nadam`  |          |
-| `# epochs`                       | `20`     | `100`    |   `160`  |
+| `optimizer`                      | `adam`   | `Adamax` |          |
+| `batch_size`                     | `16`     | `32`     |          |
+| `# epochs`                       | `150`    |          |          |
 
 In order preform this best parameter search, we used the `Talos` python library which makes it fairly easy to test hundreds of parameter combinaisons in a few lines of code. 
+Note that the training of fully connected models tested previously converged around epoch 100. Moreover, Talos retained the best-obtained loss and corresponding training epoch. Thus we only chose one value for the `# epochs` parameter.   
 
 After running not less than `XXXXXXXXXXXXXXXXXXX` hours on the IZAR EPFL cluster, we got the following results: 
 
@@ -344,30 +350,22 @@ Corresponding f1 scores :
 The second model is a support vector machine trained on the standardized embeddings to find the optimal boundary between profitable and non-profitable cycles. Again, cross-validation is used to tune the hyperparameters. Namely: the kernel of the SVM (`linear`, `rbf`, or `poly`) and the regularizer (`C`). The selected model produces the following confusion matrix on the test set : 
 
 
-<table>
-<tr><th> Embeddings </th><th>Embeddings + tokens </th></tr>
-<tr><td>
-
+`Embeddings` confusion matrix :
 | /           |True(pred) | False(pred) |
 |------------:|:---------:|:------------|
-| True(real)  | 2276      |   1509      |
-| False(real) |  88       |   128       |
+| True(real)  | 2241      |   1544      |
+| False(real) |  104      |   112       |
 
-
-</td><td>
-
+`Embeddings + tokens` confusion matrix :
 | /           |True(pred) | False(pred) |
 |------------:|:---------:|:------------|
-| True(real)  | 2276      |   1509      |
-| False(real) |  88       |   128       |
-
-
-</td></tr> </table>
+| True(real)  | 2241      |   1544      |
+| False(real) |  104      |   112       |
 
 Corresponding f1 scores : 
 | /           |`Embeddings ` | `Embeddings + tokens`|
 |------------:|:------------:|:---------------------|
-| f1 score    | 0.7403      |   1544      |
+| f1 score    | 0.7312       |   1544      |
 
 
 
@@ -381,7 +379,7 @@ Corresponding f1 scores :
 
 Given the result above, we can conclude that there is some predictability in the `one-hot` encoding of the token since the f1-score raised from `0.70` to `0.8` in the `AE` case.
 
-We also wanted to stress that all models usually experience some difficulties when it comes to predicting non-profitable
+We also wanted to stress that all models usually experience some difficulties when it comes to predicting non-profitable cycles.
 
 ## Investigation of the different embeddings performance 
 
@@ -523,8 +521,8 @@ In the following set of plots, the same metrics are recomputed but this time on 
 
 # Conclusion
 
-XXXXXXX
-
+The acquisition of data took quite some time but we managed to create a big set of data in relation to the one used in the arxiv paper. Data exploration has proven that the obtained set is diverse: a lot of tokens having different liquidities were involved in the cycles. Data are processed in a particular way:  a different scaling is applied on each token pair, missing data are filled with 0 (padding).
+Then, `Liquid` data were used to compute 100-dimensional (36x smaller than original) embeddings using autoencoders and PCA. The autoencoders did not perform great regarding the reconstruction MSE but the produced embeddings were better than PCA for clustering. The clustering based on `liquid` embeddings produced XXX meaningful clusters: profitable cycles were clustered together. Contrary to clustering, the PCA embedding performed better than autoencoders on the prediction task that we defined (binary prediction on cycle's profitability). We also noticed that the identification of the involved tokens has a positive impact on the prediction. The conducted study can be improved:  models used for embedding extraction are not satisfying (MSE wise) but because of lack of time, we do not implement improvements of next section. 
 # Further steps 
 
 We concluded the project, but there is still lots of opportunities for improvement. Some of them are described below.
