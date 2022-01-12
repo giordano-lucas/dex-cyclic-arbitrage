@@ -11,6 +11,11 @@ To obtain these datasets, please follow the instruction below:
 
 > **Note**: if you have access to the [IZAR EPFL cluster](https://www.epfl.ch/research/facilities/scitas/hardware/izar/), the simplest solution to get the datasets is to our `data` directory that was made available publicly under the following folder `scratch/izar/kapps/data/`.
 
+## Data sample 
+In case you do not want to download and process the entire set of data, one can directly download a CSV sample of `liquid` data on [Kaggle](https://www.kaggle.com/ogst68/uniswap-data-liquid)
+This dataset is meant to be saved in /data/liquid. Once downloaded, one can run the script `build_embedding_features.py` and follow the [Data Processing](data_processing/README.md) instructions. This sample dataset contains the first 1_000_000 rows of the original data. Please note that the results of the analysis (embedding extraction, clustering, prediction) will be different when using the subsample.
+
+
 ## Notes
 
 The [sanity check folder](sanity_checks) contains steps undertaken to compare the data fetched with data available on Etherscan to check the validity of our scripts.
