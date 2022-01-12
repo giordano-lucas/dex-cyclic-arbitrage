@@ -260,7 +260,7 @@ The following figure illustrates the losses obtained by each described model :
 Unfortunately, the obtained results do not correspond to expectations. The fully connected network performs poorly compare to PCA. It should not be the case (at least for the training loss) since it is a more complex model. PCA is restrained to linear transformations and `fully_connected_3L` is not. 
 This poor performance might come from the choice of the network architecture: number of layers/neurons, activation functions... To find the optimal architecture we tune these parameters in the following section. 
 
-## hyper-parameter optimisation using Talos
+## Hyper-parameter optimisation
 
 Now that we selected our main architecture for our autoencoder, namely a fully connected MLP, let's optimise our loss. They are multiple hyperparameters that can be tune for this model. We selected the following : 
 
