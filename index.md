@@ -270,13 +270,15 @@ Now that we selected our main architecture for our autoencoder, namely a fully c
 | Parameter name                   | Option 1 | Option 2 | Option 3 | 
 |:---------------------------------|---------:|---------:|---------:|
 | `activation function`            | `selu`   | `elu`    |          |
-| `# dense layers`                 | `1`      | `2`      |   `5`    |
-| `# neurons in first/last layer ` | `200`    | `300`    |   `500`  |
+| `# dense layers`                 | `3`      | `5`      |          |
+| `# neurons in first/last layer ` | `100`    | `300`    |   `600`  |
 | `dropout factor`                 | `0%`     | `25%`    |   `50%`  |
-| `optimizer`                      | `adam`   | `nadam`  |          |
-| `# epochs`                       | `20`     | `100`    |   `160`  |
+| `optimizer`                      | `adam`   | `Adamax` |          |
+| `batch_size`                     | `16`     | `32`     |          |
+| `# epochs`                       | `150`    |          |          |
 
 In order preform this best parameter search, we used the `Talos` python library which makes it fairly easy to test hundreds of parameter combinaisons in a few lines of code. 
+Note that the training of fully connected models tested previously converged around epoch 100. Moreover, Talos retained the best-obtained loss and corresponding training epoch. Thus we only chose one value for the `# epochs` parameter.   
 
 After running not less than `XXXXXXXXXXXXXXXXXXX` hours on the IZAR EPFL cluster, we got the following results: 
 
