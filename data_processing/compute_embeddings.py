@@ -27,24 +27,11 @@ def compute(model_name = "fully_connected_3L", use_liquid=True):
     # extract en encoder part of the autoencoder
     encoder = extract_layers(autoencoder,0,encoding_layer)
     encoder.summary()
-    
-<<<<<<< HEAD
-    if use_liquid:
-        print("loading liquid data")
-        train_raw = np.load(cfg["files"]["liquid"]["raw_train_features"])
-        test_raw  = np.load(cfg["files"]["liquid"]["raw_test_features"])
-    else : 
-        print("loading all data (liquid+illiquid)")
-        train_raw = np.load(cfg["files"]["full"]["raw_train_features"])
-        test_raw  = np.load(cfg["files"]["full"]["raw_test_features"])
-    #print(encoder(train_raw[:2]))
-=======
+
     print("loading data")
     train_ae = np.load(cfg["files"][features_dir]["scaled_ae_train_features"])
     test_ae  = np.load(cfg["files"][features_dir]["scaled_ae_test_features"])
 
-    #print(encoder(train_ae[:2]))
->>>>>>> 59a3c6d332cc3e62e9dda961430c374aa72f2142
     print("SHAPES:")
     print("     train ae features : ",train_ae.shape)
     print("     test ae features : ",test_ae.shape)
