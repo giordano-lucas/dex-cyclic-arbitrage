@@ -204,7 +204,7 @@ The first model chosen for embedding representation is a PCA having a latent spa
 Secondly, we trained an autoencoder with linear activations only. The purpose of this choice is to compare the autoencoder architecture with the PCA. Indeed, when using linear activations on all layers of the model, it should perform similarly to PCA. Thus, we expect the performances of this model to be comparable with the ones of PCA. 
 The model consists of 3 fully connected linear layers, one of them being the bottleneck (`dim=100`). 
 It is trained using Stochastic gradient descent and the following losses are obtained :
-{% include_relative figures/liquid/embedding/linear_losses.html %}
+{% include_relative figures/embedding/linear_losses.html %}
 
 ### Multilayer autoencoder
 
@@ -212,7 +212,7 @@ Let's go deep! In this section, the number of layers is increased and activation
 The neural network used here has 2 fully connected layers of 600 neurons each. They are symmetric to the bottleneck layer and uses `elu` activations.
 
 This model is named `fully_connected_3L` and the obtained losses are :
-{% include_relative figures/liquid/embedding/fully_connected_3L_losses.html %}
+{% include_relative figures/embedding/fully_connected_3L_losses.html %}
 Note that more variants of neural network architectures will be trained and tested later on using the `Talos` library.
 
 ### Convolutional autoencoder
