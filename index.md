@@ -255,7 +255,7 @@ The following figure illustrates the losses obtained by each described model :
 
 
 
-Unfortunately, the obtained results do not correspond to expectations. The fully connected network performs poorly compare to PCA. It should not be the case (at least for the training loss) since it is a more complex model. PCA is restrained to linear transformations and `fully_connected_3L` is not. 
+Unfortunately, the obtained results do not correspond to our expectations. The fully connected network performs poorly compared to PCA. It should not be the case (at least for the training loss) since it is a more complex model. PCA is restrained to linear transformations and `fully_connected_3L` is not. 
 This poor performance might come from the choice of the network architecture: number of layers/neurons, activation functions... To find the optimal architecture we tune these parameters in the following section. 
 
 ## Hyper-parameter optimisation
@@ -283,7 +283,7 @@ Note that `Talos` does not support `K-fold` cross-validation yet, so we had to u
 
 ## Motivation
 
-The goal of the project also consists of testing the predictability of the cycle's profitability. The return of a given cycle is defined by its `revenues` minus its `cost` (fees). `Profitability` is a Boolean value indicating if the corresponding cycle has positive or negative `profitability`. `Profitability` is then used as a target/label for classification tasks. 94% of the cycles have a positive return. This imbalance can badly affect the training process: The models will tend to always output true and will obtain a precision of 94% despite being meaningless.  Thus, we need to take this imbalance into the prediction process. The target imbalance is handled through the `class_weight` module of  Sklearn . It reweights the samples during training to obtain a 1:1 balance between positive and negative data points. 
+The goal of the project also consists of testing the predictability of the cycle's profitability. The return of a given cycle is defined by its `revenues` minus its `cost` (fees). `Profitability` is a Boolean value indicating if the corresponding cycle has positive or negative `profitability`. `Profitability` is then used as a target/label for classification tasks. 95% of the cycles have a positive return. This imbalance can badly affect the training process: The models will tend to always output true and will obtain a precision of 94% despite being meaningless.  Thus, we need to take this imbalance into the prediction process. The target imbalance is handled through the `class_weight` module of  Sklearn . It reweights the samples during training to obtain a 1:1 balance between positive and negative data points. 
 
 ## Features
 
@@ -291,13 +291,9 @@ Two different features are used as input for prediction :
 * `Embeddings`  : At first, the models use embeddings produced by the autoencoder as features. 
 * `Embeddings + tokens` : Then, additional features are added : for each cycles we add to  its embedding an encoding (one hot) of the tokens it involves. 
  
-These two types of featuere are used and scores are compared to see if names of involved tokens bring relevant information to the prediction. 
+These two types of features are used and the scores are compared to see if names of involved tokens bring relevant information to the prediction. 
 
-In our initial dataset, we also have access to the names of the 3 tokens particpating in the cyclic arbitrage, which could potentially be used as extra features ! 
-
-However, machine learning models usually don't like strings features. Let's tokenize them !
-
-Since we are dealing with a fixed (categorical) set of non-ordered features, a `one-hot` encoding is probaly a good way to go. 
+In our initial dataset, we also have access to the names of the 3 tokens particpating in the cyclic arbitrage, which could potentially be used as extra features ! However, machine learning models usually don't like strings features. Let's tokenize them ! Since we are dealing with a fixed (categorical) set of non-ordered features, a `one-hot` encoding is probaly a good way to go. 
 
 For instance, imagine we only have 3 tokens in our dataset : 
 
@@ -329,14 +325,14 @@ The first model consists of logistic regression. It is fitted on the standardize
 `Embeddings` confusion matrix :
 | /           |True(pred) | False(pred) |
 |------------:|:---------:|:------------|
-| True(real)  | 2241      |   1544      |
-| False(real) |  104      |   112       |
+| True(real)  | 657      |   530      |
+| False(real) |  25      |   29       |
 
 `Embeddings + tokens` confusion matrix :
 | /           |True(pred) | False(pred) |
 |------------:|:---------:|:------------|
-| True(real)  | 2241      |   1544      |
-| False(real) |  104      |   112       |
+| True(real)  | 829      |   358      |
+| False(real) |  36      |   18       |
 
 Corresponding f1 scores : 
 | /           |`Embeddings ` | `Embeddings + tokens`|
@@ -381,24 +377,74 @@ Corresponding f1 scores :
 | True(real)  | 2276      |   1509      |
 | False(real) |  88       |   128       |
 
+### Interpretation
+
+Given the result above, we can conclude that there is some predictability in the `one-hot` encoding of the token since the f1-score raised from `0.70` to `0.8` in the `AE` case.
+
+We also wanted to stress that all models usually experience some difficulties when it comes to predicting non-profitable
 
 ## Investigation of the different embeddings performance 
 
+To evaluate the performance of our cycle embedding (autoencoder), we propose to study the impact of different embeddings features on the output of a binary classification task, precisely the profitability of a cycle.
 
-### PCA 
+The emphasis is not put on finding the best overall model here. The idea is to study the difference in the confusion matrix and metrics (accuracy, f1-score, recall, precision) that occur when the input features changes.
 
-True neg : 20 | False pos : 34 | False neg : 373 | True pos : 814
-╒══════════════╤═══════════════╤═════════════════╕
-│ \            │   True (pred) │    False (pred) │
-╞══════════════╪═══════════════╪═════════════════╡
-│ True (real)  │           814 │             373 │
-├──────────────┼───────────────┼─────────────────┤
-│ False (Real) │            34 │              20 │
+If we observe better performance metrics for our autoencoder embedding, this experiment will have provided evidence that our embedding somehow captures the underlying structure of cyclic arbitrages. 
+
+### Method 
+
+To this end, we propose to study 3 different types of embedding :
+
+1. The AE embedding (base hypothesis)
+2. The PCA embedding (alternative hypothesis 1)
+3. A rule-based embedding using technical indicators (alternative hypothesis 2)
+
+If the first two options are described in detail in the earlier steps of this project, it is not the case for the third one. 
+
+The following rolling indicators are used :
+
+1. SMA
+5. Rolling volatily
+
+using two different rolling windows (`5` and `20`).
+
+These indicators are applied on the following underlying time series data (for each cycle):
+
+1. `Quote price` 
+2. `Gas price`
+3. Log-returns of `Quote price`
+4. Log-returns of `Gas price`
+
+In other words, for each cycle, we construct `4 * 2 * 2 = 16` features.
+
+After `zero-padding` the tensor build is of shape `N x 3 x 600 x 16`.
+
+> **Note**: the `NaN` introduced by the computed are filled using `0` in order to have comparable shapes with the AE features.
+
+Again since we have a massive imbalance between classes the `accuracy` metrics needs to be avoided. We will investigate the differences if terms of `precision` and `recall`, in particular through the `f1-score` metric.
+
+### Results
+
+For the standard AE embedding, the confusion matrix is available in section [Logistic regression](#logistic-regression).
+
+The PCA confusion matrix is show below
 
 
+| /           |True(pred) | False(pred) |
+|------------:|:---------:|:------------|
+| True(real)  | 814       |   373       |
+| False(real) |  34       |   20        |
+
+with a f1-score of 0.800
+
+For the rule-based encoding, we have
+
+XXXX
 
 
+Unfortulately, the conclusions drawn in the [Performance Analysis section of the AE training](#performance-analysis) can also be applied here. Namely, the `AE` is not able to reach the same level of f1-score as the `PCA` and `rule-based` embedding. 
 
+We would like to draw the attention to the reader on the fact that even though the `MSE Loss` was higher for the `AE` than for `PCA`, it is not obvious that the performance of `embeddings` themselves are comparable in the same way. Indeed, the `AE` was trained to procuce recontruct the input data not to be construct a relevant `embedding` in the latent dimensions.  
 
 
 # Cycle clustering
@@ -409,19 +455,21 @@ Cycles clustering can be understood as an unsupervised method to classify cycles
 
 To this end, we will start by studying the output of a standard clustering algorithm named [K-means](https://en.wikipedia.org/wiki/K-means_clustering).
 
+> **Note**: given the poor results of the `AE` embedding in the previous tasks, we chose to only use the  `PCA` embedding in this section.
+
 The starting point of the analysis is to understand which values of ```k``` (the number of clusters) lead to a relevant clustering assignment. ```silhouette``` and ```sse``` plots are the standard way to go.  
 
 {% include_relative figures/clustering/kmeans_k_metrics.html %}
 
 Usually, we should observe a maximum spike in the silhouette method plot. This is not the case here. The curve has a clear growing trend but there is no clear reason, at least for our analysis, why we should go above 20 clusters. Hence the silhouette plot is not particularly useful in the task of choosing the best `k`.
 
-However, the elbow method applied on the SSE graph seems to indicate that the steepest slope is in the range $[0, 20]$. For $k > 20$ there is less evidence than, increasing `k` improves the quality of the clustering.
+However, the elbow method applied on the SSE graph seems to indicate that the steepest slope is in the range $[0, 17]$. For $k > 17$ there is less evidence than, increasing `k` improves the quality of the clustering.
 
 Individual area silhoutte scores are also worth looking at. They can found in the next plot, sorted and grouped by clusters for convinence.
 
 Since the elbow method did not allowed us to exclude any values of `k` before 20, we choose a some values for which there was a spike in the silhouette score (indicating that there was a jump in clustering performance). 
 
-Therefore, we believe that `k=5, 7, 13, 19` may be fair tradeoffs between the goodness of the fit and the number of clusters. In the following plot, we will investigate the quality of the individual cluster to choose our final value.
+Therefore, we believe that `k=4, 9, 12, 17` may be fair tradeoffs between the goodness of the fit and the number of clusters. In the following plot, we will investigate the quality of the individual cluster to choose our final value.
 
 ![Alt text](/figures/clustering/silhouette-analysis.png){:class="img-responsive"}
 
