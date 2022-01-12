@@ -57,7 +57,7 @@ We tried many different implementations to make it run of the cluster without ou
 > **Note**: we tried to use `pandas-ta` library (`ta.Strategy` and others) to ease the development process. However, it was too slow and memory intense on a Grouper object. Hence, we had to use a pure `pandas` based implementation.
 
 In fact, the number of indicators/features used was chosen to be 12 to make it possible to run on the cluster. It is not possible to another one. 
-a
+
 ### Data preprocessing
 
 In terms of data, the rule-based dataset is available under the following names in the `config.yml` file:
