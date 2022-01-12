@@ -40,9 +40,7 @@ Each row contains information about a single swap :
 
 In the following section, we will only work on this extended dataset which is therefore referred to as `the dataset`. 
 
-# Replication of some of [[1]](https://arxiv.org/abs/2105.02784) figures
 
-In order to introduce the `Cyclic transaction dataset` and check our understanding of the data, we propose to repropose a few figures of the arxiv paper.
 
 # Data Wrangling 
 ## Data Exploration
@@ -281,6 +279,128 @@ XXXX
 
 Note that `Talos` does not support `K-fold` cross-validation yet, so we had to use a single validation set (`20%`) for this task. 
 
+# Cycles profitability prediction
+
+## Motivation
+
+The goal of the project also consists of testing the predictability of the cycle's profitability. The return of a given cycle is defined by its `revenues` minus its `cost` (fees). `Profitability` is a Boolean value indicating if the corresponding cycle has positive or negative `profitability`. `Profitability` is then used as a target/label for classification tasks. 94% of the cycles have a positive return. This imbalance can badly affect the training process: The models will tend to always output true and will obtain a precision of 94% despite being meaningless.  Thus, we need to take this imbalance into the prediction process. The target imbalance is handled through the `class_weight` module of  Sklearn . It reweights the samples during training to obtain a 1:1 balance between positive and negative data points. 
+
+## Features
+
+Two different features are used as input for prediction : 
+* `Embeddings`  : At first, the models use embeddings produced by the autoencoder as features. 
+* `Embeddings + tokens` : Then, additional features are added : for each cycles we add to  its embedding an encoding (one hot) of the tokens it involves. 
+ 
+These two types of featuere are used and scores are compared to see if names of involved tokens bring relevant information to the prediction. 
+
+In our initial dataset, we also have access to the names of the 3 tokens particpating in the cyclic arbitrage, which could potentially be used as extra features ! 
+
+However, machine learning models usually don't like strings features. Let's tokenize them !
+
+Since we are dealing with a fixed (categorical) set of non-ordered features, a `one-hot` encoding is probaly a good way to go. 
+
+For instance, imagine we only have 3 tokens in our dataset : 
+
+> `ETH`, `DAI` and `AAVE`
+
+Then one could use the following `one-hot` encoding to represent them. We have 3 tokens so the encoding will be 3-dimensional 
+
+| Token Name | \| | Dim 1 | Dim 2 | Dim 3  |
+|:----------:|:--:|:-----:|:-----:|:------:|
+| `ETH`      | \| |  1    |   0   |   0    |
+| `DAI`      | \| |  0    |   1   |   0    |
+| `AAVE`     | \| |  0    |   0   |   1    |
+
+
+For a linear algebra persective, we observe that all rows have the same norm and are linearly independent, this is what makes this `one-hot` encoding a excellent choice for our purposes.
+
+We draw the attention of the reader on the fact that these extra features should not be added as input to the convolutional autoencoder. Indeed, there is not translation bias to exploit here. In order to ease the performance comparision with other types of embedding model, we decided not to use them in any of the embedding related tasks.
+
+However,  the profitability prediction. 
+
+## Different models
+
+First, simple models such as logistic regression and SVM are used. These models take the previously computed embeddings as features. Then a more complex model consisting of a neural network is used, it is fed with the raw features. Namely, the swap rates and gas fees.
+
+### Logistic regression
+The first model consists of logistic regression. It is fitted on the standardized embeddings using a grid search cross-validation process to tune the hyperparameter C (regularizer). The following confusion matrices (one per type of features) are obtained on the test set : 
+
+
+`Embeddings` confusion matrix :
+| /           |True(pred) | False(pred) |
+|------------:|:---------:|:------------|
+| True(real)  | 2241      |   1544      |
+| False(real) |  104      |   112       |
+
+`Embeddings + tokens` confusion matrix :
+| /           |True(pred) | False(pred) |
+|------------:|:---------:|:------------|
+| True(real)  | 2241      |   1544      |
+| False(real) |  104      |   112       |
+
+Corresponding f1 scores : 
+| /           |`Embeddings ` | `Embeddings + tokens`|
+|------------:|:------------:|:---------------------|
+| f1 score    | 0.7312       |   1544      |
+
+
+### Support vector machine (SVM)
+The second model is a support vector machine trained on the standardized embeddings to find the optimal boundary between profitable and non-profitable cycles. Again, cross-validation is used to tune the hyperparameters. Namely: the kernel of the SVM (`linear`, `rbf`, or `poly`) and the regularizer (`C`). The selected model produces the following confusion matrix on the test set : 
+
+
+<table>
+<tr><th> Embeddings </th><th>Embeddings + tokens </th></tr>
+<tr><td>
+
+| /           |True(pred) | False(pred) |
+|------------:|:---------:|:------------|
+| True(real)  | 2276      |   1509      |
+| False(real) |  88       |   128       |
+
+
+</td><td>
+
+| /           |True(pred) | False(pred) |
+|------------:|:---------:|:------------|
+| True(real)  | 2276      |   1509      |
+| False(real) |  88       |   128       |
+
+
+</td></tr> </table>
+
+Corresponding f1 scores : 
+| /           |`Embeddings ` | `Embeddings + tokens`|
+|------------:|:------------:|:---------------------|
+| f1 score    | 0.7403      |   1544      |
+
+
+
+
+| /           |True(pred) | False(pred) |
+|------------:|:---------:|:------------|
+| True(real)  | 2276      |   1509      |
+| False(real) |  88       |   128       |
+
+
+## Investigation of the different embeddings performance 
+
+
+### PCA 
+
+True neg : 20 | False pos : 34 | False neg : 373 | True pos : 814
+╒══════════════╤═══════════════╤═════════════════╕
+│ \            │   True (pred) │    False (pred) │
+╞══════════════╪═══════════════╪═════════════════╡
+│ True (real)  │           814 │             373 │
+├──────────────┼───────────────┼─────────────────┤
+│ False (Real) │            34 │              20 │
+
+
+
+
+
+
+
 # Cycle clustering
 
 ## Motivation and method
@@ -353,137 +473,14 @@ In the following set of plots, the same metrics are recomputed but this time on 
 
 {% include_relative figures/clustering/Entropy_of_token_distribution_within_each_cluster_test_small.html %}
 
-# Cycles profitability prediction
+# Conclusion
 
-## Motivation
-
-The goal of the project also consists of testing the predictability of the cycle's profitability. The return of a given cycle is defined by its `revenues` minus its `cost` (fees). `Profitability` is a Boolean value indicating if the corresponding cycle has positive or negative `profitability`. `Profitability` is then used as a target/label for classification tasks. 94% of the cycles have a positive return. This imbalance can badly affect the training process: The models will tend to always output true and will obtain a precision of 94% despite being meaningless.  Thus, we need to take this imbalance into the prediction process. The target imbalance is handled through the `class_weight` module of  Sklearn . It reweights the samples during training to obtain a 1:1 balance between positive and negative data points. 
-
-## Features
-
-Two different features are used as input for prediction : 
-* `Embeddings`  : At first, the models use embeddings produced by the autoencoder as features. 
-* `Embeddings + tokens` : Then, additional features are added : for each cycles we add to  its embedding an encoding (one hot) of the tokens it involves. 
- 
-These two types of featuere are used and scores are compared to see if names of involved tokens bring relevant information to the prediction. 
-
-In our initial dataset, we also have access to the names of the 3 tokens particpating in the cyclic arbitrage, which could potentially be used as extra features ! 
-
-However, machine learning models usually don't like strings features. Let's tokenize them !
-
-Since we are dealing with a fixed (categorical) set of non-ordered features, a `one-hot` encoding is probaly a good way to go. 
-
-For instance, imagine we only have 3 tokens in our dataset : 
-
-> `ETH`, `DAI` and `AAVE`
-
-Then one could use the following `one-hot` encoding to represent them. We have 3 tokens so the encoding will be 3-dimensional 
-
-| Token Name | \| | Dim 1 | Dim 2 | Dim 3  |
-|:----------:|:--:|:-----:|:-----:|:------:|
-| `ETH`      | \| |  1    |   0   |   0    |
-| `DAI`      | \| |  0    |   1   |   0    |
-| `AAVE`     | \| |  0    |   0   |   1    |
-
-
-For a linear algebra persective, we observe that all rows have the same norm and are linearly independent, this is what makes this `one-hot` encoding a excellent choice for our purposes.
-
-We draw the attention of the reader on the fact that these extra features should not be added as input to the convolutional autoencoder. Indeed, there is not translation bias to exploit here. In order to ease the performance comparision with other types of embedding model, we decided not to use them in any of the embedding related tasks.
-
-However,  the profitability prediction. 
-
-## Different models
-
-First, simple models such as logistic regression and SVM are used. These models take the previously computed embeddings as features. Then a more complex model consisting of a neural network is used, it is fed with the raw features. Namely, the swap rates and gas fees.
-
-### Logistic regression
-The first model consists of logistic regression. It is fitted on the standardized embeddings using a grid search cross-validation process to tune the hyperparameter C (regularizer). The following confusion matrices (one per type of features) are obtained on the test set : 
-
-
-`Embeddings` confusion matrix :
-| /           |True(pred) | False(pred) |
-|------------:|:---------:|:------------|
-| True(real)  | 2241      |   1544      |
-| False(real) |  104      |   112       |
-
-`Embeddings + tokens` confusion matrix :
-| /           |True(pred) | False(pred) |
-|------------:|:---------:|:------------|
-| True(real)  | 2241      |   1544      |
-| False(real) |  104      |   112       |
-
-Corresponding f1 scores : 
-| /           |`Embeddings ` | `Embeddings + tokens`|
-|------------:|:------------:|:---------------------|
-| f1 score    | 0.7312       |   1544      |
-
-
-### Support vector machine (SVM)
-The second model is a support vector machine trained on the standardized embeddings to find the optimal boundary between profitable and non-profitable cycles. Again, cross-validation is used to tune the hyperparameters. Namely: the kernel of the SVM (`linear`, `rbf`, or `poly`) and the regularizer (`C`). The selected model produces the following confusion matrix on the test set : 
-
-
-
-
-<table>
-<tr><th> Embeddings </th><th>Embeddings + tokens </th></tr>
-<tr><td>
-
-| /           |True(pred) | False(pred) |
-|------------:|:---------:|:------------|
-| True(real)  | 2276      |   1509      |
-| False(real) |  88       |   128       |
-
-
-</td><td>
-
-| /           |True(pred) | False(pred) |
-|------------:|:---------:|:------------|
-| True(real)  | 2276      |   1509      |
-| False(real) |  88       |   128       |
-
-
-</td></tr> </table>
-
-Corresponding f1 scores : 
-| /           |`Embeddings ` | `Embeddings + tokens`|
-|------------:|:------------:|:---------------------|
-| f1 score    | 0.7403      |   1544      |
-
-
-### Neural network (NN)
-The last classification model is a complex neural network. it takes the raw standardized data as features.  The network has the following architecture:[TODO](#neural-network-nn).
-
-It consists of XXXX parameters, which is comparable to the encoding part of the embedding's autoencoder. We chose the number of parameters to be comparable to the encoder to allow the classification network to create its own embedding. We expect this network to perform better than the previous one since it creates an embedding designed for the given classification task.
-Dropout ?
-The performance obtain on the test set are the following :
-
-<table>
-<tr><th> Embeddings </th><th>Embeddings + tokens </th></tr>
-<tr><td>
-
-| /           |True(pred) | False(pred) |
-|------------:|:---------:|:------------|
-| True(real)  | 2276      |   1509      |
-| False(real) |  88       |   128       |
-
-
-</td><td>
-
-| /           |True(pred) | False(pred) |
-|------------:|:---------:|:------------|
-| True(real)  | XXXX      |   XXXX      |
-| False(real) |  XXXX       |   XXXX       |
-
-
-</td></tr> </table>
-
-Corresponding f1 scores : 
-| /           |`Embeddings ` | `Embeddings + tokens`|
-|------------:|:------------:|:---------------------|
-| f1 score    | XXXX     |   XXXX      |
-
+XXXXXXX
 
 # Further steps 
+
+We concluded the project, but there is still lots of opportunities for improvement. Some of them are described below.
+
 ## Embedding improvement 
 
 ### Attention Learning 
@@ -515,11 +512,6 @@ The performance of the encoder could be compared with more complex embedding tec
 ## Clustering improvement 
 
 If we increase the quality of the embedding, the clustering quality should increase as well. However, we can further back test the clustering algorithm by comparing KMeans with BDscan for instance.
-## Hyper-parameter optimisation
-
-In this first milestone, we only trained basic model to set up the whole project pipeline. We remain to optimise the training capabilities through `hyper-parameter optimisation`. 
-
-To this end, we will use the `talos` library to test various possible architectures for the `autoencoder`.
 
 # Resources 
 
