@@ -5,7 +5,7 @@
 
 To evaluate the performance of our cycle embedding (autoencoder), we propose to study the impact of different embeddings features on the output of a binary classification task, precisely the profitability of a cycle.
 
-The emphasis is not put on finding the best overall model here. The idea is to study the difference in the confusion matrix and metrics (accuracy, f1-score, recall, precision) that occur when the input features changes.
+The emphasis is not put on finding the best overall model here. The idea is to study the difference in the confusion matrix and metrics (accuracy, f1-score, recall, precision) that occur when the input features change.
 
 If we observe better performance metrics for our autoencoder embedding, this experiment will have provided evidence that our embedding somehow captures the underlying structure of cyclic arbitrages. 
 
@@ -24,11 +24,11 @@ If the first two options are described in detail in the earlier steps of this pr
 The following rolling indicators are used :
 
 1. SMA
-5. Rolling volatily
+5. Rolling volatility
 
 using two different rolling windows (`5` and `20`).
 
-These indicators are applied on the following underlying time series data (for each cycle):
+These indicators are applied on the following underlying time-series data (for each cycle):
 
 1. `Quote price` 
 2. `Gas price`
@@ -39,7 +39,9 @@ In other words, for each cycle, we construct `4 * 2 * 2 = 16` features.
 
 After `zero-padding` the tensor build is of shape `N x 3 x 600 x 16`.
 
-> **Note**: the `NaN` introduced by the computed are filled using `0` in order to have comparable shapes with the AE features.
+> **Note**: the `NaN` introduced by the computed are filled using `0` to have comparable shapes with the AE features.
+
+Again since we have a massive imbalance between classes the `accuracy` metrics needs to be avoided. We will investigate the differences in terms of `precision` and `recall`, in particular through the `f1-score` metric.
 
 
 ### Performance analysis
