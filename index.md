@@ -206,7 +206,7 @@ Secondly, we trained an autoencoder with linear activations only. The purpose of
 The model consists of 3 fully connected linear layers, one of them being the bottleneck (`dim=100`). 
 It is trained using Stochastic gradient descent and the following losses are obtained :
 
-{%include_relative figures/embedding/linear_losses.html %}
+{% include_relative figures/embedding/linear_losses.html %}
 ### Multilayer autoencoder
 
 Let's go deep! In this section, the number of layers is increased and activation functions are changed to be non-linear(`elu`,`relu`,`selu`...). 
@@ -214,7 +214,7 @@ The neural network used here has 2 fully connected layers of 600 neurons each. T
 Multiple activation functions were tested on this architecture and `elu` was retained to be the best one (based on test MSE). 
 This model is named `fully_connected_3L` and the obtained losses are :
 
-{%include_relative figures/embedding/fully_connected_3L_losses.html %}
+{% include_relative figures/embedding/fully_connected_3L_losses.html %}
 Surprisingly, the best loss obtained by this complex model does not beat the PCA model. It is the reason why training goes up to `500 epochs`. We wanted to see how the loss behaves and if it drops later on. But it did not happen. This model has the same number of layers as the `linear` one but it has mode neurons and the activations are more complex. Since the model is more complex we expect it to outperform the  `linear`  and `PCA` models on the training loss.  
 Note that more variants of neural network architectures will be trained and tested later on using the `Talos` library.
 
@@ -254,12 +254,12 @@ def CNN_fully_connected():
     return model_name, autoencoder
 ```
 This model is named `CNN_fully_connected` and produces following losses : 
-{%include_relative figures/embedding/CNN_fully_connected_losses.html %}
+{% include_relative figures/embedding/CNN_fully_connected_losses.html %}
 
 ## Performance Analysis
 The following figure illustrates the losses obtained by each described model : 
 
-{%include_relative figures/embedding/losses_comparison.html %}
+{% include_relative figures/embedding/losses_comparison.html %}
 
 As expected, the linear model's performances are close to the ones of PCA. However, the results obtained for more complex models do not meet our expectations. The fully connected network and the CNN perform poorly compare to PCA. They should perform better on the training data at least because they are more flexible. PCA is restrained to linear transformations which is not the case for CNN and  `fully_connected_3L`. 
 This poor performance might come from the choice of the network architecture: number of layers/neurons, activation functions...
