@@ -223,36 +223,11 @@ Note that more variants of neural network architectures will be trained and test
 To better capture the structure of cycles, we propose an alternative to the fully dense model of the previous section: a convolutional `autoencoder`. The motivation to introduce this complex architecture is that when a cyclic arbitrage is implemented, the first transaction could affect some price/gas of the second token and similarly for other transactions. The convolution operations could extract these neighbouring relationships between tokens to build a better latent representation of cycles.
 We hope that a convolutional layer will allow us to leverage this structural bias.
 First, we tried to train a "simple" CNN but it did not perform well. CNN are a simpler model than fully connected networks, having a limited number of parameters that are shared might cause some bias in the prediction. So we decided to add complexity to this model :  
-In addition to the convolutional layers of the network, we added 2 dense layers of 300 neurons symmetrically connected to the bottleneck. 
+In addition to the convolutional layers of the network, we added 2 dense layers (in blue) of 300 neurons symmetrically connected to the bottleneck (Green). 
+4 Convolution layers (in red) are added. They consist of a 2D convolution layer followed by a max-pooling operation on the encoding side and an upsampling operation on the decoding side : 
 
-Formally, we used the following architecture :
+<p align="center"> <img width="400" alt="Diagram encoder" src="figures/diagrams/CNN_FC.svg"> </p>
 
-```python
-def CNN_fully_connected():
-    model_name = "CNN_fully_connected"
-    # build encoder
-    input_img = keras.Input(shape=(3,600, 2))
-    x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(input_img)
-    x = layers.MaxPooling2D((1, 2), padding='same')(x)
-    x = layers.Conv2D(4, (3, 3), activation='relu', padding='same')(x)
-    x = layers.MaxPooling2D((3, 1), padding='same')(x)
-    encoded = layers.Conv2D(1, (1, 2), activation='relu', padding='same')(x)
-    # Dense layers
-    x = layers.Dense(300,  activation='elu')(x)
-    encoded = layers.Dense(100,  activation='elu')(x)
-    x = layers.Dense(100,  activation='elu')(encoded)
-    x = layers.Dense(300,  activation='elu')(x)
-    # build decoder
-    x = layers.Conv2D(4, (1, 2), activation='relu', padding='same')(x)
-    x = layers.UpSampling2D((3, 1))(x)
-    x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(x)
-    x = layers.UpSampling2D((1, 2))(x)
-    decoded = layers.Conv2D(2, (3, 3), activation='relu', padding='same')(x)
-    # combine encoder and decoder
-    autoencoder = keras.Model(input_img, decoded)
-    autoencoder.compile(optimizer='adam', loss='mean_squared_error',)
-    return model_name, autoencoder
-```
 This model is named `CNN_fully_connected` and produces following losses : 
 {% include_relative figures/embedding/CNN_fully_connected_losses.html %}
 
