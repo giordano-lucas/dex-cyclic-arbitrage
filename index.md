@@ -295,7 +295,7 @@ After running not less than `XXXXXXXXXXXXXXXXXXX` hours on the IZAR EPFL cluster
 |107|0.1756506711244583|0.15287084877490997|selu|16|5|0.25|150|100|adam|
 |150|0.14982140064239502|0.13650894165039062|selu|16|5|0.25|150|300|Adamax|
 |101|0.15751369297504425|0.14920662343502045|selu|16|5|0.25|150|300|adam|
-
+Talos has not finished running at the moment. But we already realize the `Adamax` works better than `Adam` on that particular task. The dropout seems to harm the performances. Model complexity (`#neurons`) is also a factor driving performance, the higher the complexity is the better the performance is. We realize now that 150 epochs are probably too small since a few models seem to not have converged after 150 epochs.    
 Note that `Talos` does not support `K-fold` cross-validation yet, so we had to use a single validation set (`20%`) for this task. 
 
 # Cycles profitability prediction
