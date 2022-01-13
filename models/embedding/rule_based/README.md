@@ -69,7 +69,7 @@ In terms of data, the rule-based dataset is available under the following names 
 - `scaled_encoded_train_features` : tensor padded version of `encoded_train_features`.
 - `scaled_encoded_test_features`  : tensor padded version of `encoded_test_features`.
 
-In order to generate then use the following command:
+In order to generate them use the following command:
 
 ```shell
 python3 models/prediction/build_rule_based_features/build_rule_based_scaled_encoded_features.py
