@@ -13,7 +13,7 @@ To obtain these datasets, please follow the instruction below:
 > **Note**: if you have access to the [IZAR EPFL cluster](https://www.epfl.ch/research/facilities/scitas/hardware/izar/), the simplest solution to get the datasets is to our `data` directory that was made available publicly under the following folder `scratch/izar/lgiordan/data/`. Use the following bash command to get it 
 
 ```bash
-cp -a scratch/izar/lgiordan/dex-cyclic-arbitrage/ home/$user/dex-cyclic-arbitrage/data/ 
+cp -a scratch/izar/lgiordan/dex-cyclic-arbitrage/data/ home/$user/dex-cyclic-arbitrage/data/ 
 ```
 If you previously cloned our git repository in the root directory of our home directory.
 
