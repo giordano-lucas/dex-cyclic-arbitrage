@@ -195,9 +195,12 @@ Using the `PCA` approach, we can easily understand how much is lost when `Q` var
 In the [Cycles profitability prediction](#cycles-profitability-prediction) task, we will be able to measure the gain of the embedding compared to the raw features (base model).
 
 ## Autoencoder : different architectures
-In this section, we tried multiple models (mainly focusing on autoencoders) for embedding computation through dimensionality reduction. As a first step, we trained the described models on the entire dataset that we have. However, we realized that some data points of the set were not `liquid` at all. These data points were represented by rates spanning over hundreds of days. The models performed poorly on this set so we decided to focus on `liquid` data only (see Data exploration). Multiple optimizers  (`Adam`,`SGD`,`NAdam`,`Adamax`,`RSMprop`) were tested for training. It appears that `Adamax` is the one working the best on these tasks. It was not always the case (no free lunch theorem) but `Adamax` was faster than the other optimizers by a factor of 10 when working on the `liquid` data.  
-Manually defining and testing architectures was a tedious and time-consuming task, multiple days of the study were dedicated to this section. 
+
+In this section, we tried multiple models (mainly focusing on autoencoders) for embedding computation through dimensionality reduction. As a first step, we trained the described models on the entire dataset that we have. However, we realized that some data points of the set were not `liquid` at all. These data points were represented by rates spanning over hundreds of days. The models performed poorly on this set so we decided to focus on `liquid` data only (see [Data exploration section](#data-exploration). Multiple optimizers  (`Adam`,`SGD`,`NAdam`,`Adamax`,`RSMprop`) were tested for training. It appears that `Adamax` is the one working the best on these tasks. It was not always the case ([no free lunch theorem](https://en.wikipedia.org/wiki/No_free_lunch_in_search_and_optimization#:~:text=In%20computational%20complexity%20and%20optimization,same%20for%20any%20solution%20method.) but `Adamax` was faster than the other optimizers by a factor of 10 when working on the `liquid` data.  
+Manually defining and testing architectures was a tedious and time-consuming task, multiple days of the study were dedicated to this section.
+
 ### PCA 
+
 The first model chosen for embedding representation is a PCA having a latent space of 100 dimensions. note that `dim=100` will be used for all next models. PCA only considers linear transformations. However, it is fast to train (around 30s in our case) and can act as a baseline comparison for other models.
 
 ### Linear autoencoder 
@@ -207,14 +210,16 @@ The model consists of 3 fully connected linear layers, one of them being the bot
 It is trained using Stochastic gradient descent and the following losses are obtained :
 
 {% include_relative figures/embedding/linear_losses.html %}
+
 ### Multilayer autoencoder
 
 Let's go deep! In this section, the number of layers is increased and activation functions are changed to be non-linear(`elu`,`relu`,`selu`...). 
 The neural network used here has 2 fully connected layers of 600 neurons each. They are symmetric to the bottleneck layer and uses `elu` activations.
 Multiple activation functions were tested on this architecture and `elu` was retained to be the best one (based on test MSE). 
-This model is named `fully_connected_3L` and the obtained losses are :
+This model is named `fully_connected_3L` and the obtained losses are:
 
 {% include_relative figures/embedding/fully_connected_3L_losses.html %}
+
 Surprisingly, the best loss obtained by this complex model does not beat the PCA model. It is the reason why training goes up to `500 epochs`. We wanted to see how the loss behaves and if it drops later on. But it did not happen. This model has the same number of layers as the `linear` one but it has mode neurons and the activations are more complex. Since the model is more complex we expect it to outperform the  `linear`  and `PCA` models on the training loss.  
 Note that more variants of neural network architectures will be trained and tested later on using the `Talos` library.
 
@@ -222,9 +227,10 @@ Note that more variants of neural network architectures will be trained and test
 
 To better capture the structure of cycles, we propose an alternative to the fully dense model of the previous section: a convolutional `autoencoder`. The motivation to introduce this complex architecture is that when a cyclic arbitrage is implemented, the first transaction could affect some price/gas of the second token and similarly for other transactions. The convolution operations could extract these neighbouring relationships between tokens to build a better latent representation of cycles.
 We hope that a convolutional layer will allow us to leverage this structural bias.
-First, we tried to train a "simple" CNN but it did not perform well. CNN are a simpler model than fully connected networks, having a limited number of parameters that are shared might cause some bias in the prediction. So we decided to add complexity to this model :  
+First, we tried to train a ***simple*** CNN but it did not perform well. CNN are a simpler model than fully connected networks, having a limited number of parameters that are shared might cause some bias in the prediction. So we decided to add complexity to this model :  
+
 In addition to the convolutional layers of the network, we added 2 dense layers (in blue) of 300 neurons symmetrically connected to the bottleneck (Green). 
-4 Convolution layers (in red) are added. They consist of a 2D convolution layer followed by a max-pooling operation on the encoding side and an upsampling operation on the decoding side : 
+4 Convolution layers (in red) are added. They consist of a 2D convolution layer followed by a max-pooling operation on the encoding side and an upsampling operation on the decoding side: 
 
 <p align="center"> <img width="400" alt="Diagram encoder" src="figures/diagrams/CNN_FC.svg"> </p>
 
@@ -311,8 +317,8 @@ The first model consists of logistic regression. It is fitted on the standardize
 
 | /           |True(pred) | False(pred) |
 |------------:|:---------:|:------------|
-| True(real)  | 657      |   530      |
-| False(real) |  25      |   29       |
+| True(real)  | 657       |   530       |
+| False(real) |  25       |   29        |
 
 `Embeddings + tokens` confusion matrix :
 
@@ -327,7 +333,7 @@ Corresponding f1 scores :
 
 | /           |`Embeddings ` | `Embeddings + tokens`|
 |------------:|:------------:|:---------------------|
-| f1 score    | 0.7312       |   1544      |
+| f1 score    | 0.703.       |   0.808      |
 
 
 ### Support vector machine (SVM)
@@ -357,7 +363,7 @@ Corresponding f1 scores :
 |------------:|:------------:|:---------------------|
 | f1 score    | 0.9799       |   1544               |
 
-Despite rebalancing the classes, it appears that the SVM models always predict true and reaches an f1 score of 0.9799. 
+Despite rebalancing the classes, it appears that the SVM models always predict true and reaches an f1 score of 0.9799. Even though this model reaches the best performance, it's a trivial model.
 
 
 ### Global Interpretation
