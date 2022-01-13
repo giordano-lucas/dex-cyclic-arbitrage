@@ -437,7 +437,12 @@ with a f1-score of 0.800
 
 For the rule-based encoding, we have
 
-XXXX
+| /           |True(pred) | False(pred) |
+|------------:|:---------:|:------------|
+| True(real)  | 977       |   210       |
+| False(real) |  42       |   12        |
+
+with a f1-score of 0.886
 
 Unfortunately, the conclusions that were drawn in the [Performance Analysis section of the AE training](#performance-analysis) can also be applied here. Namely, the `AE` is not able to reach the same level of f1-score as the `PCA` and `rule-based` embedding. 
 
