@@ -76,14 +76,15 @@ Each folder contains a decidaced `README` where extra instruction and details ar
     
 ## How to run the code 
 
-1. Follow the steps in [Data Acquisition](data_acquisition/README.md) to download the raw datasets 2. Follow the steps in [Data Processing](data_processing/README.md) to generate the preprocessed data
-2. **Data exploration**: run the `data_exploration/data_exploration.ipynb` notebook to see the data exploration steps taken.
-3. **Embeddings**: open the `models/embedding` folder:
+1. Follow the steps in [Data Acquisition](data_acquisition/README.md) to download the raw datasets 
+2. Follow the steps in [Data Processing](data_processing/README.md) to generate the preprocessed data
+3. **Data exploration**: run the `data_exploration/data_exploration.ipynb` notebook to see the data exploration steps taken.
+4. **Embeddings**: open the `models/embedding` folder:
     1. Autoencoder: follow the steps in [Train Autoencoders](models/embedding/autoencoder/README.md) to understand how to train and use the available autoencoders
     2. PCA: run the `pca_embedding.ipynb` notebook to create the `PCA` embedding.
     3. Rule-based: follow the steps in [Build Rule-based features](models/embedding/rule_based/README.md) to generate preprocessed data usefull for performance comparision.
-4. **Clustering**: run the `models/clustering/Kmeans.ipynb` notebook to see the code related to the clustering.
-5. **Profitablity prediction**: run the `models/prediction/prediction.ipynb` notebook for the profitablity prediction task.
+5. **Clustering**: run the `models/clustering/Kmeans.ipynb` notebook to see the code related to the clustering.
+6. **Profitablity prediction**: run the `models/prediction/prediction.ipynb` notebook for the profitablity prediction task.
 
 ## Dependencies requirement
 
@@ -165,12 +166,14 @@ If you want to run our code in the scitas cluster, you will need several additio
 | Autencoder manual tests for several architectures        | Augustin       |    8h        |
 | Talos setup                             | Lucas                           |    2h        |
 | Hyperparameter opmisation               | Lucas & Augustin                |    4h        |
-| Kmeans : better silouhette analysis     | Lucas                           |    1h        |
-| Kmeans : update results for liquid data | Lucas                           |    3h        |
+| Kmeans : better silouhette analysis     | Lucas                           |    3h        |
+| Kmeans : update results for liquid data | Lucas                           |    4h        |
+| PCA embedding                           | Lucas                           |    1h        |
 | Ruled based data : pandas-ta implementation    | Lucas                    |    1h        |
 | Ruled based data : pandas implementation       | Lucas                    |    3h        |
 | Ruled based data : code optimisation           | Lucas                    |    3h        |
 | Ruled based data : performance comparision with AE  | Lucas               |    1h        |
+| Repository cleaning                     | Lucas & Augustin                |    1h        |
 | Notebook comments and markdown          | Lucas & Augustin                |    4h        |
 | Data story (4)                          | Lucas & Augustin                |    6h        |
 
@@ -178,5 +181,5 @@ If you want to run our code in the scitas cluster, you will need several additio
 
 | Team member                     | work hours   |
 |:--------------------------------| ------------:|
-| Lucas Giordano                  |    63h       |
+| Lucas Giordano                  |    81h       |
 | Augustin Kapps                  |    56h       |
