@@ -382,7 +382,7 @@ Despite rebalancing the classes, it appears that the SVM models always predict t
 ### Global Interpretation
 
 Given the result above, we can conclude that there is some predictability in the `one-hot` encoding of the token since the f1-score raised from `0.70` to `0.8` in the `AE` case. We also wanted to stress that all models usually experience some difficulties when it comes to predicting non-profitable cycles.
-
+Please note that the models were trained on a subset of the data because of limited computational capabilities. Using the entire set of data would for sure increase the scores.  
 ## Investigation of the different embeddings performance 
 
 To evaluate the performance of our cycle embedding (autoencoder), we propose to study the impact of different embeddings features on the output of a binary classification task, precisely the profitability of a cycle.
