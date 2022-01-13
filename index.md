@@ -353,17 +353,17 @@ The second model is a support vector machine trained on the standardized embeddi
 
 | /           |True(pred) | False(pred) |
 |------------:|:---------:|:------------|
-| True(real)  | 1192      |    0      |
-| False(real) |  49       |   0       |
+| True(real)  | 1155      |    37      |
+| False(real) |  46       |    3       |
 
 Corresponding f1 scores : 
 
 
 | /           |`Embeddings ` | `Embeddings + tokens`|
 |------------:|:------------:|:---------------------|
-| f1 score    | 0.9799       |   1544               |
+| f1 score    | 0.9799       |   0.9653             |
 
-Despite rebalancing the classes, it appears that the SVM models always predict true and reaches an f1 score of 0.9799. Even though this model reaches the best performance, it's a trivial model.
+Despite rebalancing the classes, it appears that the SVM models always predict true and reaches an f1 score of 0.9799. Even though this model reaches the best performance, it's a trivial model.Surprisingly, including the tokens encoding does not improve the performance when using SVM as a classifier. The f1 score decreased but now the model does not behave trivially (always outputting True). 
 
 
 ### Global Interpretation
