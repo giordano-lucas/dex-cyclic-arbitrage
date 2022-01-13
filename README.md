@@ -55,14 +55,22 @@ Each folder contains a decidaced `README` where extra instruction and details ar
     .
     ├── data                                      # Data folder
     │ ├── uniswap_raw_data                        # data fetched from bitquery
-    │ │  ├── uniswap_raw_data_0_1000.json.gz     # example of file
+    │ │  ├── uniswap_raw_data_0_1000.json.gz      # example of file
     │ │  ├── ...
-    │ ├── additional_features_XXX.csv             #  data fetched from bitquery
+    │ ├── liquid                                  # directory containing datasets corresponding to liquid cycles
+    │ │ ├── uniswap_data_liquid.csv               # csv version of the dataset fetched from biquery (filter out illiquid cycles)
+    │ │ ├── additional_features_train_liquid.csv  # file used by the clustering and prediction task with extra features (train)
+    │ │ ├── additional_features_test_liquid.csv   # file used by the clustering and prediction task with extra features (test)
+    │ │ ├── ML_features                           # directory for ML features
+    │ │ │ ├── ...
+    │ │ ├── pca                                   # directory containing the encoded features from the PCA model
+    │ │ │ ├── ...
+    │ │ ├── rule_based                            # directory containing the encoded features from the Rule-Based model
+    │ │ │ ├── ...
+    │ ├── full                                    # similar architecture as for the liquid folder but for the full dataset
+    │ │ ├── ...
     │ ├── cycles_in_Uniswap.json                  # dataset from the paper
     │ ├── filtered_cycles.json                    # only cycles of length 3 
-    │ ├── uniswap_data.csv                        # csv version of the dataset fetched from biquery 
-    │ ├── liquid_uniswap_data.csv                 # filter out illiquid token pair
-    │ ├── additional_features_XXX.csv             # file used by the clustering and prediction task with extra features
     ├── data_acquisition                    # Scripts to fetch the datasets (from bitquery and from the paper)
     ├── data_exploration                    # Contains visualisations of the datasets
     ├── data_processing                     # All scripts to process the raw data into usables features for ML
@@ -71,7 +79,7 @@ Each folder contains a decidaced `README` where extra instruction and details ar
     │ ├── embedding                         # files related to the embedding task
     │ ├── prediction                        # files related to the profitablity prediction task
     ├── figures                             # Contains the ouput images and html used for the data story
-    ├── requirements.txt                    # Dependencies
+    ├── requirements.txt                    # Dependencies file
     └── README.md               
     
 ## How to run the code 
