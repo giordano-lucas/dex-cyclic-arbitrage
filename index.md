@@ -236,7 +236,7 @@ The following figure illustrates the losses obtained by each described model :
 
 {% include_relative figures/embedding/losses_comparison.html %}
 
-As expected, the linear model's performances are close to the ones of PCA. However, the results obtained for more complex models do not meet our expectations. The fully connected network and the CNN perform poorly compare to PCA. They should perform better on the training data at least because they are more flexible. PCA is restrained to linear transformations which is not the case for CNN and  `fully_connected_3L`. 
+As expected, the linear model's performances are close to the ones of PCA. However, the results obtained for more complex models do not meet our expectations. The fully connected network and the CNN perform poorly compare to PCA. They should perform better on the training data at least because they are more flexible. PCA is restrained to linear transformations which is not the case for `CNN_fully_connected` and  `fully_connected_3L`. 
 This poor performance might come from the choice of the network architecture: number of layers/neurons, activation functions...
 To find the optimal architecture we tune these parameters in the following section.
 
