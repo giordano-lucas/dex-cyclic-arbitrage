@@ -332,18 +332,24 @@ The first model consists of logistic regression. It is fitted on the standardize
 
 
 `Embeddings` confusion matrix :
+
+
 | /           |True(pred) | False(pred) |
 |------------:|:---------:|:------------|
 | True(real)  | 657      |   530      |
 | False(real) |  25      |   29       |
 
 `Embeddings + tokens` confusion matrix :
+
+
 | /           |True(pred) | False(pred) |
 |------------:|:---------:|:------------|
 | True(real)  | 829      |   358      |
 | False(real) |  36      |   18       |
 
 Corresponding f1 scores : 
+
+
 | /           |`Embeddings ` | `Embeddings + tokens`|
 |------------:|:------------:|:---------------------|
 | f1 score    | 0.7312       |   1544      |
