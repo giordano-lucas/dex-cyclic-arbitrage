@@ -164,8 +164,11 @@ If you want to run our code in the scitas cluster, you will need several additio
 | Data processing simpler pipeline        | Augustin                        |    2h        |
 | Autencoder improvement and debug        | Augustin                        |    3h        |
 | Autencoder manual tests for several architectures        | Augustin       |    8h        |
+| Testing optimizers                      | Augustin                        |    2h        |
 | Talos setup                             | Lucas                           |    2h        |
+| Running Talos                           | Augustin                        |    1h        |
 | Hyperparameter opmisation               | Lucas & Augustin                |    4h        |
+| Reporting losses                        | Augustin                        |    1h        |
 | Kmeans : better silouhette analysis     | Lucas                           |    3h        |
 | Kmeans : update results for liquid data | Lucas                           |    4h        |
 | PCA embedding                           | Lucas                           |    1h        |
@@ -182,4 +185,4 @@ If you want to run our code in the scitas cluster, you will need several additio
 | Team member                     | work hours   |
 |:--------------------------------| ------------:|
 | Lucas Giordano                  |    81h       |
-| Augustin Kapps                  |    56h       |
+| Augustin Kapps                  |    60h       |
