@@ -354,31 +354,32 @@ The second model is a support vector machine trained on the standardized embeddi
 
 
 `Embeddings` confusion matrix :
+
+
 | /           |True(pred) | False(pred) |
 |------------:|:---------:|:------------|
-| True(real)  | 2241      |   1544      |
-| False(real) |  104      |   112       |
+| True(real)  | 1192      |   0         |
+| False(real) |  49       |   0         |
 
 `Embeddings + tokens` confusion matrix :
+
+
 | /           |True(pred) | False(pred) |
 |------------:|:---------:|:------------|
-| True(real)  | 2241      |   1544      |
-| False(real) |  104      |   112       |
+| True(real)  | 1192      |    0      |
+| False(real) |  49       |   0       |
 
 Corresponding f1 scores : 
+
+
 | /           |`Embeddings ` | `Embeddings + tokens`|
 |------------:|:------------:|:---------------------|
-| f1 score    | 0.7312       |   1544      |
+| f1 score    | 0.9799       |   1544               |
+
+Despite rebalancing the classes, it appears that the SVM models always predict true and reaches an f1 score of 0.9799. 
 
 
-
-
-| /           |True(pred) | False(pred) |
-|------------:|:---------:|:------------|
-| True(real)  | 2276      |   1509      |
-| False(real) |  88       |   128       |
-
-### Interpretation
+### Global Interpretation
 
 Given the result above, we can conclude that there is some predictability in the `one-hot` encoding of the token since the f1-score raised from `0.70` to `0.8` in the `AE` case. We also wanted to stress that all models usually experience some difficulties when it comes to predicting non-profitable cycles.
 
