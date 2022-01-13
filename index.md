@@ -72,9 +72,9 @@ Note that only `quotePrice` and `gasPrice` are used as features for the embeddin
 
 {% include_relative figures/data_exploration/quotePrice_small.html %}
 
-We observe that both features are extremely heavy tailed. It is likely to cause some issues when used as features for machine learning models. As shown in the plot,applying a logarithmic transformation make the distributions more Gaussian (desired behaviour).
+We observe that both features are extremely heavy-tailed. It is likely to cause some issues when used as features for machine learning models. As shown in the plot, applying a logarithmic transformation make the distributions more Gaussian (desired behaviour).
 
-As a result, we computed again the basic descriptive statistics but this time in a log scale. We observe a better scale and the results are much more interpretable.
+As a result, we computed again the basic descriptive statistics but this time on a log scale. We observe a better scale and the results are much more interpretable.
 
 ||baseAmount|quoteAmount|quotePrice|gasPrice|gasValue|
 |---|---|---|---|---|---|
@@ -87,28 +87,30 @@ As a result, we computed again the basic descriptive statistics but this time in
 |75%|6.11|6.08|5.35|5.82|-2.94|
 |max|24.38|24.38|42.51|11.51|2.57|
 
-We also would like to draw the readers attention of the fact that this global heavy tail phenonom also appears at the token pair scale. However, we observe more variability in the distributions. We took a liquid token pool (lots of transactions within a small time frame) to compute the following graph.
+We also would like to draw the readers attention to the fact that this global heavy tail phenomenon also appears at the token pair scale. However, we observe more variability in the distributions. We took a liquid token pool (lots of transactions within a small time frame) to compute the following graph.
 
 {% include_relative figures/data_exploration/quote_price_liquid_pair_small.html %}
 
-Furthermore, some tokens were partially illiquid which negatively affects the number of transactions available in the dataset. To better understand this phenomenon, we plotted the distrbution of transaction per token pair.
+Furthermore, some tokens were partially illiquid which negatively affects the number of transactions available in the dataset. To better understand this phenomenon, we plotted the distribution of transactions per token pair.
 
 {% include_relative figures/data_exploration/nb_transaction_small.html %}
 
-Futhermore, it is likely that for illiquid uniswap pools the time between the first and the last transactions reported differ quite significantly. In contrast, for very liquids pools, the time-span can be in the order of miliseconds. This discrepancy in the dataset could create some issues for the analysis performed in this study.
+Furthermore, it is likely that for illiquid Uniswap pools the time between the first and the last transactions reported differ quite significantly. In contrast, for very liquid pools, the time-span can be in the order of milliseconds. This discrepancy in the dataset could create some issues for the analysis performed in this study.
 
-We provide more detail information of the time-span distribution in the following plot.
+We provide more detailed information on the time-span distribution in the following plot.
 
 {% include_relative figures/data_exploration/time_span_small.html %}
 
-A large disparity is observed with respect to the time span distribution. Furthermore, some transactions have more than 100 days gap for the same token which characterise the illiquity of the underlying tokens. However, the observed median time span is still fairly reasonable : `1 days 21:52:20`.
+A large disparity is observed with respect to the time span distribution. Furthermore, some transactions have more than 100 days gap for the same token which characterise the illiquidity of the underlying tokens. However, the observed median time span is still fairly reasonable: `1 day 21:52:20`.
 
-After a quick data exploration on these illiquid tokens, we realised they have a very different feature distribution than the other. They can be considered as outliers and therefore negatively impact the training of our machine learning tasks. Futhermore, one might argue that abitrage on illiquid tokens are hard to realise in practice and they there less incentive in studying them.
+After a quick data exploration on these illiquid tokens, we realised they have a very different feature distribution than the other. They can be considered as outliers and therefore negatively impact the training of our machine learning tasks. Furthermore, one might argue that arbitrage on illiquid tokens are hard to realise in practice and they there is less incentive in studying them.
 
-At this stage, we propose develop two sub-datasets for the rest of the tasks, one qualified as `full` since it contains all cycles and another qualified as `liquid` containing only those that are considered liquid enough, meaning that they satisfy the following conditions:
+At this stage, we propose to develop two sub-datasets for the rest of the tasks, one qualified as `full` since it contains all cycles and another qualified as `liquid` containing only those that are considered liquid enough. `Liquid tokens` must satisfy the following conditions:
 
-1. Each token in the cycle has at least half of transactions that should have been fetched (i.e. 300 out of 600). 
-2. Each token in the cycle is in the `80%` quantile of the time-span distribution defined above (i.e. span less than 15 days).
+1. The token has at least half of the transactions that should have been fetched (i.e. 300 out of 600). 
+2. The token is in the `80%` quantile of the time-span distribution defined above (i.e. span less than 15 days).
+
+Then a cycle is considered liquid if at least `2/3` of its composed tokens are themselves liquid.
 
 As we will later see, the `full dataset` is harder to train and we decided to only use the `liquid` at some point. 
 
@@ -133,9 +135,9 @@ To avoid the effect of the scales of the features in our results we have to re-s
 * Use a min max scaler that reduce the range fo the features to [0,1] by applying the following transformation to each feature $$x_i$$ :
          $$x_i=\frac{x_i-min(x_i)}{max(x_i)-min(x_i)}$$
 
-After taken the `log` global features showed in the data exploration section somhow look Gaussian. Hence, we decided to opt for the standard scaler.
+After taking the `log` global features shown in the data exploration section somehow look Gaussian. Hence, we decided to opt for the standard scaler.
 
-Moreover, token pairs can have very different scales in terms of quote and gas prices. Therefore, it might be worthy to define a custom scaling mecanism for each of these pairs. We refer to this as a `TokenStandardScaler` in the code.
+Moreover, token pairs can have very different scales in terms of quote and gas prices. Therefore, it might be worthy to define a custom scaling mechanism for each of these pairs. We refer to this as a `TokenStandardScaler` in the code.
 
 As expected, the latter approach yields better performance in the following machine learning tasks. However, it requires more processing power than the first approach. We had to restrict the number of rows in the dataset to be able to leverage it.
 
@@ -149,13 +151,13 @@ In this study, each cycle is represented as a tensor with the following 3 dimens
 | `P`  | 600  | the length of the time series of swap transactions                     |
 | `K`  | 2    | the amount of time series/features (`quotePrice` and `gasPrice`)       |
 
-However, due to lack of liquidity in Uniswap pools for a given pair of tokens, there could be less than `P = 600` swap transaction fetched from `bitquery`.  Since machine learning models required to fix the input size for their functioning, we need to pad the shorter time series. To this end, the fixed length `P =600` was chosen, as well as the `zero-padding` technique for simplicity reasons. An extensive backtesting process could be performed later on (e.g. fixed or mean frequency between two cycles). However, due to time constrains, we decided not to explore further in this direction.
+However, due to lack of liquidity in Uniswap pools for a given pair of tokens, there could be less than `P = 600` swap transaction fetched from `bitquery`.  Since machine learning models are required to fix the input size for their functioning, we need to pad the shorter time series. To this end, the fixed-length `P =600` was chosen, as well as the `zero-padding` technique for simplicity reasons. An extensive backtesting process could be performed later on (e.g. fixed or mean frequency between two cycles). However, due to time constraints, we decided not to explore further in this direction.
 
->  Note: in both train and test splits the `zero-padding` artictial values account for roughly `17-18%` of the `full` data set. In the [further steps section](#further-steps), we propose alternative to reduce this overhead.
+>  Note: in both train and test splits the `zero-padding` artificial values account for roughly `17-18%` of the `full` dataset and `10-11%` of the `liquid` dataset. In the [further steps section](#further-steps), we propose an alternative to reduce this overhead.
 
 ### Building the feature tensor
 
-`The dataset` is not directly shaped to build the tensor feature for the machine learning models. Indeed it simply contains a list of swap transactions in `csv` format. We need to massage using with multiple operations to group transactions associated to the same cycle together and pad each time series independently. 
+`The dataset` is not directly shaped to build the tensor feature for the machine learning models. Indeed it simply contains a list of swap transactions in `csv` format. We need to massage it using multiple operations to group transactions associated with the same cycle together and pad each time series independently. 
 
 > Note: hardware capacities of the cluster only allowed us to process `10 000 000` swap transactions.
 
@@ -289,17 +291,13 @@ Note that `Talos` does not support `K-fold` cross-validation yet, so we had to u
 
 ## Motivation
 
-The goal of the project also consists of testing the predictability of the cycle's profitability. The return of a given cycle is defined by its `revenues` minus its `cost` (fees). `Profitability` is a Boolean value indicating if the corresponding cycle has positive or negative `profitability`. `Profitability` is then used as a target/label for classification tasks. 95% of the cycles have a positive return. This imbalance can badly affect the training process: The models will tend to always output true and will obtain a precision of 94% despite being meaningless.  Thus, we need to take this imbalance into the prediction process. The target imbalance is handled through the `class_weight` module of  Sklearn . It reweights the samples during training to obtain a 1:1 balance between positive and negative data points. 
+The goal of the project also consists of testing the predictability of the cycle's profitability. The return of a given cycle is defined by its `revenues` minus its `cost` (fees). `Profitability` is a Boolean value indicating if the corresponding cycle has positive or negative `profitability`. `Profitability` is then used as a target/label for classification tasks. 95% of the cycles have a positive return. This imbalance can badly affect the training process. Indeed, a model that always outputs true will obtain a precision of 94% despite being meaningless. We proposed to deal with the imbalance through `class weights` in the loss function. The idea is to reweight the samples during training to obtain a 1 to 1 balance between positive and negative data points. 
 
-## Features
+## Method and features
 
-Two different features are used as input for prediction : 
-* `Embeddings`  : At first, the models use embeddings produced by the autoencoder as features. 
-* `Embeddings + tokens` : Then, additional features are added : for each cycles we add to  its embedding an encoding (one hot) of the tokens it involves. 
- 
-These two types of features are used and the scores are compared to see if names of involved tokens bring relevant information to the prediction. 
+Obviously, at first, the models will make use of embeddings produced by the encoding layer of the autoencoders as features. Multiple embeddings are tested (`AE`, `PCA`)
 
-In our initial dataset, we also have access to the names of the 3 tokens particpating in the cyclic arbitrage, which could potentially be used as extra features ! However, machine learning models usually don't like strings features. Let's tokenize them ! Since we are dealing with a fixed (categorical) set of non-ordered features, a `one-hot` encoding is probaly a good way to go. 
+In our initial dataset, we also have access to the names of the 3 tokens participating in the cyclic arbitrage, which could potentially be used as extra features! However, machine learning models usually don't like strings features. Let's tokenize them! Since we are dealing with a fixed (categorical) set of non-ordered features, a `one-hot` encoding is probably a good way to go. 
 
 For instance, imagine we only have 3 tokens in our dataset : 
 
@@ -314,17 +312,21 @@ Then one could use the following `one-hot` encoding to represent them. We have 3
 | `AAVE`     | \| |  0    |   0   |   1    |
 
 
-For a linear algebra persective, we observe that all rows have the same norm and are linearly independent, this is what makes this `one-hot` encoding a excellent choice for our purposes.
+From a linear algebra perspective, we observe that all rows have the same norm and are linearly independent, this is what makes this `one-hot` encoding an excellent choice for our purposes.
 
-We draw the attention of the reader on the fact that these extra features should not be added as input to the convolutional autoencoder. Indeed, there is not translation bias to exploit here. In order to ease the performance comparision with other types of embedding model, we decided not to use them in any of the embedding related tasks.
+We draw the attention of the reader to the fact that these extra features should not be added as an input to the convolutional autoencoder. Indeed, there is no translation bias to exploit here. In order to ease the performance comparison with other types of embedding models, we decided not to use them in any of the embedding related tasks. 
 
-However,  the profitability prediction. 
+To sum up, two different sets of features are used as input for prediction: 
+1. `Embeddings`.
+2. `Embeddings + tokens`.
+
+These two types of features are used and the scores are compared to see if the names of the involved tokens bring relevant information to the prediction. 
+
+Finally, we need to select a performance metric to compare our models. Usually, for binary classification tasks, the `accuracy is chosen. However, it is probably not a good chose here since we have a strong class imbalance. Indeed, using `accuracy the trivial model that outputs always true will have a high performance and this is not what we want. Hence, we will investigate the differences in terms of `precision` and `recall`, in particular through the `f1-score` metric which is a geometric mean between `precision` and `recall`.
 
 ## Different models
-
-First, simple models such as logistic regression and SVM are used. These models take the previously computed embeddings as features. Then a more complex model consisting of a neural network is used, it is fed with the raw features. Namely, the swap rates and gas fees.
-
 ### Logistic regression
+
 The first model consists of logistic regression. It is fitted on the standardized embeddings using a grid search cross-validation process to tune the hyperparameter C (regularizer). The following confusion matrices (one per type of features) are obtained on the test set : 
 
 
@@ -377,15 +379,13 @@ Corresponding f1 scores :
 
 ### Interpretation
 
-Given the result above, we can conclude that there is some predictability in the `one-hot` encoding of the token since the f1-score raised from `0.70` to `0.8` in the `AE` case.
-
-We also wanted to stress that all models usually experience some difficulties when it comes to predicting non-profitable cycles.
+Given the result above, we can conclude that there is some predictability in the `one-hot` encoding of the token since the f1-score raised from `0.70` to `0.8` in the `AE` case. We also wanted to stress that all models usually experience some difficulties when it comes to predicting non-profitable cycles.
 
 ## Investigation of the different embeddings performance 
 
 To evaluate the performance of our cycle embedding (autoencoder), we propose to study the impact of different embeddings features on the output of a binary classification task, precisely the profitability of a cycle.
 
-The emphasis is not put on finding the best overall model here. The idea is to study the difference in the confusion matrix and metrics (accuracy, f1-score, recall, precision) that occur when the input features changes.
+The emphasis is not put on finding the best overall model here. The idea is to study the difference in the confusion matrix and metrics (accuracy, f1-score, recall, precision) that occur when the input features change.
 
 If we observe better performance metrics for our autoencoder embedding, this experiment will have provided evidence that our embedding somehow captures the underlying structure of cyclic arbitrages. 
 
@@ -402,11 +402,11 @@ If the first two options are described in detail in the earlier steps of this pr
 The following rolling indicators are used :
 
 1. SMA
-5. Rolling volatily
+5. Rolling volatility
 
 using two different rolling windows (`5` and `20`).
 
-These indicators are applied on the following underlying time series data (for each cycle):
+These indicators are applied on the following underlying time-series data (for each cycle):
 
 1. `Quote price` 
 2. `Gas price`
@@ -417,9 +417,9 @@ In other words, for each cycle, we construct `4 * 2 * 2 = 16` features.
 
 After `zero-padding` the tensor build is of shape `N x 3 x 600 x 16`.
 
-> **Note**: the `NaN` introduced by the computed are filled using `0` in order to have comparable shapes with the AE features.
+> **Note**: the `NaN` introduced by the computed are filled using `0` to have comparable shapes with the AE features.
 
-Again since we have a massive imbalance between classes the `accuracy` metrics needs to be avoided. We will investigate the differences if terms of `precision` and `recall`, in particular through the `f1-score` metric.
+Again since we have a massive imbalance between classes the `accuracy` metrics needs to be avoided. We will investigate the differences in terms of `precision` and `recall`, in particular through the `f1-score` metric.
 
 ### Results
 
@@ -439,9 +439,9 @@ For the rule-based encoding, we have
 
 XXXX
 
-Unfortulately, the conclusions drawn in the [Performance Analysis section of the AE training](#performance-analysis) can also be applied here. Namely, the `AE` is not able to reach the same level of f1-score as the `PCA` and `rule-based` embedding. 
+Unfortunately, the conclusions that were drawn in the [Performance Analysis section of the AE training](#performance-analysis) can also be applied here. Namely, the `AE` is not able to reach the same level of f1-score as the `PCA` and `rule-based` embedding. 
 
-We would like to draw the attention to the reader on the fact that even though the `MSE Loss` was higher for the `AE` than for `PCA`, it is not obvious that the performance of `embeddings` themselves are comparable in the same way. Indeed, the `AE` was trained to procuce recontruct the input data not to be construct a relevant `embedding` in the latent dimensions.  
+We would like to draw the attention of the reader to the fact that even though the `MSE Loss` was higher for the `AE` than for `PCA`, it is not obvious that the performance of `embeddings` themselves are comparable in the same way. Indeed, the `AE` was trained to produce reconstruct the input data not to construct a relevant `embedding` in the latent dimensions.  
 
 # Cycle clustering
 
@@ -478,7 +478,7 @@ Since the elbow method did not allow us to exclude any values of `k` before 20e)
 
 Therefore, we propose to further investigate `k=4, 9, 16, 22` which may be fair tradeoffs between the goodness of the fit and the number of clusters. In the following plot, we will investigate the quality of the individual cluster to choose our final value.
 
-![Alt text](/figures/liquid/clustering/silhouette-analysis.png){:class="img-responsive"}
+![Alt text](/figures/liquid/clustering/silhouette-analysis.png)
 
 **Guidelines to interpret the plot**:
 
@@ -528,10 +528,10 @@ In other words, using relevant metrics, we need to demonstrate dissimilarities a
 
 For instance, we could consider the following :
 
-1. `Number of cycles per cluster` : a sanity check to understand the overall quality of the clustering. Indeed, if `99%` of cycles are clustered together, we won't be able to extract meaningful information out of the clustering.
-2. `Profit per cluster` : we would expect to observe clusters more profitable than others 
-3. `Profitibility per cluster` : this metric is related to the risk associated to a cluster. Indeed, some clusters could be less profitable than others (in average) but yielding a higher probability to make a profit in the end. It s the type of analysis that we would like to conduct with this metric. 
-4. `Token distribution understanding per cluster` : one desirable property of an interesting clustering could be to observe important differences in terms of token distribution across clusters. For example, computing the  `median` of the distribution would allow us to understand whether or not only a few tokens that are very profitable or not are used. Furthermore, the entropy of the distribution can be used as a comparison to a random clustering. 
+1. `Number of cycles per cluster`: a sanity check to understand the overall quality of the clustering. Indeed, if `99%` of cycles are clustered together, we won't be able to extract meaningful information out of the clustering.
+2. `Profit per cluster`: we would expect to observe clusters more profitable than others 
+3. `Profitability per cluster`: this metric is related to the risk associated with a cluster. Indeed, some clusters could be less profitable than others (on average) but yield a higher probability to make a profit in the end. It s the type of analysis that we would like to conduct with this metric. 
+4. `Token distribution understanding per cluster`: one desirable property of an interesting clustering could be to observe important differences in terms of token distribution across clusters. For example, computing the  `median` of the distribution would allow us to understand whether or not only a few tokens that are very profitable or not are used. Furthermore, the entropy of the distribution can be used as a comparison to a random clustering. 
 
 These metrics, computed on the training set, are shown below.
 
@@ -543,11 +543,11 @@ These metrics, computed on the training set, are shown below.
 
 {% include_relative figures/liquid/clustering/Median_of_token_distribution_within_each_cluster_train_small.html %}
 
-{% include_relative figures/liquid/clustering/Entropy_of_token_distribution_within_each_cluster_train_small.html %}
+{% include_relative figures/liquid/clustering/Entropy_of_token_distribution_within_each_cluster_test_small.html %}
 
 {% include_relative figures/liquid/clustering/token_distribution_train_small.html %}
 
-At first sight, it already looks quite promising. We can group cluster together in terms of behaviour. There are two main trends :
+At first sight, it already looks quite promising. We can group clusters together in terms of behaviour. There are two main trends :
 
 1. Profitable clusters (group `A`): `1` `2`, `3`, `4`, `9`, `10`, `12`, `13`, `14`
 2. Less profitable clusters (group `B`): `5` `6`, `7`, `8`, `11` and `15`
@@ -556,11 +556,10 @@ Let's dive into the details :
 
 1. Group `A` appears to be the one generating the larger amount of profits, with slightly better profitability but nothing astonishing.
 2. On the contrary, group `B` is below average in terms of profits.
-3. There is no outstanding differences in terms of profitability across clusters. However, one should note that the global average is already at `95%` which shows that most of the cycles are profitable anyway.
+3. There are no outstanding differences in terms of profitability across clusters. However, one should note that the global average is already at `95%` which shows that most of the cycles are profitable anyway.
 4. Clusters `2` and `12` (which below to group `A`) contain far more data points than the others. 
-5. When it comes to the token distribution entropy, group `A` is more random than the rest. However there is not clear different in terms of the median distribution across groups.
-6. The full token distribution plots shows that clusters grouped together (`A` and `B`) follow a similar distribution. For instance, for group `B`, there is not bulk at the very left but rather a smaller bulk around mid-right. Since we are dealing with a less profitable group, by hovering the plot, we may be able to indentify tokens that do not have a very good overall performance.
-
+5. When it comes to the token distribution entropy, group `A` is more random than the rest. However, there is no clear difference in terms of the median distribution across groups.
+6. The full token distribution plots show that clusters grouped together (`A` and `B`) follow a similar distribution. For instance, for group `B`, there is no bulk at the very left but rather a smaller bulk around mid-right. Since we are dealing with a less profitable group, by hovering the plot, we may be able to identify tokens that do not have a very good overall performance.
 
 In the following set of plots, the same metrics are recomputed but this time on the test set. Interestingly, the conclusions that were drawn for the train set can be extended for the test, demonstrating some degree of predictability/persistence.
 
@@ -578,8 +577,18 @@ In the following set of plots, the same metrics are recomputed but this time on 
 
 # Conclusion
 
-The acquisition of data took quite some time but we managed to create a big set of data in relation to the one used in the arxiv paper. Data exploration has proven that the obtained set is diverse: a lot of tokens having different liquidities were involved in the cycles. Data are processed in a particular way:  a different scaling is applied on each token pair, missing data are filled with 0 (padding).
-Then, `Liquid` data were used to compute 100-dimensional (36x smaller than original) embeddings using autoencoders and PCA. The autoencoders did not perform great regarding the reconstruction MSE but the produced embeddings were better than PCA for clustering. The clustering based on `liquid` embeddings produced XXX meaningful clusters: profitable cycles were clustered together. Contrary to clustering, the PCA embedding performed better than autoencoders on the prediction task that we defined (binary prediction on cycle's profitability). We also noticed that the identification of the involved tokens has a positive impact on the prediction. The conducted study can be improved:  models used for embedding extraction are not satisfying (MSE wise) but because of lack of time, we do not implement improvements of next section. 
+The acquisition of data took was time-consuming though we managed to create a big set of data in relation to the one used in the ***arxiv*** paper. Data exploration demonstrated the diversity of the data in terms of distribution and liquidity as well.  
+
+To build effective features for our machine learning models, we had to perform numerous data wrangling steps. Among others,  a token-based scaling was applied and missing data were handled through `zero-padding
+
+The Autoencoder gave us a tough ride. We had to test many different training/test sets and architectures to construct a relatively sound model. 
+In the end, only the most liquid tokens are used to compute 100-dimensional embeddings using autoencoders and PCA. Unfortunately, they did not reach the expected performance regarding the reconstruction MSE. We could not manage to overperform PCA.
+
+Then, we proposed further tests for the quality of the autoencoder. In particular, we first started to build a binary classifier for the profitability of the cycle. Multiple models (logistic regression, SVM) were contrasted to better understand what accuracy we can expect in this task. We also noticed that the addition of the involved tokens has a positive impact on the prediction.  However, in the end, the result obtained leans towards the hypothesis that the PCA embedding yields better results than our AE embedding.
+
+Finally, we used clustering methods to analyse the structural properties of cyclic arbitrages. As expected, the clustering based on `liquid` embeddings produced clusters where profitable cycles were clustered together.  In contrast to the previous observations, the most satisfactory clustering assignments were obtained using the AE method.
+
+The conducted study can be improved: models used for embedding extraction are not satisfying (MSE wise). Nevertheless, possible areas of improvement are described in the next section. 
 # Further steps 
 
 We concluded the project, but there is still lots of opportunities for improvement. Some of them are described below.
@@ -620,3 +629,6 @@ If we increase the quality of the embedding, the clustering quality should incre
 
 1. [Attention learning in Keras](https://keras.io/guides/understanding_masking_and_padding/)
 2. [Selecting the number of clusters with silhouette analysis](https://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_silhouette_analysis.html)
+3. [F1-score](https://en.wikipedia.org/wiki/F-score)
+4. [Autoencoders](https://en.wikipedia.org/wiki/Autoencoder)
+
