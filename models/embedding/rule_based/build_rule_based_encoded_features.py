@@ -67,4 +67,7 @@ def run():
     ta_test.to_csv(cfg['files']['liquid']['ruled_based']['encoded_test_features'])
 
 
-
+if __name__ == "__main__":
+    print("==== Run : build rule based encoded features ====")
+    run()
+    print("==== Done ====")
