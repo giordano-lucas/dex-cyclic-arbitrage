@@ -265,40 +265,47 @@ Note that the training of fully connected models tested previously converged aro
 
 After running not less than `12` hours on the IZAR EPFL cluster, we got the following results: 
 
-|round_epochs|loss               |val_loss               |activation  |batch_size|dense_layers|dropout|epochs|first_neuron|optimizer|
-|:-----------|------------------:|----------------------:|-----------:|---------:|-----------:|------:|-----:|-----------:|--------:|
-|115         |0.1044822409749031 |0.1127113476395607     |selu        | 16       |3           |0      |   150|         100|Adamax   |
-|86          |0.1156197190284729 |0.12028295546770096    |selu        |16        |3           |0|150|100|adam|
-|109         |0.08013497292995453|0.09330296516418457    |selu        |16        |3           |0|150|300|Adamax|
-|75          |0.09776881337165833|0.10739008337259293    |selu        |16        |3           |0|150|300|adam|
-|112         |0.07518772035837173|0.08999060094356537    |selu        |16        |3           |0|150|600|Adamax|
-|69          |0.1010388731956482 |0.1075085923075676     |selu        |16        |3           |0|150|600|adam|
-|150         |0.1587199866771698 |0.13459059596061707    |selu        |16        |3           |0.25|150|100|Adamax|
-|65          |0.1646331250667572 |0.14732488989830017    |selu        |16        |3           |0.25|150|100|adam|
-|150         |0.14255942404270172|0.11702665686607361    |selu        |16        |3           |0.25|150|300|Adamax|
-|114         |0.13739198446273804|0.1282082051038742     |selu        |16        |3           |0.25|150|300|adam|
-|150         |0.127895787358284  |0.11192671954631805    |selu        |16        |3           |0.25|150|600|Adamax|
-|89          |0.16882744431495667|0.1379149705171585     |selu        |16        |3|0.25|150|600|adam|
-|150         |0.2113858014345169 |0.1653238832950592     |selu        |16        |3|0.5|150|100|Adamax|
-|92          |0.20554718375205994|0.1625034213066101     |selu        |16        |3|0.5|150|100|adam|
-|150         |0.21108323335647583|0.15427224338054657    |selu        |16        |3|0.5|150|300|Adamax|
-|111         |0.2110714614391327 |0.15992014110088348    |selu        |16        |3|0.5|150|300|adam|
-|150         |0.20345567166805267|0.14997783303260803    |selu        |16        |3|0.5|150|600|Adamax|
-|131         |0.23863166570663452|0.15901727974414825    |selu        |16        |3|0.5|150|600|adam|
-|150         |0.10475869476795197|0.1134866327047348     |selu        |16        |5|0|150|100|Adamax|
-|65          |0.11564842611551285|0.1259555071592331     |selu        |16        |5|0|150|100|adam|
-|143         |0.10382051020860672|0.11142224818468094    |selu        |16        |5|0|150|300|Adamax|
-|65          |0.11515199393033981|0.1219802275300026     |selu        |16        |5|0|150|300|adam|
-|104         |0.10421732813119888|0.11176249384880066    |selu        |16        |5|0|150|600|Adamax|
-|94          |0.11715669929981232|0.1217772588133812     |selu        |16        |5|0|150|600|adam|
-|150         |0.1725933700799942 |0.14619795978069305    |selu        |16        |5|0.25|150|100|Adamax|
-|107         |0.1756506711244583 |0.15287084877490997    |selu        |16        |5|0.25|150|100|adam|
-|150         |0.14982140064239502|0.13650894165039062    |selu        |16        |5|0.25|150|300|Adamax|
-|101         |0.15751369297504425|0.14920662343502045    |selu        |16        |5|0.25|150|300|adam|
+|round_epochs|loss|val_loss|activation|batch_size|dense_layers|dropout|epochs|first_neuron|optimizer|
+|---|---|---|---|---|---|---|---|---|---|
+|112|0.075|0.09|selu|16|3|0.0|150|600|Adamax|
+|109|0.08|0.093|selu|16|3|0.0|150|300|Adamax|
+|75|0.098|0.107|selu|16|3|0.0|150|300|adam|
+|69|0.101|0.108|selu|16|3|0.0|150|600|adam|
+|143|0.104|0.111|selu|16|5|0.0|150|300|Adamax|
+|104|0.104|0.112|selu|16|5|0.0|150|600|Adamax|
+|150|0.128|0.112|selu|16|3|0.25|150|600|Adamax|
+|115|0.104|0.113|selu|16|3|0.0|150|100|Adamax|
+|150|0.105|0.113|selu|16|5|0.0|150|100|Adamax|
+|150|0.143|0.117|selu|16|3|0.25|150|300|Adamax|
+|86|0.116|0.12|selu|16|3|0.0|150|100|adam|
+|94|0.117|0.122|selu|16|5|0.0|150|600|adam|
+|65|0.115|0.122|selu|16|5|0.0|150|300|adam|
+|65|0.116|0.126|selu|16|5|0.0|150|100|adam|
+|114|0.137|0.128|selu|16|3|0.25|150|300|adam|
+|150|0.144|0.133|selu|16|5|0.25|150|600|Adamax|
+|150|0.159|0.135|selu|16|3|0.25|150|100|Adamax|
+|150|0.15|0.137|selu|16|5|0.25|150|300|Adamax|
+|89|0.169|0.138|selu|16|3|0.25|150|600|adam|
+|150|0.173|0.146|selu|16|5|0.25|150|100|Adamax|
+|65|0.165|0.147|selu|16|3|0.25|150|100|adam|
+|101|0.158|0.149|selu|16|5|0.25|150|300|adam|
+|150|0.203|0.15|selu|16|3|0.5|150|600|Adamax|
+|107|0.176|0.153|selu|16|5|0.25|150|100|adam|
+|46|0.164|0.154|selu|16|5|0.25|150|600|adam|
+|150|0.211|0.154|selu|16|3|0.5|150|300|Adamax|
+|131|0.239|0.159|selu|16|3|0.5|150|600|adam|
+|111|0.211|0.16|selu|16|3|0.5|150|300|adam|
+|92|0.206|0.163|selu|16|3|0.5|150|100|adam|
+|150|0.211|0.165|selu|16|3|0.5|150|100|Adamax|
+|150|0.237|0.202|selu|16|5|0.5|150|300|Adamax|
+|150|0.275|0.212|selu|16|5|0.5|150|100|Adamax|
+|94|0.308|0.246|selu|16|5|0.5|150|100|adam|
+|78|0.301|0.268|selu|16|5|0.5|150|300|adam|
 
 
-Talos has not finished running at the moment. But we already realize the `Adamax` works better than `Adam` on that particular task. The dropout seems to harm the performances. Model complexity (`#neurons`) is also a factor driving performance, the higher the complexity is the better the performance is. We realize now that 150 epochs are probably too small since a few models seem to not have converged after 150 epochs.    
-Note that `Talos` does not support `K-fold` cross-validation yet, so we had to use a single validation set (`20%`) for this task. 
+
+`Talos` has not finished running at the moment. But we already realize the `Adamax` works better than `Adam` on that particular task. The dropout seems to harm the performances. Model complexity (`#neurons`) is also a factor driving performance, the higher the complexity is the better the performance is. We realize now that 150 epochs are probably too small since a few models seem not to have converged after 150 epochs.    
+> **Note**: `Talos` does not support `K-fold` cross-validation yet, so we had to use a single validation set (`20%`) for this task. 
 
 # Cycles profitability prediction
 
